@@ -1,8 +1,0 @@
-void ShaderUpdater(XMMATRIX world, XMMATRIX worldViewProjection, ID3D11DeviceContext* pd3dImmediateContext) {
-	CB_VS_PER_OBJECT CBMatrices;
-	CBMatrices.matWorld = XMMatrixTranspose(world);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(worldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dImmediateContext, &meshFloor);
-}

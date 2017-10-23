@@ -1,4 +1,86 @@
-﻿  Tutorial 09 - Meshes Using DXUT Helper Classes.cpp
+﻿  DXUT.cpp
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53655): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53664): note: see previous definition of 'DXGI_STATUS_CLIPPED'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(14): warning C4005: 'DXGI_STATUS_NO_REDIRECTION': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53673): note: see previous definition of 'DXGI_STATUS_NO_REDIRECTION'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(15): warning C4005: 'DXGI_STATUS_NO_DESKTOP_ACCESS': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53682): note: see previous definition of 'DXGI_STATUS_NO_DESKTOP_ACCESS'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(16): warning C4005: 'DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53691): note: see previous definition of 'DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(17): warning C4005: 'DXGI_STATUS_MODE_CHANGED': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53700): note: see previous definition of 'DXGI_STATUS_MODE_CHANGED'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(18): warning C4005: 'DXGI_STATUS_MODE_CHANGE_IN_PROGRESS': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53709): note: see previous definition of 'DXGI_STATUS_MODE_CHANGE_IN_PROGRESS'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(21): warning C4005: 'DXGI_ERROR_INVALID_CALL': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53724): note: see previous definition of 'DXGI_ERROR_INVALID_CALL'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(22): warning C4005: 'DXGI_ERROR_NOT_FOUND': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53733): note: see previous definition of 'DXGI_ERROR_NOT_FOUND'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(23): warning C4005: 'DXGI_ERROR_MORE_DATA': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53742): note: see previous definition of 'DXGI_ERROR_MORE_DATA'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(24): warning C4005: 'DXGI_ERROR_UNSUPPORTED': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53751): note: see previous definition of 'DXGI_ERROR_UNSUPPORTED'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(25): warning C4005: 'DXGI_ERROR_DEVICE_REMOVED': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53760): note: see previous definition of 'DXGI_ERROR_DEVICE_REMOVED'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(26): warning C4005: 'DXGI_ERROR_DEVICE_HUNG': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53769): note: see previous definition of 'DXGI_ERROR_DEVICE_HUNG'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(27): warning C4005: 'DXGI_ERROR_DEVICE_RESET': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53779): note: see previous definition of 'DXGI_ERROR_DEVICE_RESET'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(28): warning C4005: 'DXGI_ERROR_WAS_STILL_DRAWING': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53788): note: see previous definition of 'DXGI_ERROR_WAS_STILL_DRAWING'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(29): warning C4005: 'DXGI_ERROR_FRAME_STATISTICS_DISJOINT': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53798): note: see previous definition of 'DXGI_ERROR_FRAME_STATISTICS_DISJOINT'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(30): warning C4005: 'DXGI_ERROR_GRAPHICS_VIDPN_SOURCE_IN_USE': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53807): note: see previous definition of 'DXGI_ERROR_GRAPHICS_VIDPN_SOURCE_IN_USE'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(31): warning C4005: 'DXGI_ERROR_DRIVER_INTERNAL_ERROR': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53817): note: see previous definition of 'DXGI_ERROR_DRIVER_INTERNAL_ERROR'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(32): warning C4005: 'DXGI_ERROR_NONEXCLUSIVE': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53826): note: see previous definition of 'DXGI_ERROR_NONEXCLUSIVE'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(33): warning C4005: 'DXGI_ERROR_NOT_CURRENTLY_AVAILABLE': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53835): note: see previous definition of 'DXGI_ERROR_NOT_CURRENTLY_AVAILABLE'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(34): warning C4005: 'DXGI_ERROR_REMOTE_CLIENT_DISCONNECTED': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53845): note: see previous definition of 'DXGI_ERROR_REMOTE_CLIENT_DISCONNECTED'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(35): warning C4005: 'DXGI_ERROR_REMOTE_OUTOFMEMORY': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(53854): note: see previous definition of 'DXGI_ERROR_REMOTE_OUTOFMEMORY'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d11.h(917): warning C4005: 'D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54118): note: see previous definition of 'D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d11.h(918): warning C4005: 'D3D11_ERROR_FILE_NOT_FOUND': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54127): note: see previous definition of 'D3D11_ERROR_FILE_NOT_FOUND'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d11.h(919): warning C4005: 'D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54137): note: see previous definition of 'D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d11.h(920): warning C4005: 'D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54146): note: see previous definition of 'D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(608): warning C4005: 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54094): note: see previous definition of 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54103): note: see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
+c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(654): warning C4838: conversion from 'UINT' to 'LONG' requires a narrowing conversion
+c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(655): warning C4838: conversion from 'UINT' to 'LONG' requires a narrowing conversion
+c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(1872): warning C4996: 'GetVersionExW': was declared deprecated
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\sysinfoapi.h(445): note: see declaration of 'GetVersionExW'
+c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(4247): warning C4996: 'GetVersionExW': was declared deprecated
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\sysinfoapi.h(445): note: see declaration of 'GetVersionExW'
+c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(4813): warning C4456: declaration of 'pCallbackSwapChainReleasing' hides previous local declaration
+  c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(4737): note: see declaration of 'pCallbackSwapChainReleasing'
+  DXUTDevice11.cpp
+  DXUTDevice9.cpp
+  DXUTmisc.cpp
+c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxutmisc.cpp(1117): warning C4996: 'GetVersionExA': was declared deprecated
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\um\sysinfoapi.h(436): note: see declaration of 'GetVersionExA'
+  DXUTcamera.cpp
+  DXUTgui.cpp
+c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.cpp(7235): warning C4458: declaration of 'iTexture' hides class member
+  c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.h(111): note: see declaration of 'CDXUTElement::iTexture'
+c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.cpp(7249): warning C4458: declaration of 'iFont' hides class member
+  c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.h(112): note: see declaration of 'CDXUTElement::iFont'
+c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.cpp(7249): warning C4458: declaration of 'dwTextFormat' hides class member
+  c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.h(113): note: see declaration of 'CDXUTElement::dwTextFormat'
+  DXUTres.cpp
+  DXUTsettingsdlg.cpp
+  SDKmesh.cpp
+  SDKmisc.cpp
+  Tutorial 09 - Meshes Using DXUT Helper Classes.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamath.h(2662): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamath.h(2663): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamath.h(2664): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
@@ -39,7 +121,30 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(110): warning C4324: 'TIGER_POSITION': structure was padded due to alignment specifier
 c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(113): warning C4316: 'TIGER_POSITION': object allocated on the heap may not be aligned 16
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(835): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(709): warning C4101: 'hr': unreferenced local variable
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(808): warning C4189: 'fAmbient': local variable is initialized but not referenced
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(828): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(708): warning C4101: 'hr': unreferenced local variable
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(801): warning C4189: 'fAmbient': local variable is initialized but not referenced
+  BasicHLSL9.cpp
+  Generating Code...
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(152): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(153): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(156): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(161): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(164): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(166): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(167): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(169): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(171): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(178): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(179): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(190): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(191): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(194): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(196): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(202): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(209): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(210): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(211): warning C4702: unreachable code
+c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(213): warning C4702: unreachable code
+DXUT.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.exe

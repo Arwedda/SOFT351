@@ -235,8 +235,7 @@ void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
 void RenderMesh (ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
 
-
-
+void ToRender(XMMATRIX matWorld, XMMATRIX matWVP, ID3D11DeviceContext* pd3dIC, CDXUTSDKMesh* mesh);
 
 
 //**************************************************************************//
@@ -776,7 +775,6 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	XMMATRIX matTigerTranslate = XMMatrixTranslation(tiger->X, tiger->Y, tiger->Z);
 	XMMATRIX matTigerScale     = XMMatrixScaling(10, 10, 10);
 	XMMATRIX matTigerWorld     = matRotation * matTigerTranslate * matTigerScale;
-    
 	XMMATRIX matWorldViewProjection = matTigerWorld * matView * matProjection;
 
 
@@ -793,11 +791,6 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	// be global, well defined on the heap anyway.  Not a local variable//
 	// it would seem.													//
 	//******************************************************************//
-	CB_VS_PER_OBJECT CBMatrices;
-	CBMatrices.matWorld         = XMMatrixTranspose(matTigerWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource( g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0 );
-	pd3dImmediateContext->VSSetConstantBuffers( 0, 1, &g_pcbVSPerObject );
 
 	//******************************************************************//
 	// Lighting.  Ambient light and a light direction, above, to the	//
@@ -827,7 +820,7 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	//**************************************************************************//
 	// Render the mesh.															//
 	//**************************************************************************//
-	RenderMesh (pd3dImmediateContext, &meshTiger);
+	ToRender(matTigerWorld, matWorldViewProjection, pd3dImmediateContext, &meshTiger);
 
 	//Wings by side, unless moving
 	float flap = 150;
@@ -840,6 +833,7 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	XMMATRIX matRightWingRotate = XMMatrixRotationZ(flap);
 	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matTigerWorld;
 	XMMATRIX matRightWingWorldViewProjection = matRightWingWorld * matView * matProjection;
+	ToRender(matRightWingWorld, matRightWingWorldViewProjection, pd3dImmediateContext, &meshWing);
 
 	//Left Wing Creation
 
@@ -847,37 +841,13 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	XMMATRIX matLeftWingRotate = XMMatrixRotationY(XMConvertToRadians(180)) * XMMatrixRotationZ(flap) * XMMatrixRotationX(XMConvertToRadians(180));
 	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matTigerWorld;
 	XMMATRIX matLeftWingWorldViewProjection = matLeftWingWorld * matView * matProjection;
+	ToRender(matLeftWingWorld, matLeftWingWorldViewProjection, pd3dImmediateContext, &meshWing);
 
 	//Floor Creation
 
-	XMMATRIX matFloorWorld;
-	XMMATRIX matFloorWorldViewProjection;
-
-	matFloorWorld = XMMatrixTranslation(0.0, 0.0, 0.0);
-	matFloorWorldViewProjection = matFloorWorld * matView * matProjection;
-
-	//Right Wing Rendering
-
-	CBMatrices.matWorld = XMMatrixTranspose(matRightWingWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matRightWingWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dImmediateContext, &meshWing);
-
-	//Left Wing Rendering
-
-	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matLeftWingWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dImmediateContext, &meshWing);
-
-	//Floor Rendering
-	CBMatrices.matWorld = XMMatrixTranspose(matFloorWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matFloorWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dImmediateContext, &meshFloor);
+	XMMATRIX matFloorWorld = XMMatrixTranslation(0.0, 0.0, 0.0);
+	XMMATRIX matFloorWorldViewProjection = matFloorWorld * matView * matProjection;
+	ToRender(matFloorWorld, matFloorWorldViewProjection, pd3dImmediateContext, &meshFloor);
 
 	//**************************************************************************//
 	// Render what is rather grandly called the head up display.				//
@@ -888,6 +858,21 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
     RenderText();
     DXUT_EndPerfEvent();
 }
+
+
+/*
+	Exported code to prep ID3D11DeviceContext to a function since it is performed for every item
+	in the world
+*/
+void ToRender(XMMATRIX matWorld, XMMATRIX matWVP, ID3D11DeviceContext* pd3dIC, CDXUTSDKMesh* mesh) {
+	CB_VS_PER_OBJECT CBMatrices;
+	CBMatrices.matWorld = XMMatrixTranspose(matWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWVP);
+	pd3dIC->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dIC->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderMesh(pd3dIC, mesh);
+}
+
 
 
 //**************************************************************************//

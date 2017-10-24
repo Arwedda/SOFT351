@@ -888,7 +888,7 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 		std::wstring vertex = L"v "; //v space
 		std::wstring vTexture = L"vt "; //vt space
 		std::wstring vNormal = L"vn "; //vn space
-		std::wstring face = L"f  ";//f space space
+		std::wstring face = L"f ";//f space
 
 		WCHAR first[5];
 		WCHAR oldStyleStr[200];
@@ -919,15 +919,6 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			XMFLOAT3 v;
 			v.x = x; v.y = y; v.z = z;
 			vecNormals.push_back(v);
-		} else if (line.compare(0, 2, face) == 0) {
-			int a, b, c, d, e, f, g, h, i;
-			wcscpy(oldStyleStr, line.c_str());
-			swscanf(oldStyleStr, L"%2s%f//%f//%fs%f//%f//%fs%f//%f//%f", first, &a, &b, &c, &d, &e, &f, &g, &h, &i);
-			FaceLine fL;
-			fL.a->x = a; fL.a->y = b; fL.a->z = c;
-			fL.b->x = d; fL.b->y = e; fL.b->z = f;
-			fL.c->x = g; fL.c->y = h; fL.c->z = i;
-			vecFaceLines.push_back(fL);
 		}
 
 

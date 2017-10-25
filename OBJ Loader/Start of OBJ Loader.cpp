@@ -966,6 +966,20 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 	//																	//
 	// See abobe wih the -1s.  Sorted?									//
 	//******************************************************************//
+
+	/*
+	Where v would be position data; vt texture normals; vn position normals; face would be the indices thereof. So, you have to read each value and place them in the correct container (I recommend vectors due to their ease of use) depending on the first letter. You don't have to put all the values of the indices into a vector since the indices are only numbers that point to a certain vertex of a certain type. Typically, and assuredly, an 'f' line should have values in this format:
+
+	f v/vt/vn v/vt/vn v/vt/vn assuming a model is triangulated. This represents three position vertices per triangle which otherwise makes up the entire model. If your model isn't triangulated, then you would have 4 groups of values, each pointing to a value within each of those groups.
+
+	At which point you need to order your position vertices, normals and texture normals thereof according to what index is being pointed to in the line 'f'. Some pseudo-code:
+
+	for (int i = 0; i < indices; i++){
+		orderedPositions.push_back(unOrderedPositions[positionIndex[indices] * # of indices + k]);
+		Same applies to normals and textures
+	}
+	Where k is the group number of the face from 1 to n depending on how many groups of faces there are per line.
+	*/
 	SortOfMeshSubset *mesh  = new SortOfMeshSubset;
 	
 	mesh->numVertices = (USHORT) vectorVertices.size();

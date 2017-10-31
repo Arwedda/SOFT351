@@ -879,6 +879,7 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 	std::vector <USHORT>    vecTextureIndices(0);
 	std::vector <XMFLOAT3> vecNormals(0);
 	std::vector <USHORT>    vecNormalIndices(0);
+	std::vector <SimpleVertex> vecFaces(0);
 
 	fileStream.open(filename);
 	bool isOpen = fileStream.is_open();		//debugging only.
@@ -943,6 +944,7 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			WCHAR slash4[5];
 			WCHAR slash5[5];
 			WCHAR slash6[5];
+			SimpleVertex face, face2, face3;
 
 			UINT v1, vt1, vn1, v2, vt2, vn2, v3, vt3, vn3;
 
@@ -962,6 +964,39 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			vecNormalIndices.push_back(vn1 - 1);
 			vecNormalIndices.push_back(vn2 - 1);
 			vecNormalIndices.push_back(vn3 - 1);
+
+			face.Pos.x = (v1 - 1);
+			face.Pos.y = (v1 - 1);
+			face.Pos.z = (v1 - 1);
+			face.TexUV.x = (vt1 - 1);
+			face.TexUV.y = (vt1 - 1);
+			face.VecNormal.x = (vn1 - 1);
+			face.VecNormal.y = (vn1 - 1);
+			face.VecNormal.z = (vn1 - 1);
+
+			vecFaces.push_back(face);
+
+			face2.Pos.x = (v2 - 1);
+			face2.Pos.y = (v2 - 1);
+			face2.Pos.z = (v2 - 1);
+			face2.TexUV.x = (vt2 - 1);
+			face2.TexUV.y = (vt2 - 1);
+			face2.VecNormal.x = (vn2 - 1);
+			face2.VecNormal.y = (vn2 - 1);
+			face2.VecNormal.z = (vn2 - 1);
+
+			vecFaces.push_back(face2);
+
+			face3.Pos.x = (v3 - 1);
+			face3.Pos.y = (v3 - 1);
+			face3.Pos.z = (v3 - 1);
+			face3.TexUV.x = (vt3 - 1);
+			face3.TexUV.y = (vt3 - 1);
+			face3.VecNormal.x = (vn3 - 1);
+			face3.VecNormal.y = (vn3 - 1);
+			face3.VecNormal.z = (vn3 - 1);
+
+			vecFaces.push_back(face);
 		}
 	}
 
@@ -982,11 +1017,11 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 		mesh->vertices[i].Pos.x = vectorVertices[i].x;
 		mesh->vertices[i].Pos.y = vectorVertices[i].y;
 		mesh->vertices[i].Pos.z = vectorVertices[i].z;
-		/*mesh->vertices[i].TexUV = vecTextures[vecTextureIndices[i]];
-		mesh->vertices[i].VecNormal = vecNormals[vecNormalIndices[i]];*/
+		mesh->vertices[i].TexUV = vecTextures[vecTextureIndices[i]];
+		mesh->vertices[i].VecNormal = vecNormals[vecNormalIndices[i]];
 	}
 
-	mesh->vertices[0].TexUV = vecTextures[0];
+	/*	mesh->vertices[0].TexUV = vecTextures[0];
 	mesh->vertices[1].TexUV = vecTextures[1];
 	mesh->vertices[2].TexUV = vecTextures[2];
 	mesh->vertices[3].TexUV = vecTextures[0];
@@ -1021,13 +1056,12 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 	mesh->vertices[32].TexUV = vecTextures[12];
 	mesh->vertices[33].TexUV = vecTextures[1];
 	mesh->vertices[34].TexUV = vecTextures[12];
-	mesh->vertices[34].TexUV = vecTextures[13];
+	mesh->vertices[34].TexUV = vecTextures[13];*/
 
 	mesh->numIndices = (USHORT)vectorIndices.size();
 	mesh->indexes = new USHORT[mesh->numIndices];
 	for (int i = 0; i < mesh->numIndices; i++)
-		mesh->indexes[i] = vectorIndices[i];
+		mesh->indexes[i] = i;
 
 	return mesh;
 }
-

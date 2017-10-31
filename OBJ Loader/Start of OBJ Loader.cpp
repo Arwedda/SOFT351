@@ -490,8 +490,8 @@ HRESULT InitDevice()
 	// Load the obj mesh, NOT COMPLETE.											//
 	//**************************************************************************//	
 	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Cup\\Cup.obj");
-	SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Textured_triangulated_Cube\\cube.obj");
-	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\pig\\pig.obj");
+	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Textured_triangulated_Cube\\cube.obj");
+	SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\pig\\pig.obj");
 
 	//**************************************************************************//
 	// Create the vertex buffer.												//
@@ -580,7 +580,7 @@ HRESULT InitDevice()
 	// Load the texture into "ordinary" RAM.									//
 	//**************************************************************************//
 	hr = D3DX11CreateShaderResourceViewFromFile(g_pd3dDevice,
-		L"Media\\Textured_triangulated_Cube\\cube.jpg",
+		L"Media\\pig\\pig_d.jpg",
 		NULL, NULL,
 		&g_pTextureResourceView,		// This is returned.
 		NULL);
@@ -958,45 +958,24 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			vectorIndices.push_back(v1 - 1);	// Check this carefully; see below
 			vectorIndices.push_back(v2 - 1);
 			vectorIndices.push_back(v3 - 1);
-			vecTextureIndices.push_back(vt1 - 1);
-			vecTextureIndices.push_back(vt2 - 1);
-			vecTextureIndices.push_back(vt3 - 1);
-			vecNormalIndices.push_back(vn1 - 1);
-			vecNormalIndices.push_back(vn2 - 1);
-			vecNormalIndices.push_back(vn3 - 1);
 
-			face.Pos.x = (v1 - 1);
-			face.Pos.y = (v1 - 1);
-			face.Pos.z = (v1 - 1);
-			face.TexUV.x = (vt1 - 1);
-			face.TexUV.y = (vt1 - 1);
-			face.VecNormal.x = (vn1 - 1);
-			face.VecNormal.y = (vn1 - 1);
-			face.VecNormal.z = (vn1 - 1);
+			face.Pos = (vectorVertices[v1 - 1]);
+			face.TexUV = (vecTextures[vt1 - 1]);
+			face.VecNormal = (vecNormals[vn1 - 1]);
 
 			vecFaces.push_back(face);
 
-			face2.Pos.x = (v2 - 1);
-			face2.Pos.y = (v2 - 1);
-			face2.Pos.z = (v2 - 1);
-			face2.TexUV.x = (vt2 - 1);
-			face2.TexUV.y = (vt2 - 1);
-			face2.VecNormal.x = (vn2 - 1);
-			face2.VecNormal.y = (vn2 - 1);
-			face2.VecNormal.z = (vn2 - 1);
+			face2.Pos = (vectorVertices[v2 - 1]);
+			face2.TexUV = (vecTextures[vt2 - 1]);
+			face2.VecNormal = (vecNormals[vn2 - 1]);
 
 			vecFaces.push_back(face2);
 
-			face3.Pos.x = (v3 - 1);
-			face3.Pos.y = (v3 - 1);
-			face3.Pos.z = (v3 - 1);
-			face3.TexUV.x = (vt3 - 1);
-			face3.TexUV.y = (vt3 - 1);
-			face3.VecNormal.x = (vn3 - 1);
-			face3.VecNormal.y = (vn3 - 1);
-			face3.VecNormal.z = (vn3 - 1);
+			face3.Pos = (vectorVertices[v3 - 1]);
+			face3.TexUV = (vecTextures[vt3 - 1]);
+			face3.VecNormal = (vecNormals[vn3 - 1]);
 
-			vecFaces.push_back(face);
+			vecFaces.push_back(face3);
 		}
 	}
 
@@ -1010,53 +989,14 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 	//******************************************************************//
 	SortOfMeshSubset *mesh = new SortOfMeshSubset;
 
-	mesh->numVertices = (USHORT)vectorVertices.size();
+	mesh->numVertices = (USHORT)vecFaces.size();
 	mesh->vertices = new SimpleVertex[mesh->numVertices];
 	for (int i = 0; i < mesh->numVertices; i++)
 	{
-		mesh->vertices[i].Pos.x = vectorVertices[i].x;
-		mesh->vertices[i].Pos.y = vectorVertices[i].y;
-		mesh->vertices[i].Pos.z = vectorVertices[i].z;
-		mesh->vertices[i].TexUV = vecTextures[vecTextureIndices[i]];
-		mesh->vertices[i].VecNormal = vecNormals[vecNormalIndices[i]];
+		mesh->vertices[i].Pos = vecFaces[i].Pos;
+		mesh->vertices[i].TexUV = vecFaces[i].TexUV;
+		mesh->vertices[i].VecNormal = vecFaces[i].VecNormal;
 	}
-
-	/*	mesh->vertices[0].TexUV = vecTextures[0];
-	mesh->vertices[1].TexUV = vecTextures[1];
-	mesh->vertices[2].TexUV = vecTextures[2];
-	mesh->vertices[3].TexUV = vecTextures[0];
-	mesh->vertices[4].TexUV = vecTextures[2];
-	mesh->vertices[5].TexUV = vecTextures[3];
-	mesh->vertices[6].TexUV = vecTextures[4];
-	mesh->vertices[7].TexUV = vecTextures[5];
-	mesh->vertices[8].TexUV = vecTextures[6];
-	mesh->vertices[9].TexUV = vecTextures[4];
-	mesh->vertices[10].TexUV = vecTextures[6];
-	mesh->vertices[11].TexUV = vecTextures[7];
-	mesh->vertices[12].TexUV = vecTextures[8];
-	mesh->vertices[13].TexUV = vecTextures[9];
-	mesh->vertices[14].TexUV = vecTextures[4];
-	mesh->vertices[15].TexUV = vecTextures[9];
-	mesh->vertices[16].TexUV = vecTextures[5];
-	mesh->vertices[17].TexUV = vecTextures[4];
-	mesh->vertices[18].TexUV = vecTextures[1];
-	mesh->vertices[19].TexUV = vecTextures[0];
-	mesh->vertices[20].TexUV = vecTextures[8];
-	mesh->vertices[21].TexUV = vecTextures[0];
-	mesh->vertices[22].TexUV = vecTextures[9];
-	mesh->vertices[23].TexUV = vecTextures[8];
-	mesh->vertices[24].TexUV = vecTextures[0];
-	mesh->vertices[25].TexUV = vecTextures[10];
-	mesh->vertices[26].TexUV = vecTextures[9];
-	mesh->vertices[27].TexUV = vecTextures[10];
-	mesh->vertices[28].TexUV = vecTextures[11];
-	mesh->vertices[29].TexUV = vecTextures[9];
-	mesh->vertices[30].TexUV = vecTextures[1];
-	mesh->vertices[31].TexUV = vecTextures[8];
-	mesh->vertices[32].TexUV = vecTextures[12];
-	mesh->vertices[33].TexUV = vecTextures[1];
-	mesh->vertices[34].TexUV = vecTextures[12];
-	mesh->vertices[34].TexUV = vecTextures[13];*/
 
 	mesh->numIndices = (USHORT)vectorIndices.size();
 	mesh->indexes = new USHORT[mesh->numIndices];

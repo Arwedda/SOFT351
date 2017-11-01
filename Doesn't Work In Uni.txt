@@ -1,0 +1,8 @@
+void ToRender(XMMATRIX matWorld, XMMATRIX matWVP, ID3D11DeviceContext* pd3dIC, CDXUTSDKMesh* mesh) {
+	CB_VS_PER_OBJECT CBMatrices;
+	CBMatrices.matWorld = XMMatrixTranspose(matWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWVP);
+	pd3dIC->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dIC->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderMesh(pd3dIC, mesh);
+}

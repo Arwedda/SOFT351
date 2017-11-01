@@ -72,7 +72,7 @@ float                       g_fLightScale;
 int                         g_nNumActiveLights;
 int                         g_nActiveLight;
 bool                        g_bShowHelp = false;    // If true, it renders the UI control text
-int							g_width  = 800;
+int							g_width = 800;
 int							g_height = 600;;
 
 //**************************************************************************//
@@ -81,22 +81,22 @@ int							g_height = 600;;
 CDXUTSDKMesh                meshTiger;			// Wot, not a pointer type?
 CDXUTSDKMesh				meshWing;
 CDXUTSDKMesh				meshFloor;
+CDXUTSDKMesh				meshSky;
 
 XMMATRIX					matProjection;
 
 ID3D11InputLayout          *g_pVertexLayout11 = NULL;
-ID3D11Buffer               *g_pVertexBuffer   = NULL;
-ID3D11Buffer               *g_pIndexBuffer    = NULL;
-ID3D11VertexShader         *g_pVertexShader   = NULL;
-ID3D11PixelShader          *g_pPixelShader    = NULL;
-ID3D11SamplerState         *g_pSamLinear      = NULL;
+ID3D11Buffer               *g_pVertexBuffer = NULL;
+ID3D11Buffer               *g_pIndexBuffer = NULL;
+ID3D11VertexShader         *g_pVertexShader = NULL;
+ID3D11PixelShader          *g_pPixelShader = NULL;
+ID3D11SamplerState         *g_pSamLinear = NULL;
 
 //**********************************************************************//
 // Variables to control the movement of the tiger.						//
 // The only one I have coded is rotate about Y, we need an x, y, z		//
 // position and maybe rotates about other axes.							//
 //**********************************************************************//
-
 struct TIGER_POSITION {
 	float		X = 0;
 	float		Y = 0;
@@ -105,21 +105,21 @@ struct TIGER_POSITION {
 	float		RY = 0;
 	float		RZ = 0;
 	float		speed = 0;
-	float		maxSpeed = 30;
-	float		maxReverse = -5;
+	float		maxSpeed = 10;
+	float		maxReverse = -3;
 	XMVECTOR    initDir = XMVectorSet(0, 0, -2, 0);
 };
 
 TIGER_POSITION* tiger = new TIGER_POSITION();
 
-bool		isLeftArrowDown		= false;	//Status of keyboard.  Thess are set
-bool		isRightArrowDown	= false;	//in the callback KeyboardProc(), and 
-bool		isUpArrowDown		= false;	//are used in onFrameMove().
-bool		isDownArrowDown	    = false;
-bool		isWKeyDown			= false;
-bool		isSKeyDown			= false;
+bool		isLeftArrowDown = false;	//Status of keyboard.  Thess are set
+bool		isRightArrowDown = false;	//in the callback KeyboardProc(), and 
+bool		isUpArrowDown = false;	//are used in onFrameMove().
+bool		isDownArrowDown = false;
+bool		isWKeyDown = false;
+bool		isSKeyDown = false;
 
-bool		isTigerView			= false;
+bool		isTigerView = false;
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -136,7 +136,7 @@ CDXUTTextHelper*            g_pTxtHelper = NULL;
 struct CB_VS_PER_OBJECT
 {
 	XMMATRIX matWorldViewProj;
-    XMMATRIX matWorld;				// needed to transform the normals.
+	XMMATRIX matWorld;				// needed to transform the normals.
 };
 
 
@@ -151,13 +151,13 @@ struct CB_VS_PER_OBJECT
 //**************************************************************************//
 struct CB_PS_PER_OBJECT
 {
-    XMFLOAT4 m_vObjectColor;
+	XMFLOAT4 m_vObjectColor;
 };
 UINT                        g_iCBPSPerObjectBind = 0;
 
 struct CB_PS_PER_FRAME
 {
-    XMVECTOR m_vLightDirAmbient;	// Vector pointing at the light
+	XMVECTOR m_vLightDirAmbient;	// Vector pointing at the light
 };
 
 
@@ -177,7 +177,7 @@ UINT                        g_iCBPSPerFrameBind = 1;
 //**************************************************************************//
 ID3D11Buffer               *g_pcbVSPerObject = NULL;
 ID3D11Buffer               *g_pcbPSPerObject = NULL;
-ID3D11Buffer               *g_pcbPSPerFrame  = NULL;
+ID3D11Buffer               *g_pcbPSPerFrame = NULL;
 
 
 
@@ -201,42 +201,39 @@ ID3D11Buffer               *g_pcbPSPerFrame  = NULL;
 //--------------------------------------------------------------------------------------
 // Forward declarations 
 //--------------------------------------------------------------------------------------
-bool CALLBACK ModifyDeviceSettings( DXUTDeviceSettings* pDeviceSettings, void* pUserContext );
-void CALLBACK OnFrameMove( double fTime, float fElapsedTime, void* pUserContext );
-LRESULT CALLBACK MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing,
-                          void* pUserContext );
-void CALLBACK OnKeyboard( UINT nChar, bool bKeyDown, bool bAltDown, void* pUserContext );
-void CALLBACK OnGUIEvent( UINT nEvent, int nControlID, CDXUTControl* pControl, void* pUserContext );
+bool CALLBACK ModifyDeviceSettings(DXUTDeviceSettings* pDeviceSettings, void* pUserContext);
+void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext);
+LRESULT CALLBACK MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing,
+	void* pUserContext);
+void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserContext);
+void CALLBACK OnGUIEvent(UINT nEvent, int nControlID, CDXUTControl* pControl, void* pUserContext);
 
-extern bool CALLBACK IsD3D9DeviceAcceptable( D3DCAPS9* pCaps, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat,
-                                             bool bWindowed, void* pUserContext );
-extern HRESULT CALLBACK OnD3D9CreateDevice( IDirect3DDevice9* pd3dDevice,
-                                            const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext );
-extern HRESULT CALLBACK OnD3D9ResetDevice( IDirect3DDevice9* pd3dDevice, const D3DSURFACE_DESC* pBackBufferSurfaceDesc,
-                                           void* pUserContext );
-extern void CALLBACK OnD3D9FrameRender( IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime,
-                                        void* pUserContext );
-extern void CALLBACK OnD3D9LostDevice( void* pUserContext );
-extern void CALLBACK OnD3D9DestroyDevice( void* pUserContext );
+extern bool CALLBACK IsD3D9DeviceAcceptable(D3DCAPS9* pCaps, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat,
+	bool bWindowed, void* pUserContext);
+extern HRESULT CALLBACK OnD3D9CreateDevice(IDirect3DDevice9* pd3dDevice,
+	const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext);
+extern HRESULT CALLBACK OnD3D9ResetDevice(IDirect3DDevice9* pd3dDevice, const D3DSURFACE_DESC* pBackBufferSurfaceDesc,
+	void* pUserContext);
+extern void CALLBACK OnD3D9FrameRender(IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime,
+	void* pUserContext);
+extern void CALLBACK OnD3D9LostDevice(void* pUserContext);
+extern void CALLBACK OnD3D9DestroyDevice(void* pUserContext);
 
 bool CALLBACK IsD3D11DeviceAcceptable(const CD3D11EnumAdapterInfo *AdapterInfo, UINT Output, const CD3D11EnumDeviceInfo *DeviceInfo,
-                                       DXGI_FORMAT BackBufferFormat, bool bWindowed, void* pUserContext );
-HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc,
-                                      void* pUserContext );
-HRESULT CALLBACK OnD3D11ResizedSwapChain( ID3D11Device* pd3dDevice, IDXGISwapChain* pSwapChain,
-                                          const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext );
-void CALLBACK OnD3D11ReleasingSwapChain( void* pUserContext );
-void CALLBACK OnD3D11DestroyDevice( void* pUserContext );
-void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, double fTime,
-                                  float fElapsedTime, void* pUserContext );
+	DXGI_FORMAT BackBufferFormat, bool bWindowed, void* pUserContext);
+HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc,
+	void* pUserContext);
+HRESULT CALLBACK OnD3D11ResizedSwapChain(ID3D11Device* pd3dDevice, IDXGISwapChain* pSwapChain,
+	const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext);
+void CALLBACK OnD3D11ReleasingSwapChain(void* pUserContext);
+void CALLBACK OnD3D11DestroyDevice(void* pUserContext);
+void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, double fTime,
+	float fElapsedTime, void* pUserContext);
 
 void InitApp();
 void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
-void RenderMesh (ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
-
-void ToRender(XMMATRIX matWorld, XMMATRIX matWVP, ID3D11DeviceContext* pd3dIC, CDXUTSDKMesh* mesh);
-
+void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -247,50 +244,50 @@ void ToRender(XMMATRIX matWorld, XMMATRIX matWVP, ID3D11DeviceContext* pd3dIC, C
 // versions you have seen.  This allows you to sync the frame rate to your  //
 // monitor's vertical sync event.											//
 //**************************************************************************//
-int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow )
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-    // Enable run-time memory check for debug builds.
+	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
-    _CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    // DXUT will create and use the best device (either D3D9 or D3D11) 
-    // that is available on the system depending on which D3D callbacks are set below
+	// DXUT will create and use the best device (either D3D9 or D3D11) 
+	// that is available on the system depending on which D3D callbacks are set below
 
-    
+
 	//**************************************************************************//
 	// Set DXUT callbacks.														//
-    //**************************************************************************//
-	DXUTSetCallbackDeviceChanging( ModifyDeviceSettings );
-    DXUTSetCallbackMsgProc( MsgProc );
-    DXUTSetCallbackKeyboard( OnKeyboard );
-    DXUTSetCallbackFrameMove( OnFrameMove );
+	//**************************************************************************//
+	DXUTSetCallbackDeviceChanging(ModifyDeviceSettings);
+	DXUTSetCallbackMsgProc(MsgProc);
+	DXUTSetCallbackKeyboard(OnKeyboard);
+	DXUTSetCallbackFrameMove(OnFrameMove);
 
 
-    DXUTSetCallbackD3D9DeviceAcceptable( IsD3D9DeviceAcceptable );
-    DXUTSetCallbackD3D9DeviceCreated( OnD3D9CreateDevice );
-    DXUTSetCallbackD3D9DeviceReset( OnD3D9ResetDevice );
-    DXUTSetCallbackD3D9FrameRender( OnD3D9FrameRender );
-    DXUTSetCallbackD3D9DeviceLost( OnD3D9LostDevice );
-    DXUTSetCallbackD3D9DeviceDestroyed( OnD3D9DestroyDevice );
+	DXUTSetCallbackD3D9DeviceAcceptable(IsD3D9DeviceAcceptable);
+	DXUTSetCallbackD3D9DeviceCreated(OnD3D9CreateDevice);
+	DXUTSetCallbackD3D9DeviceReset(OnD3D9ResetDevice);
+	DXUTSetCallbackD3D9FrameRender(OnD3D9FrameRender);
+	DXUTSetCallbackD3D9DeviceLost(OnD3D9LostDevice);
+	DXUTSetCallbackD3D9DeviceDestroyed(OnD3D9DestroyDevice);
 
 
-    DXUTSetCallbackD3D11DeviceAcceptable( IsD3D11DeviceAcceptable );
-    DXUTSetCallbackD3D11DeviceCreated( OnD3D11CreateDevice );
-    DXUTSetCallbackD3D11SwapChainResized( OnD3D11ResizedSwapChain );
-    DXUTSetCallbackD3D11FrameRender( OnD3D11FrameRender );
-    DXUTSetCallbackD3D11SwapChainReleasing( OnD3D11ReleasingSwapChain );
-    DXUTSetCallbackD3D11DeviceDestroyed( OnD3D11DestroyDevice );
+	DXUTSetCallbackD3D11DeviceAcceptable(IsD3D11DeviceAcceptable);
+	DXUTSetCallbackD3D11DeviceCreated(OnD3D11CreateDevice);
+	DXUTSetCallbackD3D11SwapChainResized(OnD3D11ResizedSwapChain);
+	DXUTSetCallbackD3D11FrameRender(OnD3D11FrameRender);
+	DXUTSetCallbackD3D11SwapChainReleasing(OnD3D11ReleasingSwapChain);
+	DXUTSetCallbackD3D11DeviceDestroyed(OnD3D11DestroyDevice);
 
-    InitApp();
-    DXUTInit( true, true, NULL ); // Parse the command line, show msgboxes on error, no extra command line params
-    DXUTSetCursorSettings( true, true ); // Show the cursor and clip it when in full screen
-    DXUTCreateWindow( L"Tutorial 09 - Meshes Using DXUT Helper Classes" );
-    DXUTCreateDevice (D3D_FEATURE_LEVEL_9_2, true, 800, 600 );
-    //DXUTCreateDevice(true, 640, 480);
-    DXUTMainLoop(); // Enter into the DXUT render loop
+	InitApp();
+	DXUTInit(true, true, NULL); // Parse the command line, show msgboxes on error, no extra command line params
+	DXUTSetCursorSettings(true, true); // Show the cursor and clip it when in full screen
+	DXUTCreateWindow(L"Tutorial 09 - Meshes Using DXUT Helper Classes");
+	DXUTCreateDevice(D3D_FEATURE_LEVEL_9_2, true, 800, 600);
+	//DXUTCreateDevice(true, 640, 480);
+	DXUTMainLoop(); // Enter into the DXUT render loop
 
-    return DXUTGetExitCode();
+	return DXUTGetExitCode();
 }
 
 
@@ -299,41 +296,41 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 //--------------------------------------------------------------------------------------
 void InitApp()
 {
-    // Initialize dialogs
-    g_D3DSettingsDlg.Init( &g_DialogResourceManager );
-    g_HUD.Init( &g_DialogResourceManager );
-    g_SampleUI.Init( &g_DialogResourceManager );
+	// Initialize dialogs
+	g_D3DSettingsDlg.Init(&g_DialogResourceManager);
+	g_HUD.Init(&g_DialogResourceManager);
+	g_SampleUI.Init(&g_DialogResourceManager);
 
-    g_HUD.SetCallback( OnGUIEvent ); int iY = 10;
-    g_HUD.AddButton( IDC_TOGGLEFULLSCREEN, L"Toggle full screen", 0, iY, 170, 23 );
-    g_HUD.AddButton( IDC_TOGGLEREF, L"Toggle REF (F3)", 0, iY += 26, 170, 23, VK_F3 );
-    g_HUD.AddButton( IDC_CHANGEDEVICE, L"Change device (F2)", 0, iY += 26, 170, 23, VK_F2 );
+	g_HUD.SetCallback(OnGUIEvent); int iY = 10;
+	g_HUD.AddButton(IDC_TOGGLEFULLSCREEN, L"Toggle full screen", 0, iY, 170, 23);
+	g_HUD.AddButton(IDC_TOGGLEREF, L"Toggle REF (F3)", 0, iY += 26, 170, 23, VK_F3);
+	g_HUD.AddButton(IDC_CHANGEDEVICE, L"Change device (F2)", 0, iY += 26, 170, 23, VK_F2);
 
-    g_SampleUI.SetCallback( OnGUIEvent ); iY = 10;
+	g_SampleUI.SetCallback(OnGUIEvent); iY = 10;
 }
 
 
 //--------------------------------------------------------------------------------------
 // Called right before creating a D3D9 or D3D11 device, allowing the app to modify the device settings as needed
 //--------------------------------------------------------------------------------------
-bool CALLBACK ModifyDeviceSettings( DXUTDeviceSettings* pDeviceSettings, void* pUserContext )
+bool CALLBACK ModifyDeviceSettings(DXUTDeviceSettings* pDeviceSettings, void* pUserContext)
 {
-    // Uncomment this to get debug information from D3D11
-    //pDeviceSettings->d3d11.CreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	// Uncomment this to get debug information from D3D11
+	//pDeviceSettings->d3d11.CreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
 
-    // For the first device created if its a REF device, optionally display a warning dialog box
-    static bool s_bFirstTime = true;
-    if( s_bFirstTime )
-    {
-        s_bFirstTime = false;
-        if( ( DXUT_D3D11_DEVICE == pDeviceSettings->ver &&
-              pDeviceSettings->d3d11.DriverType == D3D_DRIVER_TYPE_REFERENCE ) )
-        {
-            DXUTDisplaySwitchingToREFWarning( pDeviceSettings->ver );
-        }
-    }
+	// For the first device created if its a REF device, optionally display a warning dialog box
+	static bool s_bFirstTime = true;
+	if (s_bFirstTime)
+	{
+		s_bFirstTime = false;
+		if ((DXUT_D3D11_DEVICE == pDeviceSettings->ver &&
+			pDeviceSettings->d3d11.DriverType == D3D_DRIVER_TYPE_REFERENCE))
+		{
+			DXUTDisplaySwitchingToREFWarning(pDeviceSettings->ver);
+		}
+	}
 
-    return true;
+	return true;
 }
 
 
@@ -341,7 +338,7 @@ bool CALLBACK ModifyDeviceSettings( DXUTDeviceSettings* pDeviceSettings, void* p
 // Handle updates to the scene.  This is called regardless of which D3D		//
 // API is used (we are only using Dx11).									//
 //**************************************************************************//
-void CALLBACK OnFrameMove( double fTime, float fElapsedTime, void* pUserContext )
+void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 {
 	if (isLeftArrowDown)  tiger->RX -= fElapsedTime * 3;	// Frame rate 
 	if (isRightArrowDown) tiger->RX += fElapsedTime * 3;	// independent.
@@ -375,24 +372,24 @@ void CALLBACK OnFrameMove( double fTime, float fElapsedTime, void* pUserContext 
 //--------------------------------------------------------------------------------------
 void RenderText()
 {
-    UINT nBackBufferHeight = ( DXUTIsAppRenderingWithD3D9() ) ? DXUTGetD3D9BackBufferSurfaceDesc()->Height :
-            DXUTGetDXGIBackBufferSurfaceDesc()->Height;
+	UINT nBackBufferHeight = (DXUTIsAppRenderingWithD3D9()) ? DXUTGetD3D9BackBufferSurfaceDesc()->Height :
+		DXUTGetDXGIBackBufferSurfaceDesc()->Height;
 
-    g_pTxtHelper->Begin();
-    g_pTxtHelper->SetInsertionPos( 2, 0 );
-    g_pTxtHelper->SetForegroundColor( D3DXCOLOR( 1.0f, 1.0f, 0.0f, 1.0f ) );
-    g_pTxtHelper->DrawTextLine( DXUTGetFrameStats( DXUTIsVsyncEnabled() ) );
-    g_pTxtHelper->DrawTextLine( DXUTGetDeviceStats() );
+	g_pTxtHelper->Begin();
+	g_pTxtHelper->SetInsertionPos(2, 0);
+	g_pTxtHelper->SetForegroundColor(D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+	g_pTxtHelper->DrawTextLine(DXUTGetFrameStats(DXUTIsVsyncEnabled()));
+	g_pTxtHelper->DrawTextLine(DXUTGetDeviceStats());
 
-    // Draw help
-    if( g_bShowHelp )
-    {
-        g_pTxtHelper->SetInsertionPos( 2, nBackBufferHeight - 20 * 6 );
-        g_pTxtHelper->SetForegroundColor( D3DXCOLOR( 1.0f, 0.75f, 0.0f, 1.0f ) );
-        g_pTxtHelper->DrawTextLine( L"Controls:" );
+	// Draw help
+	if (g_bShowHelp)
+	{
+		g_pTxtHelper->SetInsertionPos(2, nBackBufferHeight - 20 * 6);
+		g_pTxtHelper->SetForegroundColor(D3DXCOLOR(1.0f, 0.75f, 0.0f, 1.0f));
+		g_pTxtHelper->DrawTextLine(L"Controls:");
 
-        g_pTxtHelper->SetInsertionPos( 20, nBackBufferHeight - 20 * 5 );
-        g_pTxtHelper->DrawTextLine( L"Rotate model: Left /right arrows\n");
+		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 5);
+		g_pTxtHelper->DrawTextLine(L"Rotate model: Left /right arrows\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 4);
 		g_pTxtHelper->DrawTextLine(L"Rotate model: Up /Down arrows\n");
@@ -403,97 +400,97 @@ void RenderText()
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 2);
 		g_pTxtHelper->DrawTextLine(L"Change view: F4 key\n");
 
-        g_pTxtHelper->SetInsertionPos( 550, nBackBufferHeight - 20 * 5 );
-        g_pTxtHelper->DrawTextLine( L"Hide help: F1\n"
-                                    L"Quit: ESC\n" );
-    }
-    else
-    {
-        g_pTxtHelper->SetForegroundColor( D3DXCOLOR( 1.0f, 1.0f, 1.0f, 1.0f ) );
-        g_pTxtHelper->DrawTextLine( L"Press F1 for help" );
-    }
+		g_pTxtHelper->SetInsertionPos(550, nBackBufferHeight - 20 * 5);
+		g_pTxtHelper->DrawTextLine(L"Hide help: F1\n"
+			L"Quit: ESC\n");
+	}
+	else
+	{
+		g_pTxtHelper->SetForegroundColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pTxtHelper->DrawTextLine(L"Press F1 for help");
+	}
 
-    g_pTxtHelper->End();
+	g_pTxtHelper->End();
 }
 
 
 //--------------------------------------------------------------------------------------
 // Handle messages to the application
 //--------------------------------------------------------------------------------------
-LRESULT CALLBACK MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing,
-                          void* pUserContext )
+LRESULT CALLBACK MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing,
+	void* pUserContext)
 {
-    // Pass messages to dialog resource manager calls so GUI state is updated correctly
-    *pbNoFurtherProcessing = g_DialogResourceManager.MsgProc( hWnd, uMsg, wParam, lParam );
-    if( *pbNoFurtherProcessing )
-        return 0;
+	// Pass messages to dialog resource manager calls so GUI state is updated correctly
+	*pbNoFurtherProcessing = g_DialogResourceManager.MsgProc(hWnd, uMsg, wParam, lParam);
+	if (*pbNoFurtherProcessing)
+		return 0;
 
-    // Pass messages to settings dialog if its active
-    if( g_D3DSettingsDlg.IsActive() )
-    {
-        g_D3DSettingsDlg.MsgProc( hWnd, uMsg, wParam, lParam );
-        return 0;
-    }
+	// Pass messages to settings dialog if its active
+	if (g_D3DSettingsDlg.IsActive())
+	{
+		g_D3DSettingsDlg.MsgProc(hWnd, uMsg, wParam, lParam);
+		return 0;
+	}
 
-    // Give the dialogs a chance to handle the message first
-    *pbNoFurtherProcessing = g_HUD.MsgProc( hWnd, uMsg, wParam, lParam );
-    if( *pbNoFurtherProcessing )
-        return 0;
-    *pbNoFurtherProcessing = g_SampleUI.MsgProc( hWnd, uMsg, wParam, lParam );
-    if( *pbNoFurtherProcessing )
-        return 0;
+	// Give the dialogs a chance to handle the message first
+	*pbNoFurtherProcessing = g_HUD.MsgProc(hWnd, uMsg, wParam, lParam);
+	if (*pbNoFurtherProcessing)
+		return 0;
+	*pbNoFurtherProcessing = g_SampleUI.MsgProc(hWnd, uMsg, wParam, lParam);
+	if (*pbNoFurtherProcessing)
+		return 0;
 
 
-    return 0;
+	return 0;
 }
 
 //**************************************************************************//
 // Handle key presses.														//
 //**************************************************************************//
-void CALLBACK OnKeyboard( UINT nChar, bool bKeyDown, bool bAltDown, void* pUserContext )
+void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserContext)
 {
-    if( bKeyDown )
-    {
-        switch( nChar )
-        {
-            case VK_F1:
-                g_bShowHelp = !g_bShowHelp; break;
-			case VK_F4:
-				isTigerView = !isTigerView;
-				break;
-      }
-    }
+	if (bKeyDown)
+	{
+		switch (nChar)
+		{
+		case VK_F1:
+			g_bShowHelp = !g_bShowHelp; break;
+		case VK_F4:
+			isTigerView = !isTigerView;
+			break;
+		}
+	}
 
-	
+
 	//**************************************************************//
 	// Nigel code to rotate the tiger.								//
 	//**************************************************************//
-	switch( nChar )
-	{		       
-		case VK_LEFT:  isLeftArrowDown  = bKeyDown; break;
-		case VK_RIGHT: isRightArrowDown = bKeyDown; break;
-		case VK_UP:    isUpArrowDown    = bKeyDown; break;
-		case VK_DOWN:  isDownArrowDown  = bKeyDown; break;
-		case 87:		isWKeyDown		= bKeyDown; break;
-		case 83:		isSKeyDown		= bKeyDown; break;
-       }
+	switch (nChar)
+	{
+	case VK_LEFT:  isLeftArrowDown = bKeyDown; break;
+	case VK_RIGHT: isRightArrowDown = bKeyDown; break;
+	case VK_UP:    isUpArrowDown = bKeyDown; break;
+	case VK_DOWN:  isDownArrowDown = bKeyDown; break;
+	case 87:		isWKeyDown = bKeyDown; break;
+	case 83:		isSKeyDown = bKeyDown; break;
+	}
 }
 
 
 //--------------------------------------------------------------------------------------
 // Handles the GUI events
 //--------------------------------------------------------------------------------------
-void CALLBACK OnGUIEvent( UINT nEvent, int nControlID, CDXUTControl* pControl, void* pUserContext )
+void CALLBACK OnGUIEvent(UINT nEvent, int nControlID, CDXUTControl* pControl, void* pUserContext)
 {
-    switch( nControlID )
-    {
-        case IDC_TOGGLEFULLSCREEN:
-            DXUTToggleFullScreen(); break;
-        case IDC_TOGGLEREF:
-            DXUTToggleREF(); break;
-        case IDC_CHANGEDEVICE:
-            g_D3DSettingsDlg.SetActive( !g_D3DSettingsDlg.IsActive() ); break;
-    }
+	switch (nControlID)
+	{
+	case IDC_TOGGLEFULLSCREEN:
+		DXUTToggleFullScreen(); break;
+	case IDC_TOGGLEREF:
+		DXUTToggleREF(); break;
+	case IDC_CHANGEDEVICE:
+		g_D3DSettingsDlg.SetActive(!g_D3DSettingsDlg.IsActive()); break;
+	}
 
 }
 
@@ -501,10 +498,10 @@ void CALLBACK OnGUIEvent( UINT nEvent, int nControlID, CDXUTControl* pControl, v
 //--------------------------------------------------------------------------------------
 // Reject any D3D11 devices that aren't acceptable by returning false
 //--------------------------------------------------------------------------------------
-bool CALLBACK IsD3D11DeviceAcceptable( const CD3D11EnumAdapterInfo *AdapterInfo, UINT Output, const CD3D11EnumDeviceInfo *DeviceInfo,
-                                       DXGI_FORMAT BackBufferFormat, bool bWindowed, void* pUserContext )
+bool CALLBACK IsD3D11DeviceAcceptable(const CD3D11EnumAdapterInfo *AdapterInfo, UINT Output, const CD3D11EnumDeviceInfo *DeviceInfo,
+	DXGI_FORMAT BackBufferFormat, bool bWindowed, void* pUserContext)
 {
-    return true;
+	return true;
 }
 
 
@@ -512,214 +509,214 @@ bool CALLBACK IsD3D11DeviceAcceptable( const CD3D11EnumAdapterInfo *AdapterInfo,
 // Compile the shader file.  These files aren't pre-compiled (well, not		//
 // here, and are compiled on the fly).										//
 //**************************************************************************//
-HRESULT CompileShaderFromFile( WCHAR* szFileName,		// File Name
-							  LPCSTR szEntryPoint,		// Namee of shader
-							  LPCSTR szShaderModel,		// Shader model
-							  ID3DBlob** ppBlobOut )	// Blob returned
+HRESULT CompileShaderFromFile(WCHAR* szFileName,		// File Name
+	LPCSTR szEntryPoint,		// Namee of shader
+	LPCSTR szShaderModel,		// Shader model
+	ID3DBlob** ppBlobOut)	// Blob returned
 {
-    HRESULT hr = S_OK;
+	HRESULT hr = S_OK;
 
-    // find the file
-    WCHAR str[MAX_PATH];
-    V_RETURN( DXUTFindDXSDKMediaFileCch( str, MAX_PATH, szFileName ) );
+	// find the file
+	WCHAR str[MAX_PATH];
+	V_RETURN(DXUTFindDXSDKMediaFileCch(str, MAX_PATH, szFileName));
 
-    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined( DEBUG ) || defined( _DEBUG )
-    // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-    // Setting this flag improves the shader debugging experience, but still allows 
-    // the shaders to be optimized and to run exactly the way they will run in 
-    // the release configuration of this program.
-    dwShaderFlags |= D3DCOMPILE_DEBUG;
+	// Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
+	// Setting this flag improves the shader debugging experience, but still allows 
+	// the shaders to be optimized and to run exactly the way they will run in 
+	// the release configuration of this program.
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
 #endif
 
-    ID3DBlob* pErrorBlob;
-    hr = D3DX11CompileFromFile( str, NULL, NULL, szEntryPoint, szShaderModel, 
-        dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL );
-    if( FAILED(hr) )
-    {
+	ID3DBlob* pErrorBlob;
+	hr = D3DX11CompileFromFile(str, NULL, NULL, szEntryPoint, szShaderModel,
+		dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
+	if (FAILED(hr))
+	{
 		WCHAR errorCharsW[200];
-        if( pErrorBlob != NULL )
+		if (pErrorBlob != NULL)
 		{
 			charStrToWideChar(errorCharsW, (char *)pErrorBlob->GetBufferPointer());
-            MessageBox( 0, errorCharsW, L"Error", 0 );
+			MessageBox(0, errorCharsW, L"Error", 0);
 		}
-        if( pErrorBlob ) pErrorBlob->Release();
-        return hr;
-    }
-    SAFE_RELEASE( pErrorBlob );
+		if (pErrorBlob) pErrorBlob->Release();
+		return hr;
+	}
+	SAFE_RELEASE(pErrorBlob);
 
-    return S_OK;
+	return S_OK;
 }
 
 
 //--------------------------------------------------------------------------------------
 // Create any D3D11 resources that aren't dependant on the back buffer
 //--------------------------------------------------------------------------------------
-HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc,
-                                      void* pUserContext )
+HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc,
+	void* pUserContext)
 {
-    HRESULT hr;
+	HRESULT hr;
 
-    ID3D11DeviceContext* pd3dImmediateContext = DXUTGetD3D11DeviceContext();
-    V_RETURN( g_DialogResourceManager.OnD3D11CreateDevice( pd3dDevice, pd3dImmediateContext ) );
-    V_RETURN( g_D3DSettingsDlg.OnD3D11CreateDevice( pd3dDevice ) );
-    g_pTxtHelper = new CDXUTTextHelper( pd3dDevice, pd3dImmediateContext, &g_DialogResourceManager, 15 );
+	ID3D11DeviceContext* pd3dImmediateContext = DXUTGetD3D11DeviceContext();
+	V_RETURN(g_DialogResourceManager.OnD3D11CreateDevice(pd3dDevice, pd3dImmediateContext));
+	V_RETURN(g_D3DSettingsDlg.OnD3D11CreateDevice(pd3dDevice));
+	g_pTxtHelper = new CDXUTTextHelper(pd3dDevice, pd3dImmediateContext, &g_DialogResourceManager, 15);
 
 
 	//**********************************************************************//
-    // Compile the pixel and vertex shaders.  If your computer doesn't		//
+	// Compile the pixel and vertex shaders.  If your computer doesn't		//
 	// support shader model 5, try shader model 4.  There is nothing we are //
 	// using here that needs shader model 5.								//
 	//**********************************************************************..
-    ID3DBlob* pVertexShaderBuffer = NULL;
-    V_RETURN( CompileShaderFromFile( L"Tutorial 09 - Meshes Using DXUT Helper Classes_VS.hlsl", "VS_DXUTSDKMesh", "vs_5_0", &pVertexShaderBuffer ) );
+	ID3DBlob* pVertexShaderBuffer = NULL;
+	V_RETURN(CompileShaderFromFile(L"Tutorial 09 - Meshes Using DXUT Helper Classes_VS.hlsl", "VS_DXUTSDKMesh", "vs_5_0", &pVertexShaderBuffer));
 
-    ID3DBlob* pPixelShaderBuffer = NULL;
-    V_RETURN( CompileShaderFromFile( L"Tutorial 09 - Meshes Using DXUT Helper Classes_PS.hlsl", "PS_DXUTSDKMesh", "ps_5_0", &pPixelShaderBuffer ) );
+	ID3DBlob* pPixelShaderBuffer = NULL;
+	V_RETURN(CompileShaderFromFile(L"Tutorial 09 - Meshes Using DXUT Helper Classes_PS.hlsl", "PS_DXUTSDKMesh", "ps_5_0", &pPixelShaderBuffer));
 
-    
-	
-	//**********************************************************************//
-    // Create the pixel and vertex shaders.									//
-	//**********************************************************************//
-	V_RETURN( pd3dDevice->CreateVertexShader( pVertexShaderBuffer->GetBufferPointer(),
-                                              pVertexShaderBuffer->GetBufferSize(), NULL, &g_pVertexShader ) );
-    DXUT_SetDebugName( g_pVertexShader, "VS_DXUTSDKMesh" );
-    V_RETURN( pd3dDevice->CreatePixelShader( pPixelShaderBuffer->GetBufferPointer(),
-                                             pPixelShaderBuffer->GetBufferSize(), NULL, &g_pPixelShader ) );
-    DXUT_SetDebugName( g_pPixelShader, "PS_DXUTSDKMesh" );
 
-	
-	
+
 	//**********************************************************************//
-    // Define the input layout.  I won't go too much into this except that  //
+	// Create the pixel and vertex shaders.									//
+	//**********************************************************************//
+	V_RETURN(pd3dDevice->CreateVertexShader(pVertexShaderBuffer->GetBufferPointer(),
+		pVertexShaderBuffer->GetBufferSize(), NULL, &g_pVertexShader));
+	DXUT_SetDebugName(g_pVertexShader, "VS_DXUTSDKMesh");
+	V_RETURN(pd3dDevice->CreatePixelShader(pPixelShaderBuffer->GetBufferPointer(),
+		pPixelShaderBuffer->GetBufferSize(), NULL, &g_pPixelShader));
+	DXUT_SetDebugName(g_pPixelShader, "PS_DXUTSDKMesh");
+
+
+
+	//**********************************************************************//
+	// Define the input layout.  I won't go too much into this except that  //
 	// the vertex defined here MUST be consistent with the vertex shader	//
 	// input you use in your shader file and the constand buffer structure  //
 	// at the top of this module.											//
 	//																		//
 	// Normal vectors are used by lighting.									//
 	//**********************************************************************//
-     const D3D11_INPUT_ELEMENT_DESC layout[] =
-    {
-        { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
+	const D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
 
-    V_RETURN( pd3dDevice->CreateInputLayout( layout, ARRAYSIZE( layout ), pVertexShaderBuffer->GetBufferPointer(),
-                                             pVertexShaderBuffer->GetBufferSize(), &g_pVertexLayout11 ) );
-    DXUT_SetDebugName( g_pVertexLayout11, "Primary" );
+	V_RETURN(pd3dDevice->CreateInputLayout(layout, ARRAYSIZE(layout), pVertexShaderBuffer->GetBufferPointer(),
+		pVertexShaderBuffer->GetBufferSize(), &g_pVertexLayout11));
+	DXUT_SetDebugName(g_pVertexLayout11, "Primary");
 
-    SAFE_RELEASE( pVertexShaderBuffer );
-    SAFE_RELEASE( pPixelShaderBuffer );
+	SAFE_RELEASE(pVertexShaderBuffer);
+	SAFE_RELEASE(pPixelShaderBuffer);
 
 
 
-    //**************************************************************************//
+	//**************************************************************************//
 	// Initialize the projection matrix.  Generally you will only want to create//
 	// this matrix once and then forget it.										//
 	//**************************************************************************//
-	matProjection = XMMatrixPerspectiveFovLH( XM_PIDIV2,				// Field of view (pi / 2 radians, or 90 degrees
-											 g_width / (FLOAT) g_height, // Aspect ratio.
-											 0.01f,						// Near clipping plane.
-											 100.0f );					// Far clipping plane.
+	matProjection = XMMatrixPerspectiveFovLH(XM_PIDIV2,				// Field of view (pi / 2 radians, or 90 degrees
+		g_width / (FLOAT)g_height, // Aspect ratio.
+		0.01f,						// Near clipping plane.
+		10000.0f);					// Far clipping plane.
 
 
-	//**************************************************************************//
-    // Load the mesh.															//
-	//**************************************************************************//
-    V_RETURN( meshTiger.Create( pd3dDevice, L"Media\\tiger\\tiger.sdkmesh", true ) );
+									//**************************************************************************//
+									// Load the mesh.															//
+									//**************************************************************************//
+	V_RETURN(meshTiger.Create(pd3dDevice, L"Media\\tiger\\tiger.sdkmesh", true));
 	V_RETURN(meshWing.Create(pd3dDevice, L"Media\\wing\\wing.sdkmesh", true));
 	V_RETURN(meshFloor.Create(pd3dDevice, L"Media\\floor\\seafloor.sdkmesh", true));
+	V_RETURN(meshSky.Create(pd3dDevice, L"Media\\Cloudbox\\skysphere.sdkmesh", true));
 
 	// Create a sampler state
-    D3D11_SAMPLER_DESC SamDesc;
-    SamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    SamDesc.MipLODBias = 0.0f;
-    SamDesc.MaxAnisotropy = 1;
-    SamDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-    SamDesc.BorderColor[0] = SamDesc.BorderColor[1] = SamDesc.BorderColor[2] = SamDesc.BorderColor[3] = 0;
-    SamDesc.MinLOD = 0;
-    SamDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    V_RETURN( pd3dDevice->CreateSamplerState( &SamDesc, &g_pSamLinear ) );
-    DXUT_SetDebugName( g_pSamLinear, "Primary" );
+	D3D11_SAMPLER_DESC SamDesc;
+	SamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamDesc.MipLODBias = 0.0f;
+	SamDesc.MaxAnisotropy = 1;
+	SamDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	SamDesc.BorderColor[0] = SamDesc.BorderColor[1] = SamDesc.BorderColor[2] = SamDesc.BorderColor[3] = 0;
+	SamDesc.MinLOD = 0;
+	SamDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	V_RETURN(pd3dDevice->CreateSamplerState(&SamDesc, &g_pSamLinear));
+	DXUT_SetDebugName(g_pSamLinear, "Primary");
 
-    
+
 	//**************************************************************************//
 	// Create the 3 constant bufers, using the same buffer descriptor to create //
 	// all three.																//
 	//**************************************************************************//
-    D3D11_BUFFER_DESC Desc;
- 	ZeroMemory( &Desc, sizeof(Desc) );
-    Desc.Usage = D3D11_USAGE_DEFAULT;
-    Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    Desc.CPUAccessFlags = 0;
-    Desc.MiscFlags = 0;
-	
-    Desc.ByteWidth = sizeof( CB_VS_PER_OBJECT );
-    V_RETURN( pd3dDevice->CreateBuffer( &Desc, NULL, &g_pcbVSPerObject ) );
-    DXUT_SetDebugName( g_pcbVSPerObject, "CB_VS_PER_OBJECT" );
+	D3D11_BUFFER_DESC Desc;
+	ZeroMemory(&Desc, sizeof(Desc));
+	Desc.Usage = D3D11_USAGE_DEFAULT;
+	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	Desc.CPUAccessFlags = 0;
+	Desc.MiscFlags = 0;
 
-    Desc.ByteWidth = sizeof( CB_PS_PER_OBJECT );
-    V_RETURN( pd3dDevice->CreateBuffer( &Desc, NULL, &g_pcbPSPerObject ) );
-    DXUT_SetDebugName( g_pcbPSPerObject, "CB_PS_PER_OBJECT" );
+	Desc.ByteWidth = sizeof(CB_VS_PER_OBJECT);
+	V_RETURN(pd3dDevice->CreateBuffer(&Desc, NULL, &g_pcbVSPerObject));
+	DXUT_SetDebugName(g_pcbVSPerObject, "CB_VS_PER_OBJECT");
 
-    Desc.ByteWidth = sizeof( CB_PS_PER_FRAME );
-    V_RETURN( pd3dDevice->CreateBuffer( &Desc, NULL, &g_pcbPSPerFrame ) );
-    DXUT_SetDebugName( g_pcbPSPerFrame, "CB_PS_PER_FRAME" );
+	Desc.ByteWidth = sizeof(CB_PS_PER_OBJECT);
+	V_RETURN(pd3dDevice->CreateBuffer(&Desc, NULL, &g_pcbPSPerObject));
+	DXUT_SetDebugName(g_pcbPSPerObject, "CB_PS_PER_OBJECT");
+
+	Desc.ByteWidth = sizeof(CB_PS_PER_FRAME);
+	V_RETURN(pd3dDevice->CreateBuffer(&Desc, NULL, &g_pcbPSPerFrame));
+	DXUT_SetDebugName(g_pcbPSPerFrame, "CB_PS_PER_FRAME");
 
 
-    return S_OK;
+	return S_OK;
 }
 
 
 //--------------------------------------------------------------------------------------
 // Create any D3D11 resources that depend on the back buffer
 //--------------------------------------------------------------------------------------
-HRESULT CALLBACK OnD3D11ResizedSwapChain( ID3D11Device* pd3dDevice, IDXGISwapChain* pSwapChain,
-                                          const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext )
+HRESULT CALLBACK OnD3D11ResizedSwapChain(ID3D11Device* pd3dDevice, IDXGISwapChain* pSwapChain,
+	const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext)
 {
-    HRESULT hr;
+	HRESULT hr;
 
-    V_RETURN( g_DialogResourceManager.OnD3D11ResizedSwapChain( pd3dDevice, pBackBufferSurfaceDesc ) );
-    V_RETURN( g_D3DSettingsDlg.OnD3D11ResizedSwapChain( pd3dDevice, pBackBufferSurfaceDesc ) );
+	V_RETURN(g_DialogResourceManager.OnD3D11ResizedSwapChain(pd3dDevice, pBackBufferSurfaceDesc));
+	V_RETURN(g_D3DSettingsDlg.OnD3D11ResizedSwapChain(pd3dDevice, pBackBufferSurfaceDesc));
 
-	g_width  = pBackBufferSurfaceDesc->Width;
+	g_width = pBackBufferSurfaceDesc->Width;
 	g_height = pBackBufferSurfaceDesc->Height;
 
-	g_HUD.SetLocation( g_width - 170, 0 );
-    g_HUD.SetSize( 170, 170 );
-	g_SampleUI.SetLocation( g_width - 170, g_height - 300 );
-    g_SampleUI.SetSize( 170, 300 );
+	g_HUD.SetLocation(g_width - 170, 0);
+	g_HUD.SetSize(170, 170);
+	g_SampleUI.SetLocation(g_width - 170, g_height - 300);
+	g_SampleUI.SetSize(170, 300);
 
-    return S_OK;
+	return S_OK;
 }
 
 
 //--------------------------------------------------------------------------------------
 // Render the scene using the D3D11 device
 //--------------------------------------------------------------------------------------
-void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, double fTime,
-                                  float fElapsedTime, void* pUserContext )
-{
-    HRESULT hr;
+void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, double fTime,
+	float fElapsedTime, void* pUserContext) {
+	HRESULT hr;
 
-    // If the settings dialog is being shown, then render it instead of rendering the app's scene
-    if( g_D3DSettingsDlg.IsActive() )
-    {
-        g_D3DSettingsDlg.OnRender( fElapsedTime );
-        return;
-    }
+	// If the settings dialog is being shown, then render it instead of rendering the app's scene
+	if (g_D3DSettingsDlg.IsActive())
+	{
+		g_D3DSettingsDlg.OnRender(fElapsedTime);
+		return;
+	}
 
-    // Clear the render target and depth stencil
-    float ClearColor[4] = { 0.0f, 0.25f, 0.25f, 0.55f };
-    ID3D11RenderTargetView* pRTV = DXUTGetD3D11RenderTargetView();
-    pd3dImmediateContext->ClearRenderTargetView( pRTV, ClearColor );
-    ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
-    pd3dImmediateContext->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0, 0 );
+	// Clear the render target and depth stencil
+	float ClearColor[4] = { 0.0f, 0.25f, 0.25f, 0.55f };
+	ID3D11RenderTargetView* pRTV = DXUTGetD3D11RenderTargetView();
+	pd3dImmediateContext->ClearRenderTargetView(pRTV, ClearColor);
+	ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
+	pd3dImmediateContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
 	//Calculate current direction
 	XMMATRIX matRotation = XMMatrixRotationRollPitchYaw(tiger->RY, tiger->RX, tiger->RZ);
@@ -732,7 +729,7 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	newDir *= tiger->speed * fElapsedTime;
 
 	//**************************************************************************//
-    // Initialize the view matrix.  What you do to the viewer matrix moves the  //
+	// Initialize the view matrix.  What you do to the viewer matrix moves the  //
 	// viewer, or course.														//
 	//																			//
 	// The viewer matrix is created every frame here, which looks silly as the	//
@@ -741,27 +738,26 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	XMVECTOR Eye;
 	XMVECTOR At;
 	XMVECTOR Up;
-	
+
 	if (!isTigerView) { //Base / 3rd "person" view
 		Eye = XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f);
 		At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	}
 	else { //Follow the tiger
-		Eye = XMVectorSet(tiger->X + XMVectorGetX(vecRear), 
-							tiger->Y + XMVectorGetY(vecRear), 
-							tiger->Z + XMVectorGetZ(vecRear), 0) * 10;
-		At =  XMVectorSet(tiger->X, tiger->Y, tiger->Z, 0.0f) * 10;
-		Up =  XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		Eye = XMVectorSet(tiger->X + XMVectorGetX(vecRear),
+			tiger->Y + XMVectorGetY(vecRear),
+			tiger->Z + XMVectorGetZ(vecRear), 0) * 10;
+		At = XMVectorSet(tiger->X, tiger->Y, tiger->Z, 0.0f) * 10;
+		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	}
 
 	XMMATRIX matView;
-	matView = XMMatrixLookAtLH( Eye,	// The eye, or viewer's position.
-								At,		// Th e look at point.
-							    Up );	// Which way is up.
-	
+	matView = XMMatrixLookAtLH(Eye,	// The eye, or viewer's position.
+		At,		// The look at point.
+		Up);	// Which way is up.
 
-	//Update tiger position
+				//Update tiger position
 	tiger->X += XMVectorGetX(newDir);
 	tiger->Y += XMVectorGetY(newDir);
 	tiger->Z += XMVectorGetZ(newDir);
@@ -771,19 +767,17 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	// the Y axis of 45 degrees.  DirectX does all angles in radians,	//
 	// hence the conversion.  And a translate.							//
 	//******************************************************************//
-
 	XMMATRIX matTigerTranslate = XMMatrixTranslation(tiger->X, tiger->Y, tiger->Z);
-	XMMATRIX matTigerScale     = XMMatrixScaling(10, 10, 10);
-	XMMATRIX matTigerWorld     = matRotation * matTigerTranslate * matTigerScale;
+	XMMATRIX matTigerScale = XMMatrixScaling(10, 10, 10);
+	XMMATRIX matTigerWorld = matRotation * matTigerTranslate * matTigerScale;
 	XMMATRIX matWorldViewProjection = matTigerWorld * matView * matProjection;
-
 
 	//******************************************************************//    
 	// Update shader variables.  We must update these for every mesh	//
 	// that we draw (well, actually we need only update the position	//
 	// for each mesh, think hard about this - Nigel						//
 	//																	//
-    // We pass the parameters to it in a constant buffer.  The buffer	//
+	// We pass the parameters to it in a constant buffer.  The buffer	//
 	// we define in this module MUST match the constant buffer in the	//
 	// shader.															//
 	//																	//
@@ -798,29 +792,34 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	// vector.  It is kind-a-silly doing this every frame unless the	//
 	// light moves.														//
 	//******************************************************************//
-    float    fAmbient                = 0.1f;
-	XMVECTOR vectorLightDirection    = XMVectorSet(-1, 1, -2, 0);  // 4th value unused.
+	float    fAmbient = 0.1f;
+	XMVECTOR vectorLightDirection = XMVectorSet(-1, 1, -2, 0);  // 4th value unused.
 	vectorLightDirection = XMVector3Normalize(vectorLightDirection);
 
 
 	CB_PS_PER_FRAME CBPerFrame;
 	CBPerFrame.m_vLightDirAmbient = vectorLightDirection;
-	pd3dImmediateContext->UpdateSubresource( g_pcbPSPerFrame, 0, NULL, &CBPerFrame, 0, 0 );
-	pd3dImmediateContext->PSSetConstantBuffers( 1, 1, &g_pcbPSPerFrame );
+	pd3dImmediateContext->UpdateSubresource(g_pcbPSPerFrame, 0, NULL, &CBPerFrame, 0, 0);
+	pd3dImmediateContext->PSSetConstantBuffers(1, 1, &g_pcbPSPerFrame);
 
 
 	CB_PS_PER_OBJECT CBPerObject;
 	CBPerObject.m_vObjectColor = XMFLOAT4(1, 1, 1, 1);
-	pd3dImmediateContext->UpdateSubresource( g_pcbPSPerObject, 0, NULL, &CBPerObject, 0, 0 );
-	pd3dImmediateContext->PSSetConstantBuffers( 0, 1, &g_pcbPSPerObject );
+	pd3dImmediateContext->UpdateSubresource(g_pcbPSPerObject, 0, NULL, &CBPerObject, 0, 0);
+	pd3dImmediateContext->PSSetConstantBuffers(0, 1, &g_pcbPSPerObject);
 
 
-    pd3dImmediateContext->PSSetSamplers( 0, 1, &g_pSamLinear );
+	pd3dImmediateContext->PSSetSamplers(0, 1, &g_pSamLinear);
 
 	//**************************************************************************//
 	// Render the mesh.															//
 	//**************************************************************************//
-	ToRender(matTigerWorld, matWorldViewProjection, pd3dImmediateContext, &meshTiger);
+	CB_VS_PER_OBJECT CBMatrices;
+	CBMatrices.matWorld = XMMatrixTranspose(matTigerWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderMesh(pd3dImmediateContext, &meshTiger);
 
 	//Wings by side, unless moving
 	float flap = 150;
@@ -833,7 +832,11 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	XMMATRIX matRightWingRotate = XMMatrixRotationZ(flap);
 	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matTigerWorld;
 	XMMATRIX matRightWingWorldViewProjection = matRightWingWorld * matView * matProjection;
-	ToRender(matRightWingWorld, matRightWingWorldViewProjection, pd3dImmediateContext, &meshWing);
+	CBMatrices.matWorld = XMMatrixTranspose(matRightWingWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matRightWingWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderMesh(pd3dImmediateContext, &meshWing);
 
 	//Left Wing Creation
 
@@ -841,83 +844,89 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	XMMATRIX matLeftWingRotate = XMMatrixRotationY(XMConvertToRadians(180)) * XMMatrixRotationZ(flap) * XMMatrixRotationX(XMConvertToRadians(180));
 	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matTigerWorld;
 	XMMATRIX matLeftWingWorldViewProjection = matLeftWingWorld * matView * matProjection;
-	ToRender(matLeftWingWorld, matLeftWingWorldViewProjection, pd3dImmediateContext, &meshWing);
+	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matLeftWingWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderMesh(pd3dImmediateContext, &meshWing);
 
 	//Floor Creation
 
 	XMMATRIX matFloorWorld = XMMatrixTranslation(0.0, 0.0, 0.0);
 	XMMATRIX matFloorWorldViewProjection = matFloorWorld * matView * matProjection;
-	ToRender(matFloorWorld, matFloorWorldViewProjection, pd3dImmediateContext, &meshFloor);
+	CBMatrices.matWorld = XMMatrixTranspose(matFloorWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matFloorWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderMesh(pd3dImmediateContext, &meshFloor);
+
+	//Skybox 
+	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 20, XMVectorGetY(Eye) * 20, XMVectorGetZ(Eye) * 20);
+	XMMATRIX matSkyScale = XMMatrixScaling(0.05, 0.05, 0.05);
+	XMMATRIX matSkyWorld = matSkyTranslate * matSkyScale;
+	XMMATRIX matSkyWorldViewProjection = matSkyWorld * matView * matProjection;
+
+	//Skybox Rendering
+	CBMatrices.matWorld = XMMatrixTranspose(matSkyWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matSkyWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderMesh(pd3dImmediateContext, &meshSky);
 
 	//**************************************************************************//
 	// Render what is rather grandly called the head up display.				//
 	//**************************************************************************//
-	DXUT_BeginPerfEvent( DXUT_PERFEVENTCOLOR, L"HUD / Stats" );
-    g_HUD.OnRender( fElapsedTime );
-    g_SampleUI.OnRender( fElapsedTime );
-    RenderText();
-    DXUT_EndPerfEvent();
+	DXUT_BeginPerfEvent(DXUT_PERFEVENTCOLOR, L"HUD / Stats");
+	g_HUD.OnRender(fElapsedTime);
+	g_SampleUI.OnRender(fElapsedTime);
+	RenderText();
+	DXUT_EndPerfEvent();
 }
-
-
-/*
-	Exported code to prep ID3D11DeviceContext to a function since it is performed for every item
-	in the world
-*/
-void ToRender(XMMATRIX matWorld, XMMATRIX matWVP, ID3D11DeviceContext* pd3dIC, CDXUTSDKMesh* mesh) {
-	CB_VS_PER_OBJECT CBMatrices;
-	CBMatrices.matWorld = XMMatrixTranspose(matWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWVP);
-	pd3dIC->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dIC->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dIC, mesh);
-}
-
 
 
 //**************************************************************************//
 // Render a CDXUTSDKMesh, using the Device Context specified.				//
 //**************************************************************************//
-void RenderMesh (ID3D11DeviceContext *pContext, 
-				 CDXUTSDKMesh         *toRender)
+void RenderMesh(ID3D11DeviceContext *pContext,
+	CDXUTSDKMesh         *toRender)
 {
 	//Get the mesh
-    //IA setup
-    pContext->IASetInputLayout( g_pVertexLayout11 );
-    UINT Strides[1];
-    UINT Offsets[1];
-    ID3D11Buffer* pVB[1];
-    pVB[0] = toRender->GetVB11( 0, 0 );
-    Strides[0] = ( UINT )toRender->GetVertexStride( 0, 0 );
-    Offsets[0] = 0;
-    pContext->IASetVertexBuffers( 0, 1, pVB, Strides, Offsets );
-    pContext->IASetIndexBuffer( toRender->GetIB11( 0 ), toRender->GetIBFormat11( 0 ), 0 );
+	//IA setup
+	pContext->IASetInputLayout(g_pVertexLayout11);
+	UINT Strides[1];
+	UINT Offsets[1];
+	ID3D11Buffer* pVB[1];
+	pVB[0] = toRender->GetVB11(0, 0);
+	Strides[0] = (UINT)toRender->GetVertexStride(0, 0);
+	Offsets[0] = 0;
+	pContext->IASetVertexBuffers(0, 1, pVB, Strides, Offsets);
+	pContext->IASetIndexBuffer(toRender->GetIB11(0), toRender->GetIBFormat11(0), 0);
 
-    // Set the shaders
-    pContext->VSSetShader( g_pVertexShader, NULL, 0 );
-    pContext->PSSetShader( g_pPixelShader,  NULL, 0 );
-    
-	for( UINT subset = 0; subset < toRender->GetNumSubsets( 0 ); ++subset )
-    {
+	// Set the shaders
+	pContext->VSSetShader(g_pVertexShader, NULL, 0);
+	pContext->PSSetShader(g_pPixelShader, NULL, 0);
+
+	for (UINT subset = 0; subset < toRender->GetNumSubsets(0); ++subset)
+	{
 		//Render
 		SDKMESH_SUBSET* pSubset = NULL;
 		D3D11_PRIMITIVE_TOPOLOGY PrimType;
-        
-		// Get the subset
-        pSubset = toRender->GetSubset( 0, subset );
 
-        PrimType = CDXUTSDKMesh::GetPrimitiveType11( ( SDKMESH_PRIMITIVE_TYPE )pSubset->PrimitiveType );
-        pContext->IASetPrimitiveTopology( PrimType );
+		// Get the subset
+		pSubset = toRender->GetSubset(0, subset);
+
+		PrimType = CDXUTSDKMesh::GetPrimitiveType11((SDKMESH_PRIMITIVE_TYPE)pSubset->PrimitiveType);
+		pContext->IASetPrimitiveTopology(PrimType);
 
 		//**************************************************************************//
 		// At the moment we load a texture into video memory every frame, which is	//
 		// HORRIBLE, we need to create more Texture2D variables.					//
 		//**************************************************************************//
-        ID3D11ShaderResourceView* pDiffuseRV = toRender->GetMaterial( pSubset->MaterialID )->pDiffuseRV11;
-        pContext->PSSetShaderResources( 0, 1, &pDiffuseRV );
+		ID3D11ShaderResourceView* pDiffuseRV = toRender->GetMaterial(pSubset->MaterialID)->pDiffuseRV11;
+		pContext->PSSetShaderResources(0, 1, &pDiffuseRV);
 
-        pContext->DrawIndexed( ( UINT )pSubset->IndexCount, 0, ( UINT )pSubset->VertexStart );
-    }
+		pContext->DrawIndexed((UINT)pSubset->IndexCount, 0, (UINT)pSubset->VertexStart);
+	}
 
 }
 
@@ -925,36 +934,36 @@ void RenderMesh (ID3D11DeviceContext *pContext,
 //--------------------------------------------------------------------------------------
 // Release D3D11 resources created in OnD3D11ResizedSwapChain 
 //--------------------------------------------------------------------------------------
-void CALLBACK OnD3D11ReleasingSwapChain( void* pUserContext )
+void CALLBACK OnD3D11ReleasingSwapChain(void* pUserContext)
 {
-    g_DialogResourceManager.OnD3D11ReleasingSwapChain();
+	g_DialogResourceManager.OnD3D11ReleasingSwapChain();
 }
 
 
 //--------------------------------------------------------------------------------------
 // Release D3D11 resources created in OnD3D11CreateDevice 
 //--------------------------------------------------------------------------------------
-void CALLBACK OnD3D11DestroyDevice( void* pUserContext )
+void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 {
-    g_DialogResourceManager.OnD3D11DestroyDevice();
-    g_D3DSettingsDlg.OnD3D11DestroyDevice();
-    DXUTGetGlobalResourceCache().OnDestroyDevice();
-    SAFE_DELETE( g_pTxtHelper );
+	g_DialogResourceManager.OnD3D11DestroyDevice();
+	g_D3DSettingsDlg.OnD3D11DestroyDevice();
+	DXUTGetGlobalResourceCache().OnDestroyDevice();
+	SAFE_DELETE(g_pTxtHelper);
 
-    meshTiger.Destroy();
+	meshTiger.Destroy();
 	meshWing.Destroy();
 	meshFloor.Destroy();
-                
-    SAFE_RELEASE( g_pVertexLayout11 );
-    SAFE_RELEASE( g_pVertexBuffer );
-    SAFE_RELEASE( g_pIndexBuffer );
-    SAFE_RELEASE( g_pVertexShader );
-    SAFE_RELEASE( g_pPixelShader );
-    SAFE_RELEASE( g_pSamLinear );
 
-    SAFE_RELEASE( g_pcbVSPerObject );
-    SAFE_RELEASE( g_pcbPSPerObject );
-    SAFE_RELEASE( g_pcbPSPerFrame );
+	SAFE_RELEASE(g_pVertexLayout11);
+	SAFE_RELEASE(g_pVertexBuffer);
+	SAFE_RELEASE(g_pIndexBuffer);
+	SAFE_RELEASE(g_pVertexShader);
+	SAFE_RELEASE(g_pPixelShader);
+	SAFE_RELEASE(g_pSamLinear);
+
+	SAFE_RELEASE(g_pcbVSPerObject);
+	SAFE_RELEASE(g_pcbPSPerObject);
+	SAFE_RELEASE(g_pcbPSPerFrame);
 }
 
 
@@ -967,5 +976,5 @@ void charStrToWideChar(WCHAR *dest, char *source)
 {
 	int length = strlen(source);
 	for (int i = 0; i <= length; i++)
-		dest[i] = (WCHAR) source[i];
+		dest[i] = (WCHAR)source[i];
 }

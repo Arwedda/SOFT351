@@ -891,9 +891,11 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 		std::wstring vTexture = L"vt"; //vt
 		std::wstring vNormal = L"vn"; //
 		std::wstring face = L"f";//f
+		std::wstring mtl = L"mt"; //mt
 
-		WCHAR first[5];
+		WCHAR first[7];
 		WCHAR oldStyleStr[200];
+		wcscpy(oldStyleStr, line.c_str());
 
 		//******************************************************************//
 		// If true, we have found a vertex.  Read it in as a 2 character	//
@@ -903,53 +905,33 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 		//******************************************************************//
 		float x, y, z;
 		if (line.compare(0, 2, vertex) == 0) {
-			wcscpy(oldStyleStr, line.c_str());
 			swscanf(oldStyleStr, L"%2s%f%f%f", first, &x, &y, &z);
-
 			XMFLOAT3 v;
 			v.x = x; v.y = y; v.z = z;
 			vectorVertices.push_back(v);
 		}
-		if (line.compare(0, 2, vTexture) == 0) {
-			wcscpy(oldStyleStr, line.c_str());
+		else if (line.compare(0, 2, vTexture) == 0) {
 			swscanf(oldStyleStr, L"%3s%f%f", first, &x, &y);
 			XMFLOAT2 v;
 			v.x = x; v.y = y;
 			vecTextures.push_back(v);
 		}
-		if (line.compare(0, 2, vNormal) == 0) {
-			wcscpy(oldStyleStr, line.c_str());
+		else if (line.compare(0, 2, vNormal) == 0) {
 			swscanf(oldStyleStr, L"%3s%f%f%f", first, &x, &y, &z);
 			XMFLOAT3 v;
 			v.x = x; v.y = y; v.z = z;
 			vecNormals.push_back(v);
 		}
-
-
-		//******************************************************************//
-		// If true, we have found a face.   Read it in as a 2 character		//
-		// string, followed by 3 decimal numbers.	Suprisingly the C++		//
-		// string has no split() method.   I am using really old stuff,		//
-		// fscanf.  There must be a better way, use regular expressions?	//
-		//																	//
-		// It assumes the line is in the format								//
-		// f v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3 ...							//
-		//******************************************************************// 
-		if (line.compare(0, 1, face) == 0)
-		{
-			WCHAR first[5];
+		else if (line.compare(0, 1, face) == 0) {
 			WCHAR slash1[5];
 			WCHAR slash2[5];
 			WCHAR slash3[5];
 			WCHAR slash4[5];
 			WCHAR slash5[5];
 			WCHAR slash6[5];
-			SimpleVertex face, face2, face3;
-
+			SimpleVertex face;
 			UINT v1, vt1, vn1, v2, vt2, vn2, v3, vt3, vn3;
 
-			WCHAR oldStyleStr[200];
-			wcscpy(oldStyleStr, line.c_str());
 			swscanf(oldStyleStr, L"%2s%d%1s%d%1s%d%d%1s%d%1s%d%d%1s%d%1s%d", first,
 				&v1, slash1, &vt1, slash2, &vn1,
 				&v2, slash3, &vt2, slash4, &vn2,
@@ -962,20 +944,23 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			face.Pos = (vectorVertices[v1 - 1]);
 			face.TexUV = (vecTextures[vt1 - 1]);
 			face.VecNormal = (vecNormals[vn1 - 1]);
-
 			vecFaces.push_back(face);
 
-			face2.Pos = (vectorVertices[v2 - 1]);
-			face2.TexUV = (vecTextures[vt2 - 1]);
-			face2.VecNormal = (vecNormals[vn2 - 1]);
+			face.Pos = (vectorVertices[v2 - 1]);
+			face.TexUV = (vecTextures[vt2 - 1]);
+			face.VecNormal = (vecNormals[vn2 - 1]);
+			vecFaces.push_back(face);
 
-			vecFaces.push_back(face2);
-
-			face3.Pos = (vectorVertices[v3 - 1]);
-			face3.TexUV = (vecTextures[vt3 - 1]);
-			face3.VecNormal = (vecNormals[vn3 - 1]);
-
-			vecFaces.push_back(face3);
+			face.Pos = (vectorVertices[v3 - 1]);
+			face.TexUV = (vecTextures[vt3 - 1]);
+			face.VecNormal = (vecNormals[vn3 - 1]);
+			vecFaces.push_back(face);
+		}
+		else if (line.compare(0, 2, mtl)) {
+			/*WCHAR second[7];
+			std::wifstream          mtlStream;
+			swscanf(oldStyleStr, L"%7s%7s", first, second);
+			mtlStream.open("Media\\pig\\" + second[0] + second[1] + second[2] + second[3] + second[4] + second[5] + second[6] + second[7]);*/
 		}
 	}
 

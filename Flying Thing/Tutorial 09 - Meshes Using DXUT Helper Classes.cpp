@@ -852,7 +852,9 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 	//Floor Creation
 
-	XMMATRIX matFloorWorld = XMMatrixTranslation(0.0, 0.0, 0.0);
+	XMMATRIX matFloorScale = XMMatrixScaling(10, 1, 10);
+	XMMATRIX matFloorTranslate = XMMatrixTranslation(0.0, 0.0, 0.0);
+	XMMATRIX matFloorWorld = matFloorScale * matFloorTranslate;
 	XMMATRIX matFloorWorldViewProjection = matFloorWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matFloorWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matFloorWorldViewProjection);
@@ -861,8 +863,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	RenderMesh(pd3dImmediateContext, &meshFloor);
 
 	//Skybox 
-	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 20, XMVectorGetY(Eye) * 20, XMVectorGetZ(Eye) * 20);
-	XMMATRIX matSkyScale = XMMatrixScaling(0.05, 0.05, 0.05);
+	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
+	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
 	XMMATRIX matSkyWorld = matSkyTranslate * matSkyScale;
 	XMMATRIX matSkyWorldViewProjection = matSkyWorld * matView * matProjection;
 

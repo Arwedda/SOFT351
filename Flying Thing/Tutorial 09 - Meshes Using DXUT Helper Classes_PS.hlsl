@@ -89,7 +89,7 @@ float4 PS_DXUTSDKMesh( PS_INPUT Input ) : SV_TARGET
 	//**********************************************************************//
 	// With lighting, or un-comment the line below to remove the lighting.	//
 	//**********************************************************************//
-	//return vDiffuse;
-	return vDiffuse * fLighting * g_vObjectColor;
+	return vDiffuse;
+	//return vDiffuse * fLighting * g_vObjectColor;
 }
 

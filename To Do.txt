@@ -1,0 +1,16 @@
+Flying Thing:
+
+Prevent gimbal lock - quaternions
+Lighting - make a PS purely for skybox
+Shadows - mapping = easy, volume = harder
+Bump mapping - make a smooth surface seem bumpy
+
+
+Obj Loader:
+
+Switch to regex
+Load lighting etc. (.mtl)
+Combine with flying thing.
+
+
+Write up

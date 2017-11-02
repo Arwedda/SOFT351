@@ -718,6 +718,22 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
 	pd3dImmediateContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
+	/* Quaternion rotation
+	Tried with just x and y axis - still 
+	Currently inverts rotate about Y-axis and causes barrel rolls after a half turn
+
+	XMVECTOR xAxis = XMVectorSet(1, 0, 0, 0);
+	XMVECTOR yAxis = XMVectorSet(0, 1, 0, 0);
+	XMVECTOR zAxis = XMVectorSet(0, 0, 1, 0);
+
+	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, tiger->RY);
+	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, tiger->RX);
+	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, tiger->RZ);
+
+	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(zRotation, yRotation), xRotation);
+	XMMATRIX matRotation = XMMatrixRotationQuaternion(combinedRotation);
+	*/
+
 	//Calculate current direction
 	XMMATRIX matRotation = XMMatrixRotationRollPitchYaw(tiger->RY, tiger->RX, tiger->RZ);
 	XMVECTOR newDir = XMVector3TransformCoord(tiger->initDir, matRotation);

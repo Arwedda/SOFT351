@@ -39,7 +39,7 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(110): warning C4324: 'TIGER_POSITION': structure was padded due to alignment specifier
 c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(113): warning C4316: 'TIGER_POSITION': object allocated on the heap may not be aligned 16
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(827): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(843): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(705): warning C4101: 'hr': unreferenced local variable
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(795): warning C4189: 'fAmbient': local variable is initialized but not referenced
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(811): warning C4189: 'fAmbient': local variable is initialized but not referenced
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.exe

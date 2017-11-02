@@ -3,7 +3,9 @@ Flying Thing:
 Prevent gimbal lock - quaternions
 Lighting - make a PS purely for skybox
 Shadows - mapping = easy, volume = harder
+Sound
 Bump mapping - make a smooth surface seem bumpy
+OOP
 
 
 Obj Loader:

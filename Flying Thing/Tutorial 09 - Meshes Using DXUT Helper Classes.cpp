@@ -92,6 +92,9 @@ ID3D11VertexShader         *g_pVertexShader = NULL;
 ID3D11PixelShader          *g_pPixelShader = NULL;
 ID3D11SamplerState         *g_pSamLinear = NULL;
 
+ID3D11Buffer				*pDiffuseBuffer = NULL;
+ID3D11PixelShader			*pDiffuseShader = NULL;
+
 //**********************************************************************//
 // Variables to control the movement of the tiger.						//
 // The only one I have coded is rotate about Y, we need an x, y, z		//
@@ -574,7 +577,8 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 	ID3DBlob* pPixelShaderBuffer = NULL;
 	V_RETURN(CompileShaderFromFile(L"Tutorial 09 - Meshes Using DXUT Helper Classes_PS.hlsl", "PS_DXUTSDKMesh", "ps_5_0", &pPixelShaderBuffer));
 
-
+	ID3DBlob *pDiffuseShaderBuffer = NULL;
+	V_RETURN(CompileShaderFromFile(L"DiffuseOnlyPS.hlsl", "PS_DXUTSDKMesh", "ps_5_0", &pDiffuseShaderBuffer));
 
 	//**********************************************************************//
 	// Create the pixel and vertex shaders.									//
@@ -586,6 +590,9 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 		pPixelShaderBuffer->GetBufferSize(), NULL, &g_pPixelShader));
 	DXUT_SetDebugName(g_pPixelShader, "PS_DXUTSDKMesh");
 
+	V_RETURN(pd3dDevice->CreatePixelShader(pDiffuseShaderBuffer->GetBufferPointer(),
+		pDiffuseShaderBuffer->GetBufferSize(), NULL, &pDiffuseShader));
+	DXUT_SetDebugName(pDiffuseShader, "PS_DXUTSDKMesh");
 
 
 	//**********************************************************************//
@@ -609,7 +616,7 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 
 	SAFE_RELEASE(pVertexShaderBuffer);
 	SAFE_RELEASE(pPixelShaderBuffer);
-
+	SAFE_RELEASE(pDiffuseBuffer);
 
 
 	//**************************************************************************//
@@ -835,6 +842,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);
 	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
 	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	pd3dImmediateContext->PSSetShader(g_pPixelShader, NULL, 0);
 	RenderMesh(pd3dImmediateContext, &meshTiger);
 
 	//Wings by side, unless moving
@@ -878,7 +886,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
 	RenderMesh(pd3dImmediateContext, &meshFloor);
 
-	//Skybox 
+	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
 	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
 	XMMATRIX matSkyWorld = matSkyTranslate * matSkyScale;
@@ -889,6 +897,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matSkyWorldViewProjection);
 	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
 	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	pd3dImmediateContext->PSSetShader(pDiffuseShader, NULL, 0);
 	RenderMesh(pd3dImmediateContext, &meshSky);
 
 	//**************************************************************************//
@@ -922,7 +931,6 @@ void RenderMesh(ID3D11DeviceContext *pContext,
 
 	// Set the shaders
 	pContext->VSSetShader(g_pVertexShader, NULL, 0);
-	pContext->PSSetShader(g_pPixelShader, NULL, 0);
 
 	for (UINT subset = 0; subset < toRender->GetNumSubsets(0); ++subset)
 	{
@@ -945,7 +953,6 @@ void RenderMesh(ID3D11DeviceContext *pContext,
 
 		pContext->DrawIndexed((UINT)pSubset->IndexCount, 0, (UINT)pSubset->VertexStart);
 	}
-
 }
 
 
@@ -971,6 +978,7 @@ void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 	meshTiger.Destroy();
 	meshWing.Destroy();
 	meshFloor.Destroy();
+	meshSky.Destroy();
 
 	SAFE_RELEASE(g_pVertexLayout11);
 	SAFE_RELEASE(g_pVertexBuffer);
@@ -978,6 +986,9 @@ void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 	SAFE_RELEASE(g_pVertexShader);
 	SAFE_RELEASE(g_pPixelShader);
 	SAFE_RELEASE(g_pSamLinear);
+
+	SAFE_RELEASE(pDiffuseBuffer);
+	SAFE_RELEASE(pDiffuseShader);
 
 	SAFE_RELEASE(g_pcbVSPerObject);
 	SAFE_RELEASE(g_pcbPSPerObject);

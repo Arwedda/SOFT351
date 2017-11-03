@@ -92,7 +92,6 @@ ID3D11VertexShader         *g_pVertexShader = NULL;
 ID3D11PixelShader          *g_pPixelShader = NULL;
 ID3D11SamplerState         *g_pSamLinear = NULL;
 
-ID3D11Buffer				*pDiffuseBuffer = NULL;
 ID3D11PixelShader			*pDiffuseShader = NULL;
 
 //**********************************************************************//
@@ -237,6 +236,14 @@ void InitApp();
 void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
+void TurnLeft(float fElapsedTime);
+void TurnRight(float fElapsedTime);
+void TurnUp(float fElapsedTime);
+void TurnDown(float fElapsedTime);
+void Forward(float fElapsedTime);
+void Reverse(float fElapsedTime);
+void SlowDown(float fElapsedTime);
+void Fall(float fElapsedTime);
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -343,32 +350,74 @@ bool CALLBACK ModifyDeviceSettings(DXUTDeviceSettings* pDeviceSettings, void* pU
 //**************************************************************************//
 void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 {
-	if (isLeftArrowDown)  tiger->RX -= fElapsedTime * 3;	// Frame rate 
-	if (isRightArrowDown) tiger->RX += fElapsedTime * 3;	// independent.
-	if (isDownArrowDown) tiger->RY -= fElapsedTime * 3;
-	if (isUpArrowDown) tiger->RY += fElapsedTime * 3;
-
-	//Handles speed adjustments. W = forward. S = Backwards. Slows to a halt if neither is pressed.
-	if (isSKeyDown) {
-		if (tiger->speed > tiger->maxReverse)tiger->speed -= fElapsedTime * 3;
+	if (isLeftArrowDown) {
+		TurnLeft(fElapsedTime);
 	}
-	else if (isWKeyDown) {
-		if (tiger->speed < tiger->maxSpeed) tiger->speed += fElapsedTime * 3;
+	if (isRightArrowDown) {
+		TurnRight(fElapsedTime);
+	}
+	if (isUpArrowDown) {
+		TurnUp(fElapsedTime);
+	}
+	if (isDownArrowDown) {
+		TurnDown(fElapsedTime);
+	}
+
+	//Handles speed adjustments. W = forward. S = Backwards. Slows to a halt and falls to y = 0 if neither is pressed.
+	if (isWKeyDown) {
+		Forward(fElapsedTime);
+	}
+	else if (isSKeyDown) {
+		Reverse(fElapsedTime);
 	}
 	else {
-		if (tiger->speed > 0) {
-			tiger->speed -= fElapsedTime * 3;
-		}
-		else if (tiger->speed < 0) {
-			tiger->speed += fElapsedTime * 3;
-		}
-		//If not adding/maintaining momentum with W or S, height is lost
-		if (tiger->Y > 0) {
-			tiger->Y -= fElapsedTime * 3;
-		}
+		SlowDown(fElapsedTime);
+		Fall(fElapsedTime);
 	}
 }
 
+void TurnLeft(float fElapsedTime) {
+	tiger->RX -= fElapsedTime * 3;
+}
+
+void TurnRight(float fElapsedTime) {
+	tiger->RX += fElapsedTime * 3;
+}
+
+void TurnUp(float fElapsedTime) {
+	tiger->RY += fElapsedTime * 3;
+}
+
+void TurnDown(float fElapsedTime) {
+	tiger->RY -= fElapsedTime * 3;
+}
+
+void Forward(float fElapsedTime) {
+	if (tiger->speed < tiger->maxSpeed) {
+		tiger->speed += fElapsedTime * 3;
+	}
+}
+
+void Reverse(float fElapsedTime) {
+	if (tiger->speed > tiger->maxReverse) {
+		tiger->speed -= fElapsedTime * 3;
+	}
+}
+
+void SlowDown(float fElapsedTime) {
+	if (tiger->speed > 0) {
+		tiger->speed -= fElapsedTime * 3;
+	}
+	else if (tiger->speed < 0) {
+		tiger->speed += fElapsedTime * 3;
+	}
+}
+
+void Fall(float fElapsedTime) {
+	if (tiger->Y > 0) {
+		tiger->Y -= fElapsedTime * 3;
+	}
+}
 
 //--------------------------------------------------------------------------------------
 // Render the help and statistics text
@@ -616,7 +665,6 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 
 	SAFE_RELEASE(pVertexShaderBuffer);
 	SAFE_RELEASE(pPixelShaderBuffer);
-	SAFE_RELEASE(pDiffuseBuffer);
 
 
 	//**************************************************************************//
@@ -987,7 +1035,6 @@ void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 	SAFE_RELEASE(g_pPixelShader);
 	SAFE_RELEASE(g_pSamLinear);
 
-	SAFE_RELEASE(pDiffuseBuffer);
 	SAFE_RELEASE(pDiffuseShader);
 
 	SAFE_RELEASE(g_pcbVSPerObject);

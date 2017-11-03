@@ -99,7 +99,7 @@ ID3D11PixelShader			*pDiffuseShader = NULL;
 // The only one I have coded is rotate about Y, we need an x, y, z		//
 // position and maybe rotates about other axes.							//
 //**********************************************************************//
-struct TIGER_POSITION {
+struct TIGER {
 	float		X = 0;
 	float		Y = 0;
 	float		Z = 2;
@@ -109,10 +109,14 @@ struct TIGER_POSITION {
 	float		speed = 0;
 	float		maxSpeed = 10;
 	float		maxReverse = -3;
+	float		maxTilt = 30;
+	float		maxClimb = 45;
+	float		wingRest = 150;
+	float		wingPosition = 150;
 	XMVECTOR    initDir = XMVectorSet(0, 0, -2, 0);
 };
 
-TIGER_POSITION* tiger = new TIGER_POSITION();
+TIGER* tiger = new TIGER();
 
 bool		isLeftArrowDown = false;	//Status of keyboard.  Thess are set
 bool		isRightArrowDown = false;	//in the callback KeyboardProc(), and 
@@ -123,6 +127,7 @@ bool		isSKeyDown = false;
 
 bool		isTigerView = false;
 
+float		worldSpinRate = 0.01;
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
 // that M$ are having issues updating their sample code, same as me - Nigel.//
@@ -247,6 +252,8 @@ void Forward(float fElapsedTime);
 void Reverse(float fElapsedTime);
 void SlowDown(float fElapsedTime);
 void Fall(float fElapsedTime);
+void WingFlap(float fElapsedTime);
+void RestWings(float fElapsedTime);
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -379,12 +386,15 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//If neither are pressed slows to a halt and falls to y = 0
 	if (isWKeyDown) {
 		Forward(fElapsedTime);
+		WingFlap(fElapsedTime);
 	}
 	if (isSKeyDown) {
 		Reverse(fElapsedTime);
+		WingFlap(fElapsedTime);
 	}
 	if (!isWKeyDown && !isSKeyDown) {
 		SlowDown(fElapsedTime);
+		RestWings(fElapsedTime);
 		Fall(fElapsedTime);
 	}
 }
@@ -394,7 +404,7 @@ void TurnLeft(float fElapsedTime) {
 }
 
 void TiltLeft(float fElapsedTime) {
-	if (tiger->RZ > XMConvertToRadians(-30)) {
+	if (tiger->RZ > XMConvertToRadians(-tiger->maxTilt)) {
 		tiger->RZ -= fElapsedTime * 3;
 	}
 }
@@ -404,7 +414,7 @@ void TurnRight(float fElapsedTime) {
 }
 
 void TiltRight(float fElapsedTime) {
-	if (tiger->RZ < XMConvertToRadians(30)) {
+	if (tiger->RZ < XMConvertToRadians(tiger->maxTilt)) {
 		tiger->RZ += fElapsedTime * 3;
 	}
 }
@@ -419,7 +429,9 @@ void StraightenUp(float fElapsedTime) {
 }
 
 void TiltUp(float fElapsedTime) {
-	tiger->RY += fElapsedTime * 3;
+	if (tiger->RY < XMConvertToRadians(tiger->maxClimb)) {
+		tiger->RY += fElapsedTime * 3;
+	}
 }
 
 void TiltDown(float fElapsedTime) {
@@ -450,6 +462,19 @@ void SlowDown(float fElapsedTime) {
 void Fall(float fElapsedTime) {
 	if (tiger->Y > 0) {
 		tiger->Y -= fElapsedTime * 3;
+	}
+}
+
+void WingFlap(float fElapsedTime) {
+	tiger->wingPosition = sin(timeGetTime() / 200.0);
+}
+
+void RestWings(float fElapsedTime) {
+	if (tiger->wingPosition > tiger->wingRest) {
+		tiger->wingPosition = tiger->wingRest;
+	}
+	if (tiger->wingPosition < tiger->wingRest) {
+		tiger->wingPosition = tiger->wingRest;
 	}
 }
 
@@ -927,15 +952,9 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	pd3dImmediateContext->PSSetShader(g_pPixelShader, NULL, 0);
 	RenderMesh(pd3dImmediateContext, &meshTiger);
 
-	//Wings by side, unless moving
-	float flap = 150;
-	if (isWKeyDown || isSKeyDown) {
-		flap = sin(timeGetTime() / 200.0);
-	}
-
 	//Right Wing Creation
 	XMMATRIX matRightWingTranslate = XMMatrixTranslation(0.2, 0.3, -0.5);
-	XMMATRIX matRightWingRotate = XMMatrixRotationZ(flap);
+	XMMATRIX matRightWingRotate = XMMatrixRotationZ(tiger->wingPosition);
 	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matTigerWorld;
 	XMMATRIX matRightWingWorldViewProjection = matRightWingWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matRightWingWorld);
@@ -947,7 +966,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	//Left Wing Creation
 
 	XMMATRIX matLeftWingTranslate = XMMatrixTranslation(-0.2, 0.3, -0.5);
-	XMMATRIX matLeftWingRotate = XMMatrixRotationY(XMConvertToRadians(180)) * XMMatrixRotationZ(flap) * XMMatrixRotationX(XMConvertToRadians(180));
+	XMMATRIX matLeftWingRotate = XMMatrixRotationY(XMConvertToRadians(180)) * XMMatrixRotationZ(tiger->wingPosition) * XMMatrixRotationX(XMConvertToRadians(180));
 	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matTigerWorld;
 	XMMATRIX matLeftWingWorldViewProjection = matLeftWingWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingWorld);
@@ -970,8 +989,9 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
+	XMMATRIX matSkyRotate = XMMatrixRotationY(XMConvertToRadians(fElapsedTime));
 	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
-	XMMATRIX matSkyWorld = matSkyTranslate * matSkyScale;
+	XMMATRIX matSkyWorld = matSkyTranslate * matSkyRotate * matSkyScale;
 	XMMATRIX matSkyWorldViewProjection = matSkyWorld * matView * matProjection;
 
 	//Skybox Rendering

@@ -237,9 +237,12 @@ void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
 void TurnLeft(float fElapsedTime);
+void TiltLeft(float fElapsedTime);
 void TurnRight(float fElapsedTime);
-void TurnUp(float fElapsedTime);
-void TurnDown(float fElapsedTime);
+void TiltRight(float fElapsedTime);
+void StraightenUp(float fElapsedTime);
+void TiltUp(float fElapsedTime);
+void TiltDown(float fElapsedTime);
 void Forward(float fElapsedTime);
 void Reverse(float fElapsedTime);
 void SlowDown(float fElapsedTime);
@@ -350,27 +353,37 @@ bool CALLBACK ModifyDeviceSettings(DXUTDeviceSettings* pDeviceSettings, void* pU
 //**************************************************************************//
 void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 {
+	//Handles turning including a tilt to simulate re-proportioning weight
+	//If neither are pressed straightens Z-axis
 	if (isLeftArrowDown) {
 		TurnLeft(fElapsedTime);
+		TiltLeft(fElapsedTime);
 	}
 	if (isRightArrowDown) {
 		TurnRight(fElapsedTime);
+		TiltRight(fElapsedTime);
 	}
-	if (isUpArrowDown) {
-		TurnUp(fElapsedTime);
-	}
-	if (isDownArrowDown) {
-		TurnDown(fElapsedTime);
+	if (!isLeftArrowDown && !isRightArrowDown) {
+		StraightenUp(fElapsedTime);
 	}
 
-	//Handles speed adjustments. W = forward. S = Backwards. Slows to a halt and falls to y = 0 if neither is pressed.
+	//Handles climbing/falling
+	if (isUpArrowDown) {
+		TiltUp(fElapsedTime);
+	}
+	if (isDownArrowDown) {
+		TiltDown(fElapsedTime);
+	}
+
+	//Handles speed adjustments
+	//If neither are pressed slows to a halt and falls to y = 0
 	if (isWKeyDown) {
 		Forward(fElapsedTime);
 	}
-	else if (isSKeyDown) {
+	if (isSKeyDown) {
 		Reverse(fElapsedTime);
 	}
-	else {
+	if (!isWKeyDown && !isSKeyDown) {
 		SlowDown(fElapsedTime);
 		Fall(fElapsedTime);
 	}
@@ -380,15 +393,36 @@ void TurnLeft(float fElapsedTime) {
 	tiger->RX -= fElapsedTime * 3;
 }
 
+void TiltLeft(float fElapsedTime) {
+	if (tiger->RZ > XMConvertToRadians(-30)) {
+		tiger->RZ -= fElapsedTime * 3;
+	}
+}
+
 void TurnRight(float fElapsedTime) {
 	tiger->RX += fElapsedTime * 3;
 }
 
-void TurnUp(float fElapsedTime) {
+void TiltRight(float fElapsedTime) {
+	if (tiger->RZ < XMConvertToRadians(30)) {
+		tiger->RZ += fElapsedTime * 3;
+	}
+}
+
+void StraightenUp(float fElapsedTime) {
+	if (tiger->RZ < 0) {
+		tiger->RZ += fElapsedTime * 3;
+	}
+	else if (tiger->RZ > 0) {
+		tiger->RZ -= fElapsedTime * 3;
+	}
+}
+
+void TiltUp(float fElapsedTime) {
 	tiger->RY += fElapsedTime * 3;
 }
 
-void TurnDown(float fElapsedTime) {
+void TiltDown(float fElapsedTime) {
 	tiger->RY -= fElapsedTime * 3;
 }
 

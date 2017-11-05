@@ -114,7 +114,6 @@ struct TIGER {
 	float		maxDescent = -1.55;
 	float		wingRest = -0.44;
 	float		wingPosition = -0.44;
-	bool		isOnGround = true;
 	XMVECTOR    initDir = XMVectorSet(0, 0, -2, 0);
 };
 
@@ -126,6 +125,7 @@ bool		isUpArrowDown = false;	//are used in onFrameMove().
 bool		isDownArrowDown = false;
 bool		isWKeyDown = false;
 bool		isSKeyDown = false;
+bool		isSpaceDown = false;
 
 bool		isTigerView = false;
 
@@ -245,21 +245,23 @@ void InitApp();
 void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
-void TurnLeft(float fElapsedTime);
-void TiltLeft(float fElapsedTime);
-void TurnRight(float fElapsedTime);
-void TiltRight(float fElapsedTime);
-void StraightenUp(float fElapsedTime);
-void TiltUp(float fElapsedTime);
-void TiltDown(float fElapsedTime);
-void LevelOut(float fElapsedTime);
-void Forward(float fElapsedTime);
-void Reverse(float fElapsedTime);
-void SlowDown(float fElapsedTime);
-void Fall(float fElapsedTime);
-void WingFlap();
-void RestWings();
-void CheckTigerHeight();
+void turnLeft(float fElapsedTime);
+void tiltLeft(float fElapsedTime);
+void turnRight(float fElapsedTime);
+void tiltRight(float fElapsedTime);
+bool isNotTurning();
+void straightenUp(float fElapsedTime);
+void tiltUp(float fElapsedTime);
+void tiltDown(float fElapsedTime);
+void levelOut(float fElapsedTime);
+void forward(float fElapsedTime);
+void reverse(float fElapsedTime);
+void slowDown(float fElapsedTime);
+void fall(float fElapsedTime);
+void wingFlap();
+void restWings();
+bool tigerInAir();
+void roar();
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -369,83 +371,91 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//Handles turning including a tilt to simulate re-proportioning weight
 	//If neither are pressed straightens Z-axis
 	if (isLeftArrowDown) {
-		TurnLeft(fElapsedTime);
-		if (!tiger->isOnGround || tiger->speed >= (tiger->maxSpeed * 0.8)) {
-			TiltLeft(fElapsedTime);
+		turnLeft(fElapsedTime);
+		if (tigerInAir() || tiger->speed >= (tiger->maxSpeed * 0.8)) {
+			tiltLeft(fElapsedTime);
 		}
 	}
 	if (isRightArrowDown) {
-		TurnRight(fElapsedTime);
-		if (!tiger->isOnGround || tiger->speed >= (tiger->maxSpeed * 0.8)) {
-			TiltRight(fElapsedTime);
+		turnRight(fElapsedTime);
+		if (tigerInAir() || tiger->speed >= (tiger->maxSpeed * 0.8)) {
+			tiltRight(fElapsedTime);
 		}
 	}
-	if (!isLeftArrowDown && !isRightArrowDown) {
-		StraightenUp(fElapsedTime);
+	if (isNotTurning()) {
+		straightenUp(fElapsedTime);
 	}
 
 	//Handles climbing/falling
 	if (isUpArrowDown) {
-		TiltUp(fElapsedTime);
+		tiltUp(fElapsedTime);
 	}
 	if (isDownArrowDown) {
-		if (!tiger->isOnGround || tiger->RY > horizontalRY) {
-			TiltDown(fElapsedTime);
+		if (tigerInAir() || tiger->RY > horizontalRY) {
+			tiltDown(fElapsedTime);
 		}
 	}
 
 	//Handles speed adjustments
 	//If neither are pressed slows to a halt and falls to y = 0
 	if (isWKeyDown) {
-		Forward(fElapsedTime);
-		if (!tiger->isOnGround) {
-			WingFlap();
+		forward(fElapsedTime);
+		if (tigerInAir()) {
+			wingFlap();
 		} else {
-			RestWings();
+			restWings();
 		}
 	}
 	if (isSKeyDown) {
-		Reverse(fElapsedTime);
-		if (!tiger->isOnGround) {
-			WingFlap();
+		reverse(fElapsedTime);
+		if (tigerInAir()) {
+			wingFlap();
 		} else {
-			RestWings();
+			restWings();
 		}
 	}
 	if (!isWKeyDown && !isSKeyDown) {
-		SlowDown(fElapsedTime);
-		RestWings();
-		if (!tiger->isOnGround) {
-			Fall(fElapsedTime);
+		slowDown(fElapsedTime);
+		restWings();
+		if (tigerInAir()) {
+			fall(fElapsedTime);
 		}
 	}
 
-	if (tiger->isOnGround) {
-		LevelOut(fElapsedTime);
+	if (!tigerInAir()) {
+		levelOut(fElapsedTime);
+	}
+
+	if (isSpaceDown) {
+		roar();
 	}
 }
 
-void TurnLeft(float fElapsedTime) {
+void turnLeft(float fElapsedTime) {
 	tiger->RX -= fElapsedTime * 3;
 }
 
-void TiltLeft(float fElapsedTime) {
+void tiltLeft(float fElapsedTime) {
 	if (tiger->RZ > -tiger->maxTilt) {
 		tiger->RZ -= fElapsedTime * 3;
 	}
 }
 
-void TurnRight(float fElapsedTime) {
+void turnRight(float fElapsedTime) {
 	tiger->RX += fElapsedTime * 3;
 }
 
-void TiltRight(float fElapsedTime) {
+void tiltRight(float fElapsedTime) {
 	if (tiger->RZ < tiger->maxTilt) {
 		tiger->RZ += fElapsedTime * 3;
 	}
 }
 
-void StraightenUp(float fElapsedTime) {
+bool isNotTurning() {
+	return (!isLeftArrowDown && !isRightArrowDown);
+}
+
+void straightenUp(float fElapsedTime) {
 	if (tiger->RZ < horizontalRZ) {
 		tiger->RZ += fElapsedTime * 3;
 	}
@@ -454,39 +464,38 @@ void StraightenUp(float fElapsedTime) {
 	}
 }
 
-void TiltUp(float fElapsedTime) {
+void tiltUp(float fElapsedTime) {
 	if (tiger->RY < tiger->maxClimb) {
 		tiger->RY += fElapsedTime * 3;
 	}
 }
 
-void TiltDown(float fElapsedTime) {
+void tiltDown(float fElapsedTime) {
 	if (tiger->RY > tiger->maxDescent) {
 		tiger->RY -= fElapsedTime * 3;
 	}
 }
 
-void LevelOut(float fElapsedTime) {
+void levelOut(float fElapsedTime) {
 	if (tiger->RY < horizontalRY) {
-		TiltUp(fElapsedTime);
+		tiltUp(fElapsedTime);
 		tiger->speed = 0;
 	}
 }
 
-
-void Forward(float fElapsedTime) {
+void forward(float fElapsedTime) {
 	if (tiger->speed < tiger->maxSpeed) {
 		tiger->speed += fElapsedTime * 3;
 	}
 }
 
-void Reverse(float fElapsedTime) {
+void reverse(float fElapsedTime) {
 	if (tiger->speed > tiger->maxReverse) {
 		tiger->speed -= fElapsedTime * 3;
 	}
 }
 
-void SlowDown(float fElapsedTime) {
+void slowDown(float fElapsedTime) {
 	if (tiger->speed > 0) {
 		tiger->speed -= fElapsedTime * 3;
 	}
@@ -495,26 +504,27 @@ void SlowDown(float fElapsedTime) {
 	}
 }
 
-void Fall(float fElapsedTime) {
+void fall(float fElapsedTime) {
 	tiger->Y -= fElapsedTime * 3;
 }
 
-void WingFlap() {
+void wingFlap() {
 	tiger->wingPosition = sin(timeGetTime() / 200.0);
+	PlaySound(L"Media\\Wing\\flap.wav", NULL, SND_ASYNC | SND_NOSTOP);
 }
 
-void RestWings() {
+void restWings() {
 	if (tiger->wingPosition > tiger->wingRest + 0.01 || tiger->wingPosition < tiger->wingRest - 0.01) {
-		WingFlap();
+		wingFlap();
 	}
 }
 
-void CheckTigerHeight() {
-	if (tiger->Y > 0) {
-		tiger->isOnGround = false;
-	} else {
-		tiger->isOnGround = true;
-	}
+bool tigerInAir() {
+	return (tiger->Y > 0);
+}
+
+void roar() {
+	PlaySound(L"Media\\Tiger\\roar.wav", NULL, SND_ASYNC | SND_NOSTOP);
 }
 
 //--------------------------------------------------------------------------------------
@@ -623,6 +633,7 @@ void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserCo
 	case VK_DOWN:  isDownArrowDown = bKeyDown; break;
 	case 87:		isWKeyDown = bKeyDown; break;
 	case 83:		isSKeyDown = bKeyDown; break;
+	case 32:		isSpaceDown = bKeyDown; break;
 	}
 }
 
@@ -778,9 +789,9 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 									//**************************************************************************//
 									// Load the mesh.															//
 									//**************************************************************************//
-	V_RETURN(meshTiger.Create(pd3dDevice, L"Media\\tiger\\tiger.sdkmesh", true));
-	V_RETURN(meshWing.Create(pd3dDevice, L"Media\\wing\\wing.sdkmesh", true));
-	V_RETURN(meshFloor.Create(pd3dDevice, L"Media\\floor\\seafloor.sdkmesh", true));
+	V_RETURN(meshTiger.Create(pd3dDevice, L"Media\\Tiger\\tiger.sdkmesh", true));
+	V_RETURN(meshWing.Create(pd3dDevice, L"Media\\Wing\\wing.sdkmesh", true));
+	V_RETURN(meshFloor.Create(pd3dDevice, L"Media\\Floor\\seafloor.sdkmesh", true));
 	V_RETURN(meshSky.Create(pd3dDevice, L"Media\\Cloudbox\\skysphere.sdkmesh", true));
 
 	// Create a sampler state
@@ -1050,7 +1061,6 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	RenderText();
 	DXUT_EndPerfEvent();
 
-	CheckTigerHeight();
 }
 
 

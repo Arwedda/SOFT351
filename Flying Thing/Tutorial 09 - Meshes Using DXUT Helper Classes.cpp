@@ -109,10 +109,12 @@ struct TIGER {
 	float		speed = 0;
 	float		maxSpeed = 10;
 	float		maxReverse = -3;
-	float		maxTilt = 30;
-	float		maxClimb = 45;
-	float		wingRest = 150;
-	float		wingPosition = 150;
+	float		maxTilt = 0.52;
+	float		maxClimb = 0.79;
+	float		maxDescent = -1.55;
+	float		wingRest = -0.44;
+	float		wingPosition = -0.44;
+	bool		isOnGround = true;
 	XMVECTOR    initDir = XMVectorSet(0, 0, -2, 0);
 };
 
@@ -128,6 +130,8 @@ bool		isSKeyDown = false;
 bool		isTigerView = false;
 
 float		worldSpinRate = 0.01;
+float		horizontalRY = 0.0;
+float		horizontalRZ = 0.0;
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
 // that M$ are having issues updating their sample code, same as me - Nigel.//
@@ -248,12 +252,14 @@ void TiltRight(float fElapsedTime);
 void StraightenUp(float fElapsedTime);
 void TiltUp(float fElapsedTime);
 void TiltDown(float fElapsedTime);
+void LevelOut(float fElapsedTime);
 void Forward(float fElapsedTime);
 void Reverse(float fElapsedTime);
 void SlowDown(float fElapsedTime);
 void Fall(float fElapsedTime);
-void WingFlap(float fElapsedTime);
-void RestWings(float fElapsedTime);
+void WingFlap();
+void RestWings();
+void CheckTigerHeight();
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -364,11 +370,15 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//If neither are pressed straightens Z-axis
 	if (isLeftArrowDown) {
 		TurnLeft(fElapsedTime);
-		TiltLeft(fElapsedTime);
+		if (!tiger->isOnGround || tiger->speed >= (tiger->maxSpeed * 0.8)) {
+			TiltLeft(fElapsedTime);
+		}
 	}
 	if (isRightArrowDown) {
 		TurnRight(fElapsedTime);
-		TiltRight(fElapsedTime);
+		if (!tiger->isOnGround || tiger->speed >= (tiger->maxSpeed * 0.8)) {
+			TiltRight(fElapsedTime);
+		}
 	}
 	if (!isLeftArrowDown && !isRightArrowDown) {
 		StraightenUp(fElapsedTime);
@@ -379,23 +389,39 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		TiltUp(fElapsedTime);
 	}
 	if (isDownArrowDown) {
-		TiltDown(fElapsedTime);
+		if (!tiger->isOnGround || tiger->RY > horizontalRY) {
+			TiltDown(fElapsedTime);
+		}
 	}
 
 	//Handles speed adjustments
 	//If neither are pressed slows to a halt and falls to y = 0
 	if (isWKeyDown) {
 		Forward(fElapsedTime);
-		WingFlap(fElapsedTime);
+		if (!tiger->isOnGround) {
+			WingFlap();
+		} else {
+			RestWings();
+		}
 	}
 	if (isSKeyDown) {
 		Reverse(fElapsedTime);
-		WingFlap(fElapsedTime);
+		if (!tiger->isOnGround) {
+			WingFlap();
+		} else {
+			RestWings();
+		}
 	}
 	if (!isWKeyDown && !isSKeyDown) {
 		SlowDown(fElapsedTime);
-		RestWings(fElapsedTime);
-		Fall(fElapsedTime);
+		RestWings();
+		if (!tiger->isOnGround) {
+			Fall(fElapsedTime);
+		}
+	}
+
+	if (tiger->isOnGround) {
+		LevelOut(fElapsedTime);
 	}
 }
 
@@ -404,7 +430,7 @@ void TurnLeft(float fElapsedTime) {
 }
 
 void TiltLeft(float fElapsedTime) {
-	if (tiger->RZ > XMConvertToRadians(-tiger->maxTilt)) {
+	if (tiger->RZ > -tiger->maxTilt) {
 		tiger->RZ -= fElapsedTime * 3;
 	}
 }
@@ -414,29 +440,39 @@ void TurnRight(float fElapsedTime) {
 }
 
 void TiltRight(float fElapsedTime) {
-	if (tiger->RZ < XMConvertToRadians(tiger->maxTilt)) {
+	if (tiger->RZ < tiger->maxTilt) {
 		tiger->RZ += fElapsedTime * 3;
 	}
 }
 
 void StraightenUp(float fElapsedTime) {
-	if (tiger->RZ < 0) {
+	if (tiger->RZ < horizontalRZ) {
 		tiger->RZ += fElapsedTime * 3;
 	}
-	else if (tiger->RZ > 0) {
+	else if (tiger->RZ > horizontalRZ) {
 		tiger->RZ -= fElapsedTime * 3;
 	}
 }
 
 void TiltUp(float fElapsedTime) {
-	if (tiger->RY < XMConvertToRadians(tiger->maxClimb)) {
+	if (tiger->RY < tiger->maxClimb) {
 		tiger->RY += fElapsedTime * 3;
 	}
 }
 
 void TiltDown(float fElapsedTime) {
-	tiger->RY -= fElapsedTime * 3;
+	if (tiger->RY > tiger->maxDescent) {
+		tiger->RY -= fElapsedTime * 3;
+	}
 }
+
+void LevelOut(float fElapsedTime) {
+	if (tiger->RY < horizontalRY) {
+		TiltUp(fElapsedTime);
+		tiger->speed = 0;
+	}
+}
+
 
 void Forward(float fElapsedTime) {
 	if (tiger->speed < tiger->maxSpeed) {
@@ -460,21 +496,24 @@ void SlowDown(float fElapsedTime) {
 }
 
 void Fall(float fElapsedTime) {
-	if (tiger->Y > 0) {
-		tiger->Y -= fElapsedTime * 3;
-	}
+	tiger->Y -= fElapsedTime * 3;
 }
 
-void WingFlap(float fElapsedTime) {
+void WingFlap() {
 	tiger->wingPosition = sin(timeGetTime() / 200.0);
 }
 
-void RestWings(float fElapsedTime) {
-	if (tiger->wingPosition > tiger->wingRest) {
-		tiger->wingPosition = tiger->wingRest;
+void RestWings() {
+	if (tiger->wingPosition > tiger->wingRest + 0.01 || tiger->wingPosition < tiger->wingRest - 0.01) {
+		WingFlap();
 	}
-	if (tiger->wingPosition < tiger->wingRest) {
-		tiger->wingPosition = tiger->wingRest;
+}
+
+void CheckTigerHeight() {
+	if (tiger->Y > 0) {
+		tiger->isOnGround = false;
+	} else {
+		tiger->isOnGround = true;
 	}
 }
 
@@ -966,7 +1005,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	//Left Wing Creation
 
 	XMMATRIX matLeftWingTranslate = XMMatrixTranslation(-0.2, 0.3, -0.5);
-	XMMATRIX matLeftWingRotate = XMMatrixRotationY(XMConvertToRadians(180)) * XMMatrixRotationZ(tiger->wingPosition) * XMMatrixRotationX(XMConvertToRadians(180));
+	XMMATRIX matLeftWingRotate = XMMatrixRotationY(3.14159) * XMMatrixRotationZ(tiger->wingPosition) * XMMatrixRotationX(3.14159);
 	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matTigerWorld;
 	XMMATRIX matLeftWingWorldViewProjection = matLeftWingWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingWorld);
@@ -989,9 +1028,9 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
-	XMMATRIX matSkyRotate = XMMatrixRotationY(XMConvertToRadians(fElapsedTime));
+	//XMMATRIX matSkyRotate = XMMatrixRotationY(fElapsedTime);
 	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
-	XMMATRIX matSkyWorld = matSkyTranslate * matSkyRotate * matSkyScale;
+	XMMATRIX matSkyWorld = matSkyTranslate * /*matSkyRotate **/ matSkyScale;
 	XMMATRIX matSkyWorldViewProjection = matSkyWorld * matView * matProjection;
 
 	//Skybox Rendering
@@ -1010,6 +1049,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	g_SampleUI.OnRender(fElapsedTime);
 	RenderText();
 	DXUT_EndPerfEvent();
+
+	CheckTigerHeight();
 }
 
 

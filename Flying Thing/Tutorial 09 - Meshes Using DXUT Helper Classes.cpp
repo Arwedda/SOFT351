@@ -1041,9 +1041,9 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
-	//XMMATRIX matSkyRotate = XMMatrixRotationY(fElapsedTime);
+	XMMATRIX matSkyRotate = XMMatrixRotationY(fElapsedTime * 2);
 	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
-	XMMATRIX matSkyWorld = matSkyTranslate * /*matSkyRotate **/ matSkyScale;
+	XMMATRIX matSkyWorld = matSkyTranslate * matSkyRotate * matSkyScale;
 	XMMATRIX matSkyWorldViewProjection = matSkyWorld * matView * matProjection;
 
 	//Skybox Rendering

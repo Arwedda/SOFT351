@@ -12,6 +12,9 @@
       <UniqueIdentifier>{2c3d4c8c-5d1a-459a-a05a-a4e4b608a44e}</UniqueIdentifier>
       <Extensions>fx;fxh;hlsl</Extensions>
     </Filter>
+    <Filter Include="Classes">
+      <UniqueIdentifier>{9bf3afba-22c6-4418-bc0f-d2ee2b88f418}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">

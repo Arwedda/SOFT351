@@ -77,7 +77,7 @@ struct PS_INPUT
 
 //**************************************************************************//
 // Pixel Shader.	This one has basic lighting, however the really			//
-// important part is the texture sampler.									//
+// important part is the rexture sampler.									//
 //**************************************************************************//
 float4 PS_DXUTSDKMesh( PS_INPUT Input ) : SV_TARGET
 {

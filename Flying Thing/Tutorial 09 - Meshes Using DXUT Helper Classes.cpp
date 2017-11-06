@@ -402,7 +402,8 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		forward(fElapsedTime);
 		if (tigerInAir()) {
 			wingFlap();
-		} else {
+		}
+		else {
 			restWings();
 		}
 	}
@@ -410,7 +411,8 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		reverse(fElapsedTime);
 		if (tigerInAir()) {
 			wingFlap();
-		} else {
+		}
+		else {
 			restWings();
 		}
 	}
@@ -883,7 +885,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	pd3dImmediateContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
 	/* Quaternion rotation
-	Tried with just x and y axis - still 
+	Tried with just x and y axis - still
 	Currently inverts rotate about Y-axis and causes barrel rolls after a half turn
 
 	XMVECTOR xAxis = XMVectorSet(1, 0, 0, 0);

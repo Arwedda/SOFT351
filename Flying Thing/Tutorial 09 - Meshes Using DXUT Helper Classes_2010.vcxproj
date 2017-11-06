@@ -421,6 +421,9 @@
     <ResourceCompile Include="Tutorial 09 - Meshes Using DXUT Helper Classes.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="DiffuseOnlyPS.hlsl">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

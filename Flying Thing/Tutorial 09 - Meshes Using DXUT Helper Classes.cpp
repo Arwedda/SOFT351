@@ -112,8 +112,8 @@ struct BEAR {
 	float		maxTilt = 0.52;
 	float		maxClimb = 0.79;
 	float		maxDescent = 1.55;
-	float		wingRest = 0.44;
-	float		wingPosition = 0.44;
+	float		wingRest = -0.44;
+	float		wingPosition = -0.44;
 	XMVECTOR    initDir = XMVectorSet(0, 0, -2, 0);
 };
 
@@ -401,31 +401,31 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	if (isWKeyDown) {
 		forward(fElapsedTime);
 		if (bearInAir()) {
-			//wingFlap();
+			wingFlap();
 		}
 		else {
-			//restWings();
+			restWings();
 		}
 	}
 	if (isSKeyDown) {
 		reverse(fElapsedTime);
 		if (bearInAir()) {
-			//wingFlap();
+			wingFlap();
 		}
 		else {
-			//restWings();
+			restWings();
 		}
 	}
 	if (!isWKeyDown && !isSKeyDown) {
-		//slowDown(fElapsedTime);
-		//restWings();
+		slowDown(fElapsedTime);
+		restWings();
 		if (bearInAir()) {
-			//fall(fElapsedTime);
+			fall(fElapsedTime);
 		}
 	}
 
 	if (!bearInAir()) {
-		//levelOut(fElapsedTime);
+		levelOut(fElapsedTime);
 	}
 
 	if (isSpaceDown) {
@@ -479,22 +479,22 @@ void tiltDown(float fElapsedTime) {
 }
 
 void levelOut(float fElapsedTime) {
-	if (bear->RY < horizontalRY) {
+	if (bear->RY > horizontalRY) {
 		tiltUp(fElapsedTime);
 		bear->speed = 0;
 	}
 }
 
 void forward(float fElapsedTime) {
-	//if (bear->speed < bear->maxSpeed) {
+	if (bear->speed > -bear->maxSpeed) {
 		bear->speed -= fElapsedTime * 3;
-	//}
+	}
 }
 
 void reverse(float fElapsedTime) {
-	//if (bear->speed > bear->maxReverse) {
+	if (bear->speed < bear->maxReverse) {
 		bear->speed += fElapsedTime * 3;
-	//}
+	}
 }
 
 void slowDown(float fElapsedTime) {
@@ -512,7 +512,7 @@ void fall(float fElapsedTime) {
 
 void wingFlap() {
 	bear->wingPosition = sin(timeGetTime() / 200.0);
-	PlaySound(L"Media\\Wing\\flap.wav", NULL, SND_ASYNC | SND_NOSTOP);
+	PlaySound(L"Media\\Bear\\flap.wav", NULL, SND_ASYNC | SND_NOSTOP);
 }
 
 void restWings() {
@@ -792,7 +792,7 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 									// Load the mesh.															//
 									//**************************************************************************//
 	V_RETURN(meshBear.Create(pd3dDevice, L"Media\\Bear\\bear.sdkmesh", true));
-	V_RETURN(meshWing.Create(pd3dDevice, L"Media\\Wing\\wing.sdkmesh", true));
+	V_RETURN(meshWing.Create(pd3dDevice, L"Media\\Bear\\bearwing.sdkmesh", true));
 	V_RETURN(meshFloor.Create(pd3dDevice, L"Media\\Floor\\seafloor.sdkmesh", true));
 	V_RETURN(meshSky.Create(pd3dDevice, L"Media\\Cloudbox\\skysphere.sdkmesh", true));
 
@@ -1004,10 +1004,12 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	pd3dImmediateContext->PSSetShader(g_pPixelShader, NULL, 0);
 	RenderMesh(pd3dImmediateContext, &meshBear);
 
+	XMMATRIX matWingScale = XMMatrixScaling(0.5, 0.5, 0.5);
+
 	//Right Wing Creation
-	XMMATRIX matRightWingTranslate = XMMatrixTranslation(0.2, 0.3, -0.5);
+	XMMATRIX matRightWingTranslate = XMMatrixTranslation(0.2, 1.7, 0.0);
 	XMMATRIX matRightWingRotate = XMMatrixRotationZ(bear->wingPosition);
-	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matBearWorld;
+	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matWingScale * matBearWorld;
 	XMMATRIX matRightWingWorldViewProjection = matRightWingWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matRightWingWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matRightWingWorldViewProjection);
@@ -1017,9 +1019,9 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 	//Left Wing Creation
 
-	XMMATRIX matLeftWingTranslate = XMMatrixTranslation(-0.2, 0.3, -0.5);
+	XMMATRIX matLeftWingTranslate = XMMatrixTranslation(-0.2, 1.7, 0.0);
 	XMMATRIX matLeftWingRotate = XMMatrixRotationY(3.14159) * XMMatrixRotationZ(bear->wingPosition) * XMMatrixRotationX(3.14159);
-	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matBearWorld;
+	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matWingScale * matBearWorld;
 	XMMATRIX matLeftWingWorldViewProjection = matLeftWingWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matLeftWingWorldViewProjection);
@@ -1040,7 +1042,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	RenderMesh(pd3dImmediateContext, &meshFloor);
 
 	//Skybox
-	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
+	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye)  * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
 	XMMATRIX matSkyRotate = XMMatrixRotationY(timeGetTime() * worldSpinRate);
 	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
 	XMMATRIX matSkyWorld = matSkyTranslate * matSkyRotate * matSkyScale;

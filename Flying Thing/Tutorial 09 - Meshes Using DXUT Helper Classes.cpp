@@ -78,7 +78,7 @@ int							g_height = 600;;
 //**************************************************************************//
 // Meshes here.																//
 //**************************************************************************//
-CDXUTSDKMesh                meshTiger;			// Wot, not a pointer type?
+CDXUTSDKMesh                meshBear;			// Wot, not a pointer type?
 CDXUTSDKMesh				meshWing;
 CDXUTSDKMesh				meshFloor;
 CDXUTSDKMesh				meshSky;
@@ -99,25 +99,25 @@ ID3D11PixelShader			*pDiffuseShader = NULL;
 // The only one I have coded is rotate about Y, we need an x, y, z		//
 // position and maybe rotates about other axes.							//
 //**********************************************************************//
-struct TIGER {
+struct BEAR {
 	float		X = 0;
 	float		Y = 0;
 	float		Z = 2;
-	float		RX = 0;
+	float		RX = 1.55;
 	float		RY = 0;
 	float		RZ = 0;
 	float		speed = 0;
 	float		maxSpeed = 10;
-	float		maxReverse = -3;
+	float		maxReverse = 3;
 	float		maxTilt = 0.52;
 	float		maxClimb = 0.79;
-	float		maxDescent = -1.55;
-	float		wingRest = -0.44;
-	float		wingPosition = -0.44;
+	float		maxDescent = 1.55;
+	float		wingRest = 0.44;
+	float		wingPosition = 0.44;
 	XMVECTOR    initDir = XMVectorSet(0, 0, -2, 0);
 };
 
-TIGER* tiger = new TIGER();
+BEAR* bear = new BEAR();
 
 bool		isLeftArrowDown = false;	//Status of keyboard.  Thess are set
 bool		isRightArrowDown = false;	//in the callback KeyboardProc(), and 
@@ -127,7 +127,7 @@ bool		isWKeyDown = false;
 bool		isSKeyDown = false;
 bool		isSpaceDown = false;
 
-bool		isTigerView = false;
+bool		isBearView = false;
 
 float		worldSpinRate = 0.00001;
 float		horizontalRY = 0.0;
@@ -260,7 +260,7 @@ void slowDown(float fElapsedTime);
 void fall(float fElapsedTime);
 void wingFlap();
 void restWings();
-bool tigerInAir();
+bool bearInAir();
 void roar();
 
 //**************************************************************************//
@@ -372,13 +372,13 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//If neither are pressed straightens Z-axis
 	if (isLeftArrowDown) {
 		turnLeft(fElapsedTime);
-		if (tigerInAir() || tiger->speed >= (tiger->maxSpeed * 0.8)) {
+		if (bearInAir() || bear->speed >= (bear->maxSpeed * 0.8)) {
 			tiltLeft(fElapsedTime);
 		}
 	}
 	if (isRightArrowDown) {
 		turnRight(fElapsedTime);
-		if (tigerInAir() || tiger->speed >= (tiger->maxSpeed * 0.8)) {
+		if (bearInAir() || bear->speed >= (bear->maxSpeed * 0.8)) {
 			tiltRight(fElapsedTime);
 		}
 	}
@@ -391,7 +391,7 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		tiltUp(fElapsedTime);
 	}
 	if (isDownArrowDown) {
-		if (tigerInAir() || tiger->RY > horizontalRY) {
+		if (bearInAir() || bear->RY < horizontalRY) {
 			tiltDown(fElapsedTime);
 		}
 	}
@@ -400,32 +400,32 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//If neither are pressed slows to a halt and falls to y = 0
 	if (isWKeyDown) {
 		forward(fElapsedTime);
-		if (tigerInAir()) {
-			wingFlap();
+		if (bearInAir()) {
+			//wingFlap();
 		}
 		else {
-			restWings();
+			//restWings();
 		}
 	}
 	if (isSKeyDown) {
 		reverse(fElapsedTime);
-		if (tigerInAir()) {
-			wingFlap();
+		if (bearInAir()) {
+			//wingFlap();
 		}
 		else {
-			restWings();
+			//restWings();
 		}
 	}
 	if (!isWKeyDown && !isSKeyDown) {
-		slowDown(fElapsedTime);
-		restWings();
-		if (tigerInAir()) {
-			fall(fElapsedTime);
+		//slowDown(fElapsedTime);
+		//restWings();
+		if (bearInAir()) {
+			//fall(fElapsedTime);
 		}
 	}
 
-	if (!tigerInAir()) {
-		levelOut(fElapsedTime);
+	if (!bearInAir()) {
+		//levelOut(fElapsedTime);
 	}
 
 	if (isSpaceDown) {
@@ -434,22 +434,22 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 }
 
 void turnLeft(float fElapsedTime) {
-	tiger->RX -= fElapsedTime * 3;
+	bear->RX -= fElapsedTime * 3;
 }
 
 void tiltLeft(float fElapsedTime) {
-	if (tiger->RZ > -tiger->maxTilt) {
-		tiger->RZ -= fElapsedTime * 3;
+	if (bear->RZ < bear->maxTilt) {
+		bear->RZ += fElapsedTime * 3;
 	}
 }
 
 void turnRight(float fElapsedTime) {
-	tiger->RX += fElapsedTime * 3;
+	bear->RX += fElapsedTime * 3;
 }
 
 void tiltRight(float fElapsedTime) {
-	if (tiger->RZ < tiger->maxTilt) {
-		tiger->RZ += fElapsedTime * 3;
+	if (bear->RZ > -bear->maxTilt) {
+		bear->RZ -= fElapsedTime * 3;
 	}
 }
 
@@ -458,75 +458,75 @@ bool isNotTurning() {
 }
 
 void straightenUp(float fElapsedTime) {
-	if (tiger->RZ < horizontalRZ) {
-		tiger->RZ += fElapsedTime * 3;
+	if (bear->RZ < horizontalRZ) {
+		bear->RZ += fElapsedTime * 3;
 	}
-	else if (tiger->RZ > horizontalRZ) {
-		tiger->RZ -= fElapsedTime * 3;
+	else if (bear->RZ > horizontalRZ) {
+		bear->RZ -= fElapsedTime * 3;
 	}
 }
 
 void tiltUp(float fElapsedTime) {
-	if (tiger->RY < tiger->maxClimb) {
-		tiger->RY += fElapsedTime * 3;
+	if (bear->RY > -bear->maxClimb) {
+		bear->RY -= fElapsedTime * 3;
 	}
 }
 
 void tiltDown(float fElapsedTime) {
-	if (tiger->RY > tiger->maxDescent) {
-		tiger->RY -= fElapsedTime * 3;
+	if (bear->RY < bear->maxDescent) {
+		bear->RY += fElapsedTime * 3;
 	}
 }
 
 void levelOut(float fElapsedTime) {
-	if (tiger->RY < horizontalRY) {
+	if (bear->RY < horizontalRY) {
 		tiltUp(fElapsedTime);
-		tiger->speed = 0;
+		bear->speed = 0;
 	}
 }
 
 void forward(float fElapsedTime) {
-	if (tiger->speed < tiger->maxSpeed) {
-		tiger->speed += fElapsedTime * 3;
-	}
+	//if (bear->speed < bear->maxSpeed) {
+		bear->speed -= fElapsedTime * 3;
+	//}
 }
 
 void reverse(float fElapsedTime) {
-	if (tiger->speed > tiger->maxReverse) {
-		tiger->speed -= fElapsedTime * 3;
-	}
+	//if (bear->speed > bear->maxReverse) {
+		bear->speed += fElapsedTime * 3;
+	//}
 }
 
 void slowDown(float fElapsedTime) {
-	if (tiger->speed > 0) {
-		tiger->speed -= fElapsedTime * 3;
+	if (bear->speed > 0) {
+		bear->speed -= fElapsedTime * 3;
 	}
-	else if (tiger->speed < 0) {
-		tiger->speed += fElapsedTime * 3;
+	else if (bear->speed < 0) {
+		bear->speed += fElapsedTime * 3;
 	}
 }
 
 void fall(float fElapsedTime) {
-	tiger->Y -= fElapsedTime * 3;
+	bear->Y -= fElapsedTime * 3;
 }
 
 void wingFlap() {
-	tiger->wingPosition = sin(timeGetTime() / 200.0);
+	bear->wingPosition = sin(timeGetTime() / 200.0);
 	PlaySound(L"Media\\Wing\\flap.wav", NULL, SND_ASYNC | SND_NOSTOP);
 }
 
 void restWings() {
-	if (tiger->wingPosition > tiger->wingRest + 0.01 || tiger->wingPosition < tiger->wingRest - 0.01) {
+	if (bear->wingPosition > bear->wingRest + 0.01 || bear->wingPosition < bear->wingRest - 0.01) {
 		wingFlap();
 	}
 }
 
-bool tigerInAir() {
-	return (tiger->Y > 0);
+bool bearInAir() {
+	return (bear->Y > 0);
 }
 
 void roar() {
-	PlaySound(L"Media\\Tiger\\roar.wav", NULL, SND_ASYNC | SND_NOSTOP);
+	PlaySound(L"Media\\Bear\\roar.wav", NULL, SND_ASYNC | SND_NOSTOP);
 }
 
 //--------------------------------------------------------------------------------------
@@ -618,7 +618,7 @@ void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserCo
 		case VK_F1:
 			g_bShowHelp = !g_bShowHelp; break;
 		case VK_F4:
-			isTigerView = !isTigerView;
+			isBearView = !isBearView;
 			break;
 		}
 	}
@@ -791,7 +791,7 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 									//**************************************************************************//
 									// Load the mesh.															//
 									//**************************************************************************//
-	V_RETURN(meshTiger.Create(pd3dDevice, L"Media\\Tiger\\tiger.sdkmesh", true));
+	V_RETURN(meshBear.Create(pd3dDevice, L"Media\\Bear\\bear.sdkmesh", true));
 	V_RETURN(meshWing.Create(pd3dDevice, L"Media\\Wing\\wing.sdkmesh", true));
 	V_RETURN(meshFloor.Create(pd3dDevice, L"Media\\Floor\\seafloor.sdkmesh", true));
 	V_RETURN(meshSky.Create(pd3dDevice, L"Media\\Cloudbox\\skysphere.sdkmesh", true));
@@ -892,23 +892,23 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMVECTOR yAxis = XMVectorSet(0, 1, 0, 0);
 	XMVECTOR zAxis = XMVectorSet(0, 0, 1, 0);
 
-	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, tiger->RY);
-	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, tiger->RX);
-	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, tiger->RZ);
+	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, bear->RY);
+	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, bear->RX);
+	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, bear->RZ);
 
 	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(zRotation, yRotation), xRotation);
 	XMMATRIX matRotation = XMMatrixRotationQuaternion(combinedRotation);
 	*/
 
 	//Calculate current direction
-	XMMATRIX matRotation = XMMatrixRotationRollPitchYaw(tiger->RY, tiger->RX, tiger->RZ);
-	XMVECTOR newDir = XMVector3TransformCoord(tiger->initDir, matRotation);
+	XMMATRIX matRotation = XMMatrixRotationRollPitchYaw(bear->RY, bear->RX, bear->RZ);
+	XMVECTOR newDir = XMVector3TransformCoord(bear->initDir, matRotation);
 	newDir = XMVector3Normalize(newDir);
 
 	XMVECTOR vecRear = newDir * -3;
 
 	//Move tiger in that direction by the speed
-	newDir *= tiger->speed * fElapsedTime;
+	newDir *= bear->speed * fElapsedTime;
 
 	//**************************************************************************//
 	// Initialize the view matrix.  What you do to the viewer matrix moves the  //
@@ -921,16 +921,16 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMVECTOR At;
 	XMVECTOR Up;
 
-	if (!isTigerView) { //Base / 3rd "person" view
+	if (!isBearView) { //Base / 3rd "person" view
 		Eye = XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f);
 		At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	}
 	else { //Follow the tiger
-		Eye = XMVectorSet(tiger->X + XMVectorGetX(vecRear),
-			tiger->Y + XMVectorGetY(vecRear),
-			tiger->Z + XMVectorGetZ(vecRear), 0) * 10;
-		At = XMVectorSet(tiger->X, tiger->Y, tiger->Z, 0.0f) * 10;
+		Eye = XMVectorSet(bear->X - XMVectorGetX(vecRear),
+			bear->Y - XMVectorGetY(vecRear),
+			bear->Z - XMVectorGetZ(vecRear), 0) * 10;
+		At = XMVectorSet(bear->X, bear->Y, bear->Z, 0.0f) * 10;
 		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	}
 
@@ -940,19 +940,19 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 		Up);	// Which way is up.
 
 				//Update tiger position
-	tiger->X += XMVectorGetX(newDir);
-	tiger->Y += XMVectorGetY(newDir);
-	tiger->Z += XMVectorGetZ(newDir);
+	bear->X += XMVectorGetX(newDir);
+	bear->Y += XMVectorGetY(newDir);
+	bear->Z += XMVectorGetZ(newDir);
 
 	//******************************************************************//
 	// Create the world matrix for the tiger: just a rotate around	    //
 	// the Y axis of 45 degrees.  DirectX does all angles in radians,	//
 	// hence the conversion.  And a translate.							//
 	//******************************************************************//
-	XMMATRIX matTigerTranslate = XMMatrixTranslation(tiger->X, tiger->Y, tiger->Z);
-	XMMATRIX matTigerScale = XMMatrixScaling(10, 10, 10);
-	XMMATRIX matTigerWorld = matRotation * matTigerTranslate * matTigerScale;
-	XMMATRIX matWorldViewProjection = matTigerWorld * matView * matProjection;
+	XMMATRIX matBearTranslate = XMMatrixTranslation(bear->X, bear->Y, bear->Z);
+	XMMATRIX matBearScale = XMMatrixScaling(10, 10, 10);
+	XMMATRIX matBearWorld = matRotation * matBearTranslate * matBearScale;
+	XMMATRIX matWorldViewProjection = matBearWorld * matView * matProjection;
 
 	//******************************************************************//    
 	// Update shader variables.  We must update these for every mesh	//
@@ -997,17 +997,17 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	// Render the mesh.															//
 	//**************************************************************************//
 	CB_VS_PER_OBJECT CBMatrices;
-	CBMatrices.matWorld = XMMatrixTranspose(matTigerWorld);
+	CBMatrices.matWorld = XMMatrixTranspose(matBearWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);
 	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
 	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
 	pd3dImmediateContext->PSSetShader(g_pPixelShader, NULL, 0);
-	RenderMesh(pd3dImmediateContext, &meshTiger);
+	RenderMesh(pd3dImmediateContext, &meshBear);
 
 	//Right Wing Creation
 	XMMATRIX matRightWingTranslate = XMMatrixTranslation(0.2, 0.3, -0.5);
-	XMMATRIX matRightWingRotate = XMMatrixRotationZ(tiger->wingPosition);
-	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matTigerWorld;
+	XMMATRIX matRightWingRotate = XMMatrixRotationZ(bear->wingPosition);
+	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matBearWorld;
 	XMMATRIX matRightWingWorldViewProjection = matRightWingWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matRightWingWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matRightWingWorldViewProjection);
@@ -1018,8 +1018,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	//Left Wing Creation
 
 	XMMATRIX matLeftWingTranslate = XMMatrixTranslation(-0.2, 0.3, -0.5);
-	XMMATRIX matLeftWingRotate = XMMatrixRotationY(3.14159) * XMMatrixRotationZ(tiger->wingPosition) * XMMatrixRotationX(3.14159);
-	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matTigerWorld;
+	XMMATRIX matLeftWingRotate = XMMatrixRotationY(3.14159) * XMMatrixRotationZ(bear->wingPosition) * XMMatrixRotationX(3.14159);
+	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matBearWorld;
 	XMMATRIX matLeftWingWorldViewProjection = matLeftWingWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matLeftWingWorldViewProjection);
@@ -1128,7 +1128,7 @@ void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 	DXUTGetGlobalResourceCache().OnDestroyDevice();
 	SAFE_DELETE(g_pTxtHelper);
 
-	meshTiger.Destroy();
+	meshBear.Destroy();
 	meshWing.Destroy();
 	meshFloor.Destroy();
 	meshSky.Destroy();

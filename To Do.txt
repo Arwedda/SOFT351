@@ -1,7 +1,6 @@
 Flying Thing:
 
 Shadows - mapping = easy, volume = harder
-Sound
 Bump mapping - make a smooth surface seem bumpy
 Look at lighting
 OOP
@@ -17,3 +16,4 @@ Combine with flying thing.
 
 
 Write up
+Sound

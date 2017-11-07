@@ -129,7 +129,7 @@ bool		isSpaceDown = false;
 
 bool		isTigerView = false;
 
-float		worldSpinRate = 0.01;
+float		worldSpinRate = 0.00001;
 float		horizontalRY = 0.0;
 float		horizontalRZ = 0.0;
 //**************************************************************************//
@@ -732,13 +732,13 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 	// using here that needs shader model 5.								//
 	//**********************************************************************..
 	ID3DBlob* pVertexShaderBuffer = NULL;
-	V_RETURN(CompileShaderFromFile(L"Tutorial 09 - Meshes Using DXUT Helper Classes_VS.hlsl", "VS_DXUTSDKMesh", "vs_5_0", &pVertexShaderBuffer));
+	V_RETURN(CompileShaderFromFile(L"Tutorial 09 - Meshes Using DXUT Helper Classes_VS.hlsl", "VS_DXUTSDKMesh", "vs_4_0", &pVertexShaderBuffer));
 
 	ID3DBlob* pPixelShaderBuffer = NULL;
-	V_RETURN(CompileShaderFromFile(L"Tutorial 09 - Meshes Using DXUT Helper Classes_PS.hlsl", "PS_DXUTSDKMesh", "ps_5_0", &pPixelShaderBuffer));
+	V_RETURN(CompileShaderFromFile(L"Tutorial 09 - Meshes Using DXUT Helper Classes_PS.hlsl", "PS_DXUTSDKMesh", "ps_4_0", &pPixelShaderBuffer));
 
 	ID3DBlob *pDiffuseShaderBuffer = NULL;
-	V_RETURN(CompileShaderFromFile(L"DiffuseOnlyPS.hlsl", "PS_DXUTSDKMesh", "ps_5_0", &pDiffuseShaderBuffer));
+	V_RETURN(CompileShaderFromFile(L"DiffuseOnlyPS.hlsl", "PS_DXUTSDKMesh", "ps_4_0", &pDiffuseShaderBuffer));
 
 	//**********************************************************************//
 	// Create the pixel and vertex shaders.									//
@@ -1041,12 +1041,10 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
-	XMMATRIX matSkyRotate = XMMatrixRotationY(fElapsedTime * 2);
+	XMMATRIX matSkyRotate = XMMatrixRotationY(timeGetTime() * worldSpinRate);
 	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
 	XMMATRIX matSkyWorld = matSkyTranslate * matSkyRotate * matSkyScale;
 	XMMATRIX matSkyWorldViewProjection = matSkyWorld * matView * matProjection;
-
-	//Skybox Rendering
 	CBMatrices.matWorld = XMMatrixTranspose(matSkyWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matSkyWorldViewProjection);
 	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);

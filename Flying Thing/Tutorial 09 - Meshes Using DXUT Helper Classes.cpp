@@ -100,38 +100,38 @@ ID3D11PixelShader			*pDiffuseShader = NULL;
 // position and maybe rotates about other axes.							//
 //**********************************************************************//
 struct BEAR {
-	float		X = 0;
-	float		Y = 0;
-	float		Z = 2;
-	float		RX = 1.55;
-	float		RY = 0;
-	float		RZ = 0;
-	float		speed = 0;
-	float		maxSpeed = 10;
-	float		maxReverse = 3;
-	float		maxTilt = 0.52;
-	float		maxClimb = 0.79;
-	float		maxDescent = 1.55;
-	float		wingRest = -0.44;
-	float		wingPosition = -0.44;
+	float		X				= 0;
+	float		Y				= -1.0;
+	float		Z				= 2;
+	float		RX				= 1.55;
+	float		RY				= 0;
+	float		RZ				= 0;
+	float		speed			= 0;
+	float		maxSpeed		= 10;
+	float		maxReverse		= 3;
+	float		maxTilt			= 0.52;
+	float		maxClimb		= 0.79;
+	float		maxDescent		= 1.55;
+	float		wingRest		= -0.44;
+	float		wingPosition	= -0.44;
 	XMVECTOR    initDir = XMVectorSet(0, 0, -2, 0);
 };
 
-BEAR* bear = new BEAR();
+bool		isLeftArrowDown		= false;	//Status of keyboard.  Thess are set
+bool		isRightArrowDown	= false;	//in the callback KeyboardProc(), and 
+bool		isUpArrowDown		= false;	//are used in onFrameMove().
+bool		isDownArrowDown		= false;
+bool		isWKeyDown			= false;
+bool		isSKeyDown			= false;
+bool		isSpaceDown			= false;
+bool		isBearView			= false;
 
-bool		isLeftArrowDown = false;	//Status of keyboard.  Thess are set
-bool		isRightArrowDown = false;	//in the callback KeyboardProc(), and 
-bool		isUpArrowDown = false;	//are used in onFrameMove().
-bool		isDownArrowDown = false;
-bool		isWKeyDown = false;
-bool		isSKeyDown = false;
-bool		isSpaceDown = false;
+float		worldSpinRate	= 0.00001;
+float		horizontalRY	= 0.0;
+float		horizontalRZ	= 0.0;
+float		ground			= -1.0;
+BEAR*		bear			= new BEAR();
 
-bool		isBearView = false;
-
-float		worldSpinRate = 0.00001;
-float		horizontalRY = 0.0;
-float		horizontalRZ = 0.0;
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
 // that M$ are having issues updating their sample code, same as me - Nigel.//
@@ -522,7 +522,7 @@ void restWings() {
 }
 
 bool bearInAir() {
-	return (bear->Y > 0);
+	return (bear->Y > ground);
 }
 
 void roar() {
@@ -904,9 +904,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMMATRIX matRotation = XMMatrixRotationRollPitchYaw(bear->RY, bear->RX, bear->RZ);
 	XMVECTOR newDir = XMVector3TransformCoord(bear->initDir, matRotation);
 	newDir = XMVector3Normalize(newDir);
-
 	XMVECTOR vecRear = newDir * -3;
-
+	//XMVectorSetZ(vecRear, vecRear + 10);
 	//Move tiger in that direction by the speed
 	newDir *= bear->speed * fElapsedTime;
 
@@ -1128,7 +1127,9 @@ void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 	g_DialogResourceManager.OnD3D11DestroyDevice();
 	g_D3DSettingsDlg.OnD3D11DestroyDevice();
 	DXUTGetGlobalResourceCache().OnDestroyDevice();
+
 	SAFE_DELETE(g_pTxtHelper);
+	SAFE_DELETE(bear);
 
 	meshBear.Destroy();
 	meshWing.Destroy();
@@ -1141,9 +1142,7 @@ void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 	SAFE_RELEASE(g_pVertexShader);
 	SAFE_RELEASE(g_pPixelShader);
 	SAFE_RELEASE(g_pSamLinear);
-
 	SAFE_RELEASE(pDiffuseShader);
-
 	SAFE_RELEASE(g_pcbVSPerObject);
 	SAFE_RELEASE(g_pcbPSPerObject);
 	SAFE_RELEASE(g_pcbPSPerFrame);

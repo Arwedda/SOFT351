@@ -55,14 +55,14 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(608): w
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50445): note: see previous definition of 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50454): note: see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
-c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(654): warning C4838: conversion from 'UINT' to 'LONG' requires a narrowing conversion
-c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(655): warning C4838: conversion from 'UINT' to 'LONG' requires a narrowing conversion
-c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(1872): warning C4996: 'GetVersionExW': was declared deprecated
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\core\dxut.cpp(654): warning C4838: conversion from 'UINT' to 'LONG' requires a narrowing conversion
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\core\dxut.cpp(655): warning C4838: conversion from 'UINT' to 'LONG' requires a narrowing conversion
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\core\dxut.cpp(1872): warning C4996: 'GetVersionExW': was declared deprecated
   c:\program files (x86)\windows kits\8.1\include\um\sysinfoapi.h(442): note: see declaration of 'GetVersionExW'
-c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(4247): warning C4996: 'GetVersionExW': was declared deprecated
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\core\dxut.cpp(4247): warning C4996: 'GetVersionExW': was declared deprecated
   c:\program files (x86)\windows kits\8.1\include\um\sysinfoapi.h(442): note: see declaration of 'GetVersionExW'
-c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(4813): warning C4456: declaration of 'pCallbackSwapChainReleasing' hides previous local declaration
-  c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxut.cpp(4737): note: see declaration of 'pCallbackSwapChainReleasing'
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\core\dxut.cpp(4813): warning C4456: declaration of 'pCallbackSwapChainReleasing' hides previous local declaration
+  c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\core\dxut.cpp(4737): note: see declaration of 'pCallbackSwapChainReleasing'
   DXUTDevice11.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
@@ -234,7 +234,7 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(608): w
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50445): note: see previous definition of 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50454): note: see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
-c:\users\jkell\desktop\soft351\flying thing\dxut\core\dxutmisc.cpp(1117): warning C4996: 'GetVersionExA': was declared deprecated
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\core\dxutmisc.cpp(1117): warning C4996: 'GetVersionExA': was declared deprecated
   c:\program files (x86)\windows kits\8.1\include\um\sysinfoapi.h(433): note: see declaration of 'GetVersionExA'
   DXUTcamera.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
@@ -350,12 +350,12 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(608): w
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50445): note: see previous definition of 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50454): note: see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
-c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.cpp(7235): warning C4458: declaration of 'iTexture' hides class member
-  c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.h(111): note: see declaration of 'CDXUTElement::iTexture'
-c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.cpp(7249): warning C4458: declaration of 'iFont' hides class member
-  c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.h(112): note: see declaration of 'CDXUTElement::iFont'
-c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.cpp(7249): warning C4458: declaration of 'dwTextFormat' hides class member
-  c:\users\jkell\desktop\soft351\flying thing\dxut\optional\dxutgui.h(113): note: see declaration of 'CDXUTElement::dwTextFormat'
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\optional\dxutgui.cpp(7235): warning C4458: declaration of 'iTexture' hides class member
+  c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\optional\dxutgui.h(111): note: see declaration of 'CDXUTElement::iTexture'
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\optional\dxutgui.cpp(7249): warning C4458: declaration of 'iFont' hides class member
+  c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\optional\dxutgui.h(112): note: see declaration of 'CDXUTElement::iFont'
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\optional\dxutgui.cpp(7249): warning C4458: declaration of 'dwTextFormat' hides class member
+  c:\users\jkellaway\desktop\coursework\soft351\flying thing\dxut\optional\dxutgui.h(113): note: see declaration of 'CDXUTElement::dwTextFormat'
   DXUTres.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
@@ -679,11 +679,11 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.inl(1269): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(117): warning C4324: 'BEAR': structure was padded due to alignment specifier
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(120): warning C4316: 'BEAR': object allocated on the heap may not be aligned 16
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(514): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(871): warning C4101: 'hr': unreferenced local variable
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(977): warning C4189: 'fAmbient': local variable is initialized but not referenced
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(117): warning C4324: 'BEAR': structure was padded due to alignment specifier
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(120): warning C4316: 'BEAR': object allocated on the heap may not be aligned 16
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(514): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(871): warning C4101: 'hr': unreferenced local variable
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(977): warning C4189: 'fAmbient': local variable is initialized but not referenced
   BasicHLSL9.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
@@ -742,26 +742,26 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(608): w
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50454): note: see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
   Generating Code...
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(152): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(153): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(156): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(161): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(164): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(166): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(167): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(169): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(171): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(178): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(179): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(190): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(191): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(194): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(196): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(202): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(209): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(210): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(211): warning C4702: unreachable code
-c:\users\jkell\desktop\soft351\flying thing\basichlsl9.cpp(213): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(152): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(153): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(156): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(161): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(164): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(166): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(167): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(169): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(171): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(178): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(179): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(190): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(191): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(194): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(196): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(202): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(209): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(210): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(211): warning C4702: unreachable code
+c:\users\jkellaway\desktop\coursework\soft351\flying thing\basichlsl9.cpp(213): warning C4702: unreachable code
 DXUT.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
-  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.exe
-  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.pdb (Full PDB)
+  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Desktop\Coursework\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.exe
+  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Desktop\Coursework\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.pdb (Full PDB)

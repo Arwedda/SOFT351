@@ -175,6 +175,7 @@ struct CB_PS_PER_FRAME
 	XMFLOAT4	lightDiffuseColour;			//Light intensities.
 	XMFLOAT4	lightAmbientColour;
 	XMFLOAT4	lightSpecularColour;
+
 	XMFLOAT4	materialPower;				//Only first value used.
 };
 

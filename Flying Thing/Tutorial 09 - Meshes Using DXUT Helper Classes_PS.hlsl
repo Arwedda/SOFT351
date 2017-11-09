@@ -44,7 +44,6 @@ cbuffer cbPerFrame : register( b1 )
 	float4	 lightDiffuseColour;		//Light intensities.
 	float4	 lightAmbientColour;
 	float4   lightSpecularColour;
-
 	float4   materialPower;				//Only first value used.
 };
 
@@ -91,7 +90,7 @@ float4 PS_DXUTSDKMesh( PS_INPUT input ) : SV_TARGET
 	float4 specularReflection;
 	float4 ambientReflection;
 
-	float4 vDiffuse = g_txDiffuse.Sample(g_samLinear, input.vTexcoord);
+	float4 meshColour = g_txDiffuse.Sample(g_samLinear, input.vTexcoord);
 	float3 vecNormal = normalize(input.vNormal);
 	int    glossyness = materialPower.x;  // Only the first "x" value of power  //
 										  // is used; same for each RGB colour.	//
@@ -99,7 +98,7 @@ float4 PS_DXUTSDKMesh( PS_INPUT input ) : SV_TARGET
 	 //**********************************************************************//
 	// Diffuse reflection.													//
 	//**********************************************************************//
-	diffuseReflection = lightDiffuseColour * vDiffuse *  dot(vecNormal, vecLight);
+	diffuseReflection = lightDiffuseColour * meshColour *  dot(vecNormal, vecLight);
 
 
 	//**********************************************************************//
@@ -110,14 +109,14 @@ float4 PS_DXUTSDKMesh( PS_INPUT input ) : SV_TARGET
 	//**********************************************************************//
 	float3 halfVector = normalize((vecLight + vecViewer) / 2.0);
 
-	specularReflection = lightSpecularColour *  vDiffuse *
+	specularReflection = lightSpecularColour *  meshColour *
 		pow(dot(vecNormal, halfVector), glossyness);
 
 
 	//**********************************************************************//
 	// Ambient reflection.													//
 	//**********************************************************************//
-	ambientReflection = lightAmbientColour * vDiffuse;
+	ambientReflection = lightAmbientColour * meshColour;
 
 
 	//**********************************************************************//

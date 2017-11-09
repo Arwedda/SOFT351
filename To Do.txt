@@ -2,9 +2,7 @@ Flying Thing:
 
 Shadows - mapping = easy, volume = harder
 Bump mapping - make a smooth surface seem bumpy
-Look at lighting
 OOP
-
 Prevent gimbal lock - quaternions
 
 
@@ -17,3 +15,4 @@ Combine with flying thing.
 
 Write up
 Sound
+Lighting

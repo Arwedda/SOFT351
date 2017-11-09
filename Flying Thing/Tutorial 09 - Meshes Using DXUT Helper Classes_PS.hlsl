@@ -39,8 +39,13 @@ cbuffer cbPerObject : register( b0 )
 
 cbuffer cbPerFrame : register( b1 )
 {
-	float3		g_vLightDir;
-	float		g_fAmbient;
+	float4   vecLight;					//Light vector.
+	float4	 vecViewer;					//Vector pointing at viewer;
+	float4	 lightDiffuseColour;		//Light intensities.
+	float4	 lightAmbientColour;
+	float4   lightSpecularColour;
+
+	float4   materialPower;				//Only first value used.
 };
 
 
@@ -79,17 +84,48 @@ struct PS_INPUT
 // Pixel Shader.	This one has basic lighting, however the really			//
 // important part is the rexture sampler.									//
 //**************************************************************************//
-float4 PS_DXUTSDKMesh( PS_INPUT Input ) : SV_TARGET
+float4 PS_DXUTSDKMesh( PS_INPUT input ) : SV_TARGET
 {
-	float4 vDiffuse = g_txDiffuse.Sample( g_samLinear, Input.vTexcoord );
-	
-	float fLighting = saturate( dot( g_vLightDir, Input.vNormal ) );
-	fLighting = max( fLighting, g_fAmbient );
-	
-	//**********************************************************************//
-	// With lighting, or un-comment the line below to remove the lighting.	//
-	//**********************************************************************//
-	//return vDiffuse;
-	return vDiffuse * fLighting * g_vObjectColor;
-}
+	float4 finalColour;			//Defining all these locally is slow,
+	float4 diffuseReflection;	//but more readable.
+	float4 specularReflection;
+	float4 ambientReflection;
 
+	float4 vDiffuse = g_txDiffuse.Sample(g_samLinear, input.vTexcoord);
+	float3 vecNormal = normalize(input.vNormal);
+	int    glossyness = materialPower.x;  // Only the first "x" value of power  //
+										  // is used; same for each RGB colour.	//
+
+	 //**********************************************************************//
+	// Diffuse reflection.													//
+	//**********************************************************************//
+	diffuseReflection = lightDiffuseColour * vDiffuse *  dot(vecNormal, vecLight);
+
+
+	//**********************************************************************//
+	// Specular reflection.													//
+	//																		//
+	// We probably don't need to normalise the half vector, but we don't	//
+	// get the right anseer if I do not...									//
+	//**********************************************************************//
+	float3 halfVector = normalize((vecLight + vecViewer) / 2.0);
+
+	specularReflection = lightSpecularColour *  vDiffuse *
+		pow(dot(vecNormal, halfVector), glossyness);
+
+
+	//**********************************************************************//
+	// Ambient reflection.													//
+	//**********************************************************************//
+	ambientReflection = lightAmbientColour * vDiffuse;
+
+
+	//**********************************************************************//
+	// Sum them all up.														//
+	//**********************************************************************//
+	finalColour = diffuseReflection + ambientReflection + specularReflection;
+
+	finalColour = saturate(finalColour);
+
+	return finalColour;
+}

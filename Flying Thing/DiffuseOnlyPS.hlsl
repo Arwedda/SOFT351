@@ -10,8 +10,12 @@ cbuffer cbPerObject : register(b0)
 
 cbuffer cbPerFrame : register(b1)
 {
-	float3		g_vLightDir;
-	float		g_fAmbient;
+	float4   vecLight;					//Light vector.
+	float4	 vecViewer;					//Vector pointing at viewer;
+	float4	 lightDiffuseColour;		//Light intensities.
+	float4	 lightAmbientColour;
+	float4   lightSpecularColour;
+	float4   materialPower;				//Only first value used.
 };
 
 Texture2D	 g_txDiffuse : register(t0);

@@ -166,11 +166,22 @@ struct CB_PS_PER_OBJECT
 };
 UINT                        g_iCBPSPerObjectBind = 0;
 
+
+
 struct CB_PS_PER_FRAME
 {
-	XMVECTOR m_vLightDirAmbient;	// Vector pointing at the light
+	XMVECTOR	vecLight;					//Light vector.
+	XMVECTOR	vecViewer;					//Vector pointing at viewer;
+	XMFLOAT4	lightDiffuseColour;			//Light intensities.
+	XMFLOAT4	lightAmbientColour;
+	XMFLOAT4	lightSpecularColour;
+	XMFLOAT4	materialPower;				//Only first value used.
 };
 
+XMFLOAT4	lDiffuseColour(1, 1, 1, 1);			// Alpha unused
+XMFLOAT4	lSpecularColour(1, 1, 1, 1);		// Alpha unused
+XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1);	// Alpha unused	
+UINT        materialShinyness = 80;				// Only one of these for
 
 struct MexhVertexStructure
 {
@@ -938,7 +949,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 		At,		// The look at point.
 		Up);	// Which way is up.
 
-				//Update tiger position
+	//Update tiger position
 	bear->X += XMVectorGetX(newDir);
 	bear->Y += XMVectorGetY(newDir);
 	bear->Z += XMVectorGetZ(newDir);
@@ -979,7 +990,12 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 
 	CB_PS_PER_FRAME CBPerFrame;
-	CBPerFrame.m_vLightDirAmbient = vectorLightDirection;
+	CBPerFrame.vecLight = vectorLightDirection;
+	CBPerFrame.vecViewer = Eye;
+	CBPerFrame.lightDiffuseColour = lDiffuseColour;
+	CBPerFrame.lightAmbientColour = lAmbientColour;
+	CBPerFrame.lightSpecularColour = lSpecularColour;
+	CBPerFrame.materialPower.x = materialShinyness;
 	pd3dImmediateContext->UpdateSubresource(g_pcbPSPerFrame, 0, NULL, &CBPerFrame, 0, 0);
 	pd3dImmediateContext->PSSetConstantBuffers(1, 1, &g_pcbPSPerFrame);
 

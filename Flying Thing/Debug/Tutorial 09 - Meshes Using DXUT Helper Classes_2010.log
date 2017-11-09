@@ -1,4 +1,5 @@
-﻿  DXUT.cpp
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'c:\users\jkell\desktop\soft351\flying thing\debug\tutorial 09 - meshes using dxut helper classes.pch' because it is being used by another process.
+  DXUT.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
@@ -681,9 +682,10 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(117): warning C4324: 'BEAR': structure was padded due to alignment specifier
 c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(133): warning C4316: 'BEAR': object allocated on the heap may not be aligned 16
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(514): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(871): warning C4101: 'hr': unreferenced local variable
-c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(976): warning C4189: 'fAmbient': local variable is initialized but not referenced
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(525): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(998): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(882): warning C4101: 'hr': unreferenced local variable
+c:\users\jkell\desktop\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(987): warning C4189: 'fAmbient': local variable is initialized but not referenced
   BasicHLSL9.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'

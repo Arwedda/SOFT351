@@ -85,10 +85,10 @@ struct PS_INPUT
 //**************************************************************************//
 float4 PS_DXUTSDKMesh( PS_INPUT input ) : SV_TARGET
 {
-	float4 finalColour;			//Defining all these locally is slow,
-	float4 diffuseReflection;	//but more readable.
-	float4 specularReflection;
+	float4 finalColour;
+	float4 diffuseReflection;
 	float4 ambientReflection;
+	float4 specularReflection;
 
 	float4 meshColour = g_txDiffuse.Sample(g_samLinear, input.vTexcoord);
 	float3 vecNormal = normalize(input.vNormal);

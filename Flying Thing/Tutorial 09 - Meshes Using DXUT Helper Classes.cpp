@@ -101,7 +101,7 @@ ID3D11PixelShader			*pDiffuseShader = NULL;
 //**********************************************************************//
 struct BEAR {
 	float		X				= 0;
-	float		Y				= -1.0;
+	float		Y				= 0.0;
 	float		Z				= 2;
 	float		RX				= 1.55;
 	float		RY				= 0;
@@ -129,7 +129,7 @@ bool		isBearView			= false;
 float		worldSpinRate	= 0.00001;
 float		horizontalRY	= 0.0;
 float		horizontalRZ	= 0.0;
-float		ground			= -1.0;
+float		ground			= 0.0;
 BEAR*		bear			= new BEAR();
 
 //**************************************************************************//
@@ -180,9 +180,9 @@ struct CB_PS_PER_FRAME
 };
 
 XMFLOAT4	lDiffuseColour(1, 1, 1, 1);			// Alpha unused
-XMFLOAT4	lSpecularColour(1, 1, 1, 1);		// Alpha unused
 XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1);	// Alpha unused	
-UINT        materialShinyness = 80;				// Only one of these for
+XMFLOAT4	lSpecularColour(1, 1, 1, 1);		// Alpha unused
+UINT        materialShinyness = 80;
 
 struct MexhVertexStructure
 {
@@ -274,6 +274,7 @@ void wingFlap();
 void restWings();
 bool bearInAir();
 void roar();
+void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender);
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -939,7 +940,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	}
 	else { //Follow the tiger
 		Eye = XMVectorSet(bear->X - XMVectorGetX(vecRear),
-			bear->Y - XMVectorGetY(vecRear),
+			(bear->Y - XMVectorGetY(vecRear)) + 2.0,
 			bear->Z - XMVectorGetZ(vecRear), 0) * 10;
 		At = XMVectorSet(bear->X, bear->Y, bear->Z, 0.0f) * 10;
 		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -986,12 +987,12 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	// light moves.														//
 	//******************************************************************//
 	float    fAmbient = 0.1f;
-	XMVECTOR vectorLightDirection = XMVectorSet(-1, 1, -2, 0);  // 4th value unused.
-	vectorLightDirection = XMVector3Normalize(vectorLightDirection);
+	XMVECTOR vecLightDirection = XMVectorSet(-1, 1, -2, 0);  // 4th value unused.
+	vecLightDirection = XMVector3Normalize(vecLightDirection);
 
 
 	CB_PS_PER_FRAME CBPerFrame;
-	CBPerFrame.vecLight = vectorLightDirection;
+	CBPerFrame.vecLight = vecLightDirection;
 	CBPerFrame.vecViewer = Eye;
 	CBPerFrame.lightDiffuseColour = lDiffuseColour;
 	CBPerFrame.lightAmbientColour = lAmbientColour;
@@ -1034,7 +1035,6 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	RenderMesh(pd3dImmediateContext, &meshWing);
 
 	//Left Wing Creation
-
 	XMMATRIX matLeftWingTranslate = XMMatrixTranslation(-0.2, 1.7, 0.0);
 	XMMATRIX matLeftWingRotate = XMMatrixRotationY(3.14159) * XMMatrixRotationZ(bear->wingPosition) * XMMatrixRotationX(3.14159);
 	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matWingScale * matBearWorld;
@@ -1046,9 +1046,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	RenderMesh(pd3dImmediateContext, &meshWing);
 
 	//Floor Creation
-
 	XMMATRIX matFloorScale = XMMatrixScaling(10, 1, 10);
-	XMMATRIX matFloorTranslate = XMMatrixTranslation(0.0, 0.0, 0.0);
+	XMMATRIX matFloorTranslate = XMMatrixTranslation(0.0, 1.0, 0.0);
 	XMMATRIX matFloorWorld = matFloorScale * matFloorTranslate;
 	XMMATRIX matFloorWorldViewProjection = matFloorWorld * matView * matProjection;
 	CBMatrices.matWorld = XMMatrixTranspose(matFloorWorld);
@@ -1056,6 +1055,35 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
 	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
 	RenderMesh(pd3dImmediateContext, &meshFloor);
+
+	//Shadow - bear
+	XMVECTOR vecFloor = XMVectorSet(0, 1.0, 0, 0);
+	XMMATRIX matShadow = XMMatrixShadow(vecFloor, vecLightDirection);
+	XMMATRIX matShadowTranslate = XMMatrixTranslation(bear->X, bear->Y - 0.5, bear->Z);
+	XMMATRIX matShadowWorld = matBearWorld * matShadow * matShadowTranslate;
+	XMMATRIX matShadowWorldViewProjection = matShadowWorld * matView * matProjection;
+	CBMatrices.matWorld = XMMatrixTranspose(matShadowWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matShadowWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderShadow(pd3dImmediateContext, &meshBear);
+
+	//Shadow - wings
+	XMMATRIX matLeftWingShadowWorld = matLeftWingWorld * matShadow *  matShadowTranslate;
+	XMMATRIX matLeftWingShadowWorldViewProjection = matLeftWingShadowWorld * matView * matProjection;
+	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingShadowWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matLeftWingShadowWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderShadow(pd3dImmediateContext, &meshWing);
+
+	XMMATRIX matRightWingShadowWorld = matRightWingWorld * matShadow *  matShadowTranslate;
+	XMMATRIX matRightWingShadowWorldViewProjection = matRightWingShadowWorld * matView * matProjection;
+	CBMatrices.matWorld = XMMatrixTranspose(matRightWingShadowWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matRightWingShadowWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	RenderShadow(pd3dImmediateContext, &meshWing);
 
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
@@ -1078,7 +1106,6 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	g_SampleUI.OnRender(fElapsedTime);
 	RenderText();
 	DXUT_EndPerfEvent();
-
 }
 
 
@@ -1121,6 +1148,51 @@ void RenderMesh(ID3D11DeviceContext *pContext,
 		//**************************************************************************//
 		ID3D11ShaderResourceView* pDiffuseRV = toRender->GetMaterial(pSubset->MaterialID)->pDiffuseRV11;
 		pContext->PSSetShaderResources(0, 1, &pDiffuseRV);
+
+		pContext->DrawIndexed((UINT)pSubset->IndexCount, 0, (UINT)pSubset->VertexStart);
+	}
+}
+
+void RenderShadow(ID3D11DeviceContext *pContext,
+	CDXUTSDKMesh         *toRender)
+{
+	//Get the mesh
+	//IA setup
+	pContext->IASetInputLayout(g_pVertexLayout11);
+	UINT Strides[1];
+	UINT Offsets[1];
+	ID3D11Buffer* pVB[1];
+	pVB[0] = toRender->GetVB11(0, 0);
+	Strides[0] = (UINT)toRender->GetVertexStride(0, 0);
+	Offsets[0] = 0;
+	pContext->IASetVertexBuffers(0, 1, pVB, Strides, Offsets);
+	pContext->IASetIndexBuffer(toRender->GetIB11(0), toRender->GetIBFormat11(0), 0);
+
+
+	UINT                      numSubsets = toRender->GetNumSubsets(0);
+	boolean                   mustRestoreOriginalTexture = false;
+	ID3D11ShaderResourceView  *pDiffuseRV = NULL;
+	SDKMESH_SUBSET			  *pSubset = NULL;
+	D3D11_PRIMITIVE_TOPOLOGY  PrimType;
+
+
+
+	//**************************************************************************//
+	// Render each subset.														//
+	//**************************************************************************//
+	for (UINT subset = 0; subset < numSubsets; ++subset)
+	{
+		pSubset = NULL;
+
+		// Get the subset
+		pSubset = toRender->GetSubset(0, subset);
+
+		PrimType = CDXUTSDKMesh::GetPrimitiveType11((SDKMESH_PRIMITIVE_TYPE)pSubset->PrimitiveType);
+		pContext->IASetPrimitiveTopology(PrimType);
+
+		pContext->PSSetShaderResources(0, 1, &pDiffuseRV);
+		mustRestoreOriginalTexture = true;
+
 
 		pContext->DrawIndexed((UINT)pSubset->IndexCount, 0, (UINT)pSubset->VertexStart);
 	}

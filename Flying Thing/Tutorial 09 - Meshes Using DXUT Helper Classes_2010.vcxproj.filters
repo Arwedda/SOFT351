@@ -87,6 +87,9 @@
   <ItemGroup>
     <ClCompile Include="Tutorial 09 - Meshes Using DXUT Helper Classes.cpp" />
     <ClCompile Include="BasicHLSL9.cpp" />
+    <ClCompile Include="Bear.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Tutorial 09 - Meshes Using DXUT Helper Classes_VS.hlsl">
@@ -103,5 +106,8 @@
     <ResourceCompile Include="Tutorial 09 - Meshes Using DXUT Helper Classes.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <ClInclude Include="Bear.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

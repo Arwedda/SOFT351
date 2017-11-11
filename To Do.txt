@@ -1,10 +1,8 @@
 Flying Thing:
 
-Shadows - mapping = easy, volume = harder
-Bump mapping - make a smooth surface seem bumpy
+Fix camera
 OOP
 Prevent gimbal lock - quaternions
-
 
 Obj Loader:
 
@@ -14,5 +12,6 @@ Combine with flying thing.
 
 
 Write up
-Sound
-Lighting
+Sound (flap, roar)
+Lighting (per pixel)
+Shadow (mapping)

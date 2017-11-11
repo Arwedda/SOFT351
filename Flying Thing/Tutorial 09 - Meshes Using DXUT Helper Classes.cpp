@@ -261,20 +261,21 @@ void turnLeft(float fElapsedTime);
 void tiltLeft(float fElapsedTime);
 void turnRight(float fElapsedTime);
 void tiltRight(float fElapsedTime);
-bool isNotTurning();
-void straightenUp(float fElapsedTime);
 void tiltUp(float fElapsedTime);
 void tiltDown(float fElapsedTime);
-void levelOut(float fElapsedTime);
 void forward(float fElapsedTime);
 void reverse(float fElapsedTime);
 void slowDown(float fElapsedTime);
 void fall(float fElapsedTime);
 void wingFlap();
 void restWings();
-bool bearInAir();
 void roar();
 void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender);
+
+bool isNotTurning();
+void straightenUp(float fElapsedTime);
+void levelOut(float fElapsedTime);
+bool bearInAir();
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//

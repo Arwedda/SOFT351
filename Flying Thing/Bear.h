@@ -17,16 +17,16 @@
 class Bear
 {
 private:
-	float x, y, z;						//Position.
-	float rx, ry, rz;					//Rotation (direction)
-	float speed, maxForward, maxReverse;//Speeds
-	float sx, sy, sz;					//Scales in x, y, z directions.
-	//float frameTime;					//Used to calculate elapsed times
-	float		maxTilt;				//Tilt whilst turning
-	float		maxClimb, maxDescent;	//Manual climb/descend rate
-	float		wingRest, wingPosition;	//Wing angle
-	XMVECTOR initialDirection;			//Initial direction
-	//XMVECTOR currentDir;				//Current direction
+	float x, y, z;							//Position.
+	float rx, ry, rz;						//Rotation (direction)
+	float speed, maxForward, maxReverse;	//Speeds
+	float sx, sy, sz;						//Scales in x, y, z directions.
+											//float frameTime;						//Used to calculate elapsed times
+	float		maxTilt;					//Tilt whilst turning
+	float		maxClimb, maxDescent;		//Manual climb/descend rate
+	float		wingRest, wingPosition;		//Wing angle
+	XMVECTOR initialDirection;				//Initial direction
+	//XMVECTOR currentDir;					//Current direction
 public:
 	/*XMMATRIX  matAllRotations;   //Used for moveForward.
 	XMMATRIX  matRotateX;
@@ -56,7 +56,6 @@ public:
 													//**********************************************************************//
 public:
 	Bear();
-	~Bear();
 	float getX();
 	void setX(float newX);
 	float getY();
@@ -70,6 +69,7 @@ public:
 	float getRZ();
 	void setRZ(float newX);
 	float getSpeed();
+	void setSpeed(float newSpeed);
 	float getMaxForward();
 	float getMaxReverse();
 	float getSX();

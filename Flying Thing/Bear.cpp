@@ -4,8 +4,8 @@
 Bear::Bear() {
 	x = 0.0;
 	y = 0.0;
-	z = 0.0;
-	rx = 1.55;
+	z = 2.0;
+	rx = -2;
 	ry = 0.0;
 	rz = 0.0;
 	speed = 0.0;
@@ -20,12 +20,8 @@ Bear::Bear() {
 	maxDescent = 1.55;
 	wingRest = -0.44;
 	wingPosition = -0.44;
-	initialDirection = XMVectorSet(0, 0, -2, 0);
+	initialDirection = XMVectorSet(-2, 0, 0, 0);
 	//currentDir = initialDir;
-}
-
-Bear::~Bear() {
-	//bear = NULL;
 }
 
 float Bear::getX() {
@@ -78,6 +74,10 @@ void Bear::setRZ(float newRZ) {
 
 float Bear::getSpeed() {
 	return speed;
+}
+
+void Bear::setSpeed(float newSpeed) {
+	speed = newSpeed;
 }
 
 float Bear::getMaxForward() {

@@ -101,11 +101,13 @@ bool		isSKeyDown			= false;
 bool		isSpaceDown			= false;
 bool		isBearView			= false;
 
-float		worldSpinRate	= 0.00001;
-float		horizontalRY	= 0.0;
-float		horizontalRZ	= 0.0;
-float		ground			= 0.0;
-Bear*		bear			= new Bear();
+float		worldSpinRate		= 0.00001;
+float		horizontalRY		= 0.0;
+float		horizontalRZ		= 0.0;
+float		ground				= 0.0;
+float		cameraYZoom			= 2.0;
+float		cameraStabiliser	= 0.0;
+Bear*		bear				= new Bear();
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -232,11 +234,7 @@ void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
 void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender);
-
 bool isNotTurning();
-void straightenUp(float fElapsedTime);
-void levelOut(float fElapsedTime);
-bool bearInAir();
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -347,27 +345,29 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//If neither are pressed straightens Z-axis
 	if (isLeftArrowDown) {
 		bear->turnLeft(fElapsedTime);
-		if (bearInAir() || bear->getSpeed() >= (bear->getMaxForward() * 0.8)) {
+		if (bear->inAir(ground) || bear->getSpeed() >= (bear->getMaxForward() * 0.8)) {
 			bear->tiltLeft(fElapsedTime);
 		}
 	}
 	if (isRightArrowDown) {
 		bear->turnRight(fElapsedTime);
-		if (bearInAir() || bear->getSpeed() >= (bear->getMaxForward() * 0.8)) {
+		if (bear->inAir(ground) || bear->getSpeed() >= (bear->getMaxForward() * 0.8)) {
 			bear->tiltRight(fElapsedTime);
 		}
 	}
 	if (isNotTurning()) {
-		straightenUp(fElapsedTime);
+		bear->straightenUp(fElapsedTime, horizontalRZ);
 	}
 
 	//Handles climbing/falling
 	if (isUpArrowDown) {
 		bear->tiltUp(fElapsedTime);
+		cameraStabiliser = (cameraYZoom / bear->getMaxDescent() * bear->getRY());
 	}
 	if (isDownArrowDown) {
-		if (bearInAir() || bear->getRY() < horizontalRY) {
+		if (bear->inAir(ground) || bear->getRY() <= horizontalRY) {
 			bear->tiltDown(fElapsedTime);
+			cameraStabiliser = (cameraYZoom / bear->getMaxDescent() * bear->getRY());
 		}
 	}
 
@@ -375,7 +375,7 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//If neither are pressed slows to a halt and falls to y = 0
 	if (isWKeyDown) {
 		bear->forward(fElapsedTime);
-		if (bearInAir()) {
+		if (bear->inAir(ground)) {
 			bear->wingFlap();
 		}
 		else {
@@ -383,8 +383,10 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		}
 	}
 	if (isSKeyDown) {
-		bear->reverse(fElapsedTime);
-		if (bearInAir()) {
+		if (bear->inAir(ground) || bear->getRY() >= horizontalRY) {
+			bear->reverse(fElapsedTime);
+		}
+		if (bear->inAir(ground)) {
 			bear->wingFlap();
 		}
 		else {
@@ -394,13 +396,13 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	if (!isWKeyDown && !isSKeyDown) {
 		bear->slowDown(fElapsedTime);
 		bear->restWings();
-		if (bearInAir()) {
+		if (bear->inAir(ground)) {
 			bear->fall(fElapsedTime);
 		}
 	}
 
-	if (!bearInAir()) {
-		levelOut(fElapsedTime);
+	if (!bear->inAir(ground)) {
+		bear->levelOut(fElapsedTime, horizontalRY);
 	}
 
 	if (isSpaceDown) {
@@ -410,78 +412,6 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 
 bool isNotTurning() {
 	return (!isLeftArrowDown && !isRightArrowDown);
-}
-
-void straightenUp(float fElapsedTime) {
-	if (bear->getRZ() < horizontalRZ) {
-		bear->setRZ(bear->getRZ() + fElapsedTime * 3);
-	}
-	else if (bear->getRZ() > horizontalRZ) {
-		bear->setRZ(bear->getRZ() - fElapsedTime * 3);
-	}
-}
-
-void tiltUp(float fElapsedTime) {
-	if (bear->getRY() > -bear->getMaxClimb()) {
-		bear->setRY(bear->getRY() - fElapsedTime * 3);
-	}
-}
-
-void tiltDown(float fElapsedTime) {
-	if (bear->getRY() < bear->getMaxDescent()) {
-		bear->setRY(bear->getRY() + fElapsedTime * 3);
-	}
-}
-
-void levelOut(float fElapsedTime) {
-	if (bear->getRY() > horizontalRY) {
-		tiltUp(fElapsedTime);
-		bear->setSpeed(0);
-	}
-}
-
-void forward(float fElapsedTime) {
-	if (bear->getSpeed() > -bear->getMaxForward()) {
-		bear->setSpeed(bear->getSpeed() - fElapsedTime * 3);
-	}
-}
-
-void reverse(float fElapsedTime) {
-	if (bear->getSpeed() < bear->getMaxReverse()) {
-		bear->setSpeed(bear->getSpeed() + fElapsedTime * 3);
-	}
-}
-
-void slowDown(float fElapsedTime) {
-	if (bear->getSpeed() > 0) {
-		bear->setSpeed(bear->getSpeed() - fElapsedTime * 3);
-	}
-	else if (bear->getSpeed() < 0) {
-		bear->setSpeed(bear->getSpeed() + fElapsedTime * 3);
-	}
-}
-
-void fall(float fElapsedTime) {
-	bear->setY(bear->getY() - fElapsedTime * 3);
-}
-
-void wingFlap() {
-	bear->setWingPosition(sin(timeGetTime() / 200.0));
-	PlaySound(L"Media\\Bear\\flap.wav", NULL, SND_ASYNC | SND_NOSTOP);
-}
-
-void restWings() {
-	if (bear->getWingPosition() > bear->getWingRest() + 0.01 || bear->getWingPosition() < bear->getWingRest() - 0.01) {
-		wingFlap();
-	}
-}
-
-bool bearInAir() {
-	return (bear->getY() > ground);
-}
-
-void roar() {
-	PlaySound(L"Media\\Bear\\roar.wav", NULL, SND_ASYNC | SND_NOSTOP);
 }
 
 //--------------------------------------------------------------------------------------
@@ -839,30 +769,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
 	pd3dImmediateContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
-	/* Quaternion rotation
-	Tried with just x and y axis - still
-	Currently inverts rotate about Y-axis and causes barrel rolls after a half turn
-
-	XMVECTOR xAxis = XMVectorSet(1, 0, 0, 0);
-	XMVECTOR yAxis = XMVectorSet(0, 1, 0, 0);
-	XMVECTOR zAxis = XMVectorSet(0, 0, 1, 0);
-
-	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, bear->RY);
-	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, bear->RX);
-	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, bear->RZ);
-
-	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(zRotation, yRotation), xRotation);
-	XMMATRIX matRotation = XMMatrixRotationQuaternion(combinedRotation);
-	*/
-
-	//Calculate current direction
-	XMMATRIX matRotation = XMMatrixRotationRollPitchYaw(bear->getRY(), bear->getRX(), bear->getRZ());
-	XMVECTOR newDir = XMVector3TransformCoord(bear->getInitialDirection(), matRotation);
-	newDir = XMVector3Normalize(newDir);
-	XMVECTOR vecRear = newDir * -3;
-
-	//Move bear in that direction by the speed
-	newDir *= bear->getSpeed() * fElapsedTime;
+	XMVECTOR vecRear = bear->move(fElapsedTime);
 
 	//**************************************************************************//
 	// Initialize the view matrix.  What you do to the viewer matrix moves the  //
@@ -882,7 +789,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	}
 	else { //Follow the bear
 		Eye = XMVectorSet(bear->getX() - XMVectorGetX(vecRear),
-			(bear->getY() - XMVectorGetY(vecRear)) + 2.0,
+			(bear->getY() - XMVectorGetY(vecRear)) + (cameraYZoom - cameraStabiliser),
 			bear->getZ() - XMVectorGetZ(vecRear), 0) * 10;
 		At = XMVectorSet(bear->getX(), bear->getY(), bear->getZ(), 0.0f) * 10;
 		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -892,11 +799,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	matView = XMMatrixLookAtLH(Eye,	// The eye, or viewer's position.
 		At,		// The look at point.
 		Up);	// Which way is up.
-
-	//Update bear position
-	bear->setX(bear->getX() + XMVectorGetX(newDir));
-	bear->setY(bear->getY() + XMVectorGetY(newDir));
-	bear->setZ(bear->getZ() + XMVectorGetZ(newDir));
+	
 
 	//******************************************************************//
 	// Create the world matrix for the bear: just a rotate around	    //
@@ -905,7 +808,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	//******************************************************************//
 	XMMATRIX matBearTranslate = XMMatrixTranslation(bear->getX(), bear->getY(), bear->getZ());
 	XMMATRIX matBearScale = XMMatrixScaling(bear->getSX(), bear->getSY(), bear->getSZ());
-	XMMATRIX matBearWorld = matRotation * matBearTranslate * matBearScale;
+	XMMATRIX matBearWorld = bear->matRotations * matBearTranslate * matBearScale;
 	XMMATRIX matWorldViewProjection = matBearWorld * matView * matProjection;
 
 	//******************************************************************//    

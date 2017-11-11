@@ -5,7 +5,7 @@ Bear::Bear() {
 	x = 0.0;
 	y = 0.0;
 	z = 2.0;
-	rx = -2;
+	rx = -2.0;
 	ry = 0.0;
 	rz = 0.0;
 	speed = 0.0;
@@ -20,7 +20,7 @@ Bear::Bear() {
 	maxDescent = 1.55;
 	wingRest = -0.44;
 	wingPosition = -0.44;
-	initialDirection = XMVectorSet(-2, 0, 0, 0);
+	initialDirection = XMVectorSet(0, 0, -2, 0);
 	//currentDir = initialDir;
 }
 
@@ -148,18 +148,6 @@ void Bear::tiltRight(float fElapsedTime) {
 	}
 }
 
-void Bear::tiltUp(float fElapsedTime) {
-	if (ry > -maxClimb) {
-		ry -= fElapsedTime * 3;
-	}
-}
-
-void Bear::tiltDown(float fElapsedTime) {
-	if (ry < maxDescent) {
-		ry += fElapsedTime * 3;
-	}
-}
-
 void Bear::forward(float fElapsedTime) {
 	if (speed > -maxForward) {
 		speed -= fElapsedTime * 3;
@@ -196,6 +184,71 @@ void Bear::restWings() {
 	}
 }
 
+void Bear::straightenUp(float fElapsedTime, float horizontalRZ) {
+	if (getRZ() < horizontalRZ) {
+		setRZ(getRZ() + fElapsedTime * 3);
+	}
+	else if (getRZ() > horizontalRZ) {
+		setRZ(getRZ() - fElapsedTime * 3);
+	}
+}
+
+void Bear::tiltUp(float fElapsedTime) {
+	if (getRY() > -getMaxClimb()) {
+		setRY(getRY() - fElapsedTime * 3);
+	}
+}
+
+void Bear::tiltDown(float fElapsedTime) {
+	if (getRY() < getMaxDescent()) {
+		setRY(getRY() + fElapsedTime * 3);
+	}
+}
+
+void Bear::levelOut(float fElapsedTime, float horizontalRY) {
+	if (getRY() > horizontalRY) {
+		tiltUp(fElapsedTime);
+		setSpeed(0);
+	}
+}
+
+bool Bear::inAir(float ground) {
+	return (getY() > ground);
+}
+
 void Bear::roar() {
 	PlaySound(L"Media\\Bear\\roar.wav", NULL, SND_ASYNC | SND_NOSTOP);
+}
+
+XMVECTOR Bear::move(float fElapsedTime) {
+	/* Quaternion rotation
+	Tried with just x and y axis - still
+	Currently inverts rotate about Y-axis and causes barrel rolls after a half turn
+
+	XMVECTOR xAxis = XMVectorSet(1, 0, 0, 0);
+	XMVECTOR yAxis = XMVectorSet(0, 1, 0, 0);
+	XMVECTOR zAxis = XMVectorSet(0, 0, 1, 0);
+
+	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, bear->RY);
+	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, bear->RX);
+	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, bear->RZ);
+
+	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(zRotation, yRotation), xRotation);
+	XMMATRIX matRotation = XMMatrixRotationQuaternion(combinedRotation);
+	*/
+
+	//Calculate current direction
+	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
+	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
+	currentDir = XMVector3Normalize(currentDir);
+	XMVECTOR vecRear = currentDir * -3;
+
+	//Move bear in that direction by the speed
+	currentDir *= getSpeed() * fElapsedTime;
+
+	setX(getX() + XMVectorGetX(currentDir));
+	setY(getY() + XMVectorGetY(currentDir));
+	setZ(getZ() + XMVectorGetZ(currentDir));
+
+	return vecRear;
 }

@@ -26,12 +26,9 @@ private:
 	float		maxClimb, maxDescent;		//Manual climb/descend rate
 	float		wingRest, wingPosition;		//Wing angle
 	XMVECTOR initialDirection;				//Initial direction
-	//XMVECTOR currentDir;					//Current direction
 public:
-	/*XMMATRIX  matAllRotations;   //Used for moveForward.
-	XMMATRIX  matRotateX;
-	XMMATRIX  matRotateY;
-	XMMATRIX  matRotateZ;
+	XMVECTOR  currentDir;					//Current direction
+	XMMATRIX  matRotations;
 	XMMATRIX  matScale;
 	XMMATRIX  matTranslate;
 
@@ -95,6 +92,10 @@ public:
 	void fall(float fElapsedTime);
 	void wingFlap();
 	void restWings();
+	void straightenUp(float fElapsedTime, float horizontalRZ);
+	void levelOut(float fElapsedTime, float horizontalRY);
+	bool inAir(float ground);
 	void roar();
+	XMVECTOR move(float fElapsedTime);
 };
 #endif

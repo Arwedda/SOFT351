@@ -384,6 +384,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Thing3D.h" />
     <None Include="DXUT\Optional\directx.ico" />
     <ClInclude Include="Bear.h" />
     <ClInclude Include="DXUT\Core\DXUT.h" />
@@ -411,6 +412,7 @@
     <ClCompile Include="DXUT\Optional\SDKmisc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Thing3D.cpp" />
     <ClCompile Include="Tutorial 09 - Meshes Using DXUT Helper Classes.cpp" />
     <ClCompile Include="BasicHLSL9.cpp" />
   </ItemGroup>

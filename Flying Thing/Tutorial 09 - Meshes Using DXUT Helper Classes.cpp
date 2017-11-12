@@ -52,6 +52,7 @@
 #include "SDKMesh.h"
 #include <xnamath.h>
 #include "resource.h"
+#include "Thing3D.h"
 #include "Bear.h"
 
 //**************************************************************************//
@@ -604,7 +605,7 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 	void* pUserContext)
 {
 	HRESULT hr;
-
+	
 	ID3D11DeviceContext* pd3dImmediateContext = DXUTGetD3D11DeviceContext();
 	V_RETURN(g_DialogResourceManager.OnD3D11CreateDevice(pd3dDevice, pd3dImmediateContext));
 	V_RETURN(g_D3DSettingsDlg.OnD3D11CreateDevice(pd3dDevice));
@@ -720,6 +721,7 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 	V_RETURN(pd3dDevice->CreateBuffer(&Desc, NULL, &g_pcbPSPerFrame));
 	DXUT_SetDebugName(g_pcbPSPerFrame, "CB_PS_PER_FRAME");
 
+	//bear->initialise(g_pcbVSPerObject, g_pPixelShader, &meshBear, g_pVertexLayout11, g_pVertexShader);
 
 	return S_OK;
 }
@@ -858,6 +860,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	//**************************************************************************//
 	// Render the mesh.															//
 	//**************************************************************************//
+	//bear->prepareRender(pd3dImmediateContext, matView, matProjection);
+
 	CB_VS_PER_OBJECT CBMatrices;
 	CBMatrices.matWorld = XMMatrixTranspose(matBearWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);

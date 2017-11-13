@@ -1,4 +1,5 @@
-﻿  DXUT.cpp
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Tutorial 09 - Meshes Using DXUT Helper Classes.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  DXUT.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
@@ -778,7 +779,7 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.i
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkellaway\documents\github\soft351\flying thing\thing3d.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-  Tutorial 09 - Meshes Using DXUT Helper Classes.cpp
+  Flying Thing.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
@@ -874,11 +875,11 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.i
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkellaway\documents\github\soft351\flying thing\thing3d.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-c:\users\jkellaway\documents\github\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(111): warning C4316: 'Bear': object allocated on the heap may not be aligned 16
-c:\users\jkellaway\documents\github\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(848): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
-c:\users\jkellaway\documents\github\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(895): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
-c:\users\jkellaway\documents\github\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(759): warning C4101: 'hr': unreferenced local variable
-c:\users\jkellaway\documents\github\soft351\flying thing\tutorial 09 - meshes using dxut helper classes.cpp(837): warning C4189: 'fAmbient': local variable is initialized but not referenced
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(111): warning C4316: 'Bear': object allocated on the heap may not be aligned 16
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(848): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(895): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(759): warning C4101: 'hr': unreferenced local variable
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(837): warning C4189: 'fAmbient': local variable is initialized but not referenced
   BasicHLSL9.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
@@ -958,5 +959,5 @@ c:\users\jkellaway\documents\github\soft351\flying thing\basichlsl9.cpp(210): wa
 c:\users\jkellaway\documents\github\soft351\flying thing\basichlsl9.cpp(211): warning C4702: unreachable code
 c:\users\jkellaway\documents\github\soft351\flying thing\basichlsl9.cpp(213): warning C4702: unreachable code
 Bear.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
-  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Documents\GitHub\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.exe
-  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Documents\GitHub\SOFT351\Flying Thing\Debug\Tutorial 09 - Meshes Using DXUT Helper Classes.pdb (Full PDB)
+  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Documents\GitHub\SOFT351\Flying Thing\Debug\Flying Thing.exe
+  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Documents\GitHub\SOFT351\Flying Thing\Debug\Flying Thing.pdb (Full PDB)

@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>Tutorial 09 - Meshes Using DXUT Helper Classes</ProjectName>
+    <ProjectName>Flying Thing</ProjectName>
     <ProjectGuid>{D3D11100-96D0-4629-88B8-122C0256058C}</ProjectGuid>
     <RootNamespace>Tutorial 09 - Meshes Using DXUT Helper Classes</RootNamespace>
     <Keyword>Win32Proj</Keyword>
@@ -413,12 +413,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Thing3D.cpp" />
-    <ClCompile Include="Tutorial 09 - Meshes Using DXUT Helper Classes.cpp" />
+    <ClCompile Include="Flying Thing.cpp" />
     <ClCompile Include="BasicHLSL9.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tutorial 09 - Meshes Using DXUT Helper Classes_VS.hlsl" />
-    <None Include="Tutorial 09 - Meshes Using DXUT Helper Classes_PS.hlsl" />
+    <None Include="VertexShader.hlsl" />
+    <None Include="PixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h" />

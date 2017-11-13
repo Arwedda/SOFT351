@@ -83,9 +83,14 @@
     <None Include="DiffuseOnlyPS.hlsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="PixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="VertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Tutorial 09 - Meshes Using DXUT Helper Classes.cpp" />
     <ClCompile Include="BasicHLSL9.cpp" />
     <ClCompile Include="Bear.cpp">
       <Filter>Classes</Filter>
@@ -93,14 +98,7 @@
     <ClCompile Include="Thing3D.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Tutorial 09 - Meshes Using DXUT Helper Classes_VS.hlsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Tutorial 09 - Meshes Using DXUT Helper Classes_PS.hlsl">
-      <Filter>Shaders</Filter>
-    </None>
+    <ClCompile Include="Flying Thing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

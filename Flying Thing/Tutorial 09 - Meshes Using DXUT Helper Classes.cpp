@@ -233,6 +233,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 void InitApp();
 void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
+void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender, const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
 void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender);
 bool isNotTurning();
@@ -862,13 +863,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	//**************************************************************************//
 	//bear->prepareRender(pd3dImmediateContext, matView, matProjection);
 
-	CB_VS_PER_OBJECT CBMatrices;
-	CBMatrices.matWorld = XMMatrixTranspose(matBearWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
 	pd3dImmediateContext->PSSetShader(g_pPixelShader, NULL, 0);
-	RenderMesh(pd3dImmediateContext, &meshBear);
+	prepareRender(pd3dImmediateContext, &meshBear, matBearWorld, matWorldViewProjection, false);
 
 	XMMATRIX matWingScale = XMMatrixScaling(0.5, 0.5, 0.5);
 
@@ -877,62 +873,40 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMMATRIX matRightWingRotate = XMMatrixRotationZ(bear->getWingPosition());
 	XMMATRIX matRightWingWorld = matRightWingRotate * matRightWingTranslate * matWingScale * matBearWorld;
 	XMMATRIX matRightWingWorldViewProjection = matRightWingWorld * matView * matProjection;
-	CBMatrices.matWorld = XMMatrixTranspose(matRightWingWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matRightWingWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dImmediateContext, &meshWing);
+	prepareRender(pd3dImmediateContext, &meshWing, matRightWingWorld, matRightWingWorldViewProjection, false);
 
 	//Left Wing Creation
 	XMMATRIX matLeftWingTranslate = XMMatrixTranslation(-0.2, 1.7, 0.0);
 	XMMATRIX matLeftWingRotate = XMMatrixRotationY(3.14159) * XMMatrixRotationZ(bear->getWingPosition()) * XMMatrixRotationX(3.14159);
 	XMMATRIX matLeftWingWorld = matLeftWingRotate * matLeftWingTranslate * matWingScale * matBearWorld;
 	XMMATRIX matLeftWingWorldViewProjection = matLeftWingWorld * matView * matProjection;
-	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matLeftWingWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dImmediateContext, &meshWing);
+	prepareRender(pd3dImmediateContext, &meshWing, matLeftWingWorld, matLeftWingWorldViewProjection, false);
 
 	//Floor Creation
 	XMMATRIX matFloorScale = XMMatrixScaling(10, 1, 10);
 	XMMATRIX matFloorTranslate = XMMatrixTranslation(0.0, 1.0, 0.0);
 	XMMATRIX matFloorWorld = matFloorScale * matFloorTranslate;
 	XMMATRIX matFloorWorldViewProjection = matFloorWorld * matView * matProjection;
-	CBMatrices.matWorld = XMMatrixTranspose(matFloorWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matFloorWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderMesh(pd3dImmediateContext, &meshFloor);
+	prepareRender(pd3dImmediateContext, &meshFloor, matFloorWorld, matFloorWorldViewProjection, false);
 
 	//Shadow - bear
-	XMVECTOR vecFloor = XMVectorSet(0, 1.0, 0, 0);
+	XMVECTOR vecFloor = XMVectorSet(0.0, 1.0, 0.0, 0.0);
 	XMMATRIX matShadow = XMMatrixShadow(vecFloor, vecLightDirection);
 	XMMATRIX matShadowTranslate = XMMatrixTranslation(bear->getX(), bear->getY() - 0.5, bear->getZ());
 	XMMATRIX matShadowWorld = matBearWorld * matShadow * matShadowTranslate;
 	XMMATRIX matShadowWorldViewProjection = matShadowWorld * matView * matProjection;
-	CBMatrices.matWorld = XMMatrixTranspose(matShadowWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matShadowWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderShadow(pd3dImmediateContext, &meshBear);
+	prepareRender(pd3dImmediateContext, &meshBear, matShadowWorld, matShadowWorldViewProjection, true);
+
 
 	//Shadow - wings
 	XMMATRIX matLeftWingShadowWorld = matLeftWingWorld * matShadow *  matShadowTranslate;
 	XMMATRIX matLeftWingShadowWorldViewProjection = matLeftWingShadowWorld * matView * matProjection;
-	CBMatrices.matWorld = XMMatrixTranspose(matLeftWingShadowWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matLeftWingShadowWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderShadow(pd3dImmediateContext, &meshWing);
+	prepareRender(pd3dImmediateContext, &meshWing, matLeftWingShadowWorld, matLeftWingShadowWorldViewProjection, true);
 
 	XMMATRIX matRightWingShadowWorld = matRightWingWorld * matShadow *  matShadowTranslate;
 	XMMATRIX matRightWingShadowWorldViewProjection = matRightWingShadowWorld * matView * matProjection;
-	CBMatrices.matWorld = XMMatrixTranspose(matRightWingShadowWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matRightWingShadowWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	RenderShadow(pd3dImmediateContext, &meshWing);
+	prepareRender(pd3dImmediateContext, &meshWing, matRightWingShadowWorld, matRightWingShadowWorldViewProjection, true);
+
 
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
@@ -940,12 +914,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMMATRIX matSkyScale = XMMatrixScaling(0.5, 0.5, 0.5);
 	XMMATRIX matSkyWorld = matSkyRotate * matSkyTranslate * matSkyScale;
 	XMMATRIX matSkyWorldViewProjection = matSkyWorld * matView * matProjection;
-	CBMatrices.matWorld = XMMatrixTranspose(matSkyWorld);
-	CBMatrices.matWorldViewProj = XMMatrixTranspose(matSkyWorldViewProjection);
-	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
-	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
 	pd3dImmediateContext->PSSetShader(pDiffuseShader, NULL, 0);
-	RenderMesh(pd3dImmediateContext, &meshSky);
+	prepareRender(pd3dImmediateContext, &meshSky, matSkyWorld, matSkyWorldViewProjection, false);
 
 	//**************************************************************************//
 	// Render what is rather grandly called the head up display.				//
@@ -957,12 +927,26 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	DXUT_EndPerfEvent();
 }
 
+void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender,
+	const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow) {
+	CB_VS_PER_OBJECT CBMatrices;
+	CBMatrices.matWorld = XMMatrixTranspose(matWorld);
+	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);
+	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
+	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
+	if (isShadow) {
+		RenderShadow(pd3dImmediateContext, toRender);
+	} else {
+		RenderMesh(pd3dImmediateContext, toRender);
+	}
+}
+
+
 
 //**************************************************************************//
 // Render a CDXUTSDKMesh, using the Device Context specified.				//
 //**************************************************************************//
-void RenderMesh(ID3D11DeviceContext *pContext,
-	CDXUTSDKMesh         *toRender)
+void RenderMesh(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender)
 {
 	//Get the mesh
 	//IA setup
@@ -1002,9 +986,7 @@ void RenderMesh(ID3D11DeviceContext *pContext,
 	}
 }
 
-void RenderShadow(ID3D11DeviceContext *pContext,
-	CDXUTSDKMesh         *toRender)
-{
+void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender) {
 	//Get the mesh
 	//IA setup
 	pContext->IASetInputLayout(g_pVertexLayout11);

@@ -11,7 +11,8 @@
 class Bear : public Thing3D
 {
 private:
-	float		speed, maxForward, maxReverse;	//Speeds
+	float		speed, fallSpeed;				//Speeds
+	float		maxForward, maxReverse;			//Max speeds
 	float		maxTilt;						//Tilt whilst turning
 	float		maxClimb, maxDescent;			//Manual climb/descend rate
 	float		wingRest, wingPosition;			//Wing angle
@@ -19,6 +20,8 @@ public:
 	Bear();
 	float getSpeed();
 	void setSpeed(float newSpeed);
+	float getFallSpeed();
+	void setFallSpeed(float newFallSpeed);
 	float getMaxForward();
 	float getMaxReverse();
 	float getMaxTilt();

@@ -160,7 +160,7 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.i
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkellaway\documents\github\soft351\flying thing\thing3d.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-c:\users\jkellaway\documents\github\soft351\flying thing\bear.cpp(101): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jkellaway\documents\github\soft351\flying thing\bear.cpp(115): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   DXUTDevice11.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
@@ -875,11 +875,12 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.i
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkellaway\documents\github\soft351\flying thing\thing3d.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(111): warning C4316: 'Bear': object allocated on the heap may not be aligned 16
-c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(848): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
-c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(895): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
-c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(759): warning C4101: 'hr': unreferenced local variable
-c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(837): warning C4189: 'fAmbient': local variable is initialized but not referenced
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(112): warning C4316: 'Bear': object allocated on the heap may not be aligned 16
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(163): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(852): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(899): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(763): warning C4101: 'hr': unreferenced local variable
+c:\users\jkellaway\documents\github\soft351\flying thing\flying thing.cpp(841): warning C4189: 'fAmbient': local variable is initialized but not referenced
   BasicHLSL9.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'

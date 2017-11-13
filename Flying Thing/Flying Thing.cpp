@@ -106,6 +106,7 @@ float		worldSpinRate		= 0.00001;
 float		horizontalRY		= 0.0;
 float		horizontalRZ		= 0.0;
 float		ground				= 0.0;
+float		gravityFallSpeed	= 9.8 / 1000; //Gravity fall speed based on 1000 frames per second
 float		cameraYZoom			= 2.0;
 float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
@@ -156,10 +157,10 @@ struct CB_PS_PER_FRAME
 	XMFLOAT4	materialPower;				//Only first value used.
 };
 
-XMFLOAT4	lDiffuseColour(1, 1, 1, 1);			// Alpha unused
-XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1);	// Alpha unused	
-XMFLOAT4	lSpecularColour(1, 1, 1, 1);		// Alpha unused
-UINT        materialShinyness = 80;
+XMFLOAT4	lDiffuseColour(1.0, 1.0, 1.0, 1.0);			// Alpha unused
+XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1.0);	// Alpha unused	
+XMFLOAT4	lSpecularColour(1.0, 1.0, 1.0, 1.0);		// Alpha unused
+UINT        materialShinyness = 80.0;
 
 struct MexhVertexStructure
 {
@@ -376,6 +377,7 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	//Handles speed adjustments
 	//If neither are pressed slows to a halt and falls to y = 0
 	if (isWKeyDown) {
+		bear->setFallSpeed(0);
 		bear->forward(fElapsedTime);
 		if (bear->inAir(ground)) {
 			bear->wingFlap();
@@ -385,6 +387,7 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		}
 	}
 	if (isSKeyDown) {
+		bear->setFallSpeed(0);
 		if (bear->inAir(ground) || bear->getRY() >= horizontalRY) {
 			bear->reverse(fElapsedTime);
 		}
@@ -399,11 +402,12 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		bear->slowDown(fElapsedTime);
 		bear->restWings();
 		if (bear->inAir(ground)) {
-			bear->fall(fElapsedTime);
+			bear->fall(gravityFallSpeed);
 		}
 	}
 
 	if (!bear->inAir(ground)) {
+		bear->setFallSpeed(0);
 		bear->levelOut(fElapsedTime, horizontalRY);
 	}
 

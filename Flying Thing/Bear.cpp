@@ -20,6 +20,13 @@ void Bear::setSpeed(float newSpeed) {
 	speed = newSpeed;
 }
 
+float Bear::getFallSpeed() {
+	return fallSpeed;
+}
+void Bear::setFallSpeed(float newFallSpeed) {
+	fallSpeed = newFallSpeed;
+}
+
 float Bear::getMaxForward() {
 	return maxForward;
 }
@@ -93,8 +100,15 @@ void Bear::slowDown(float fElapsedTime) {
 	}
 }
 
-void Bear::fall(float fElapsedTime) {
-	setY(getY() - fElapsedTime * 3);
+void Bear::fall(float gravityFallSpeed) {
+	setFallSpeed(getFallSpeed() + gravityFallSpeed);
+	float newHeight = getY() - getFallSpeed();
+	if (newHeight >= 0.0) {
+		setY(newHeight);
+	}
+	else {
+		setY(0.0);
+	}
 }
 
 void Bear::wingFlap() {

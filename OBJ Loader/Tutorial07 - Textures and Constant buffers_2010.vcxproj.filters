@@ -14,10 +14,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Start of OBJ loader PS.hlsl">
+    <None Include="OBJ loader PS.hlsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Start of OBJ loader VS.hlsl">
+    <None Include="OBJ loader VS.hlsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -30,6 +30,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Start of OBJ Loader.cpp" />
+    <ClCompile Include="OBJ Loader.cpp" />
   </ItemGroup>
 </Project>

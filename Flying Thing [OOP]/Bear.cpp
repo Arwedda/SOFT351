@@ -5,7 +5,7 @@ Bear::Bear()
 	speed = 0.0;
 	maxForward = 10.0;
 	maxReverse = 3.0;
-	dragCoefficient = 1000.0;	//Playing with arbitrary numbers
+	dragCoefficient = 0.5;		//Playing with arbitrary numbers
 	mass = 300.0;				//Brown bear (heaviest) are up to 600kg
 	maxTilt = 0.52;
 	maxClimb = 0.79;
@@ -104,7 +104,7 @@ void Bear::slowDown(float fElapsedTime, float airDensity) {
 
 void Bear::slowGround() {
 	float speed = getSpeed();
-	setSpeed(speed * 0.999);
+	setSpeed(speed * 0.99);
 }
 
 void Bear::fall(float gravityFallSpeed) {
@@ -114,6 +114,7 @@ void Bear::fall(float gravityFallSpeed) {
 		setY(newHeight);
 	}
 	else {
+		setSpeed(0.0);
 		setY(0.0);
 	}
 }
@@ -166,21 +167,17 @@ void Bear::roar() {
 }
 
 XMVECTOR Bear::move(float fElapsedTime) {
-	/* Quaternion rotation
-	Tried with just x and y axis - still
-	Currently inverts rotate about Y-axis and causes barrel rolls after a half turn
-
-	XMVECTOR xAxis = XMVectorSet(1, 0, 0, 0);
-	XMVECTOR yAxis = XMVectorSet(0, 1, 0, 0);
+	/* //Quaternion rotation - sort of works, not quite right sometimes
+	XMVECTOR xAxis = XMVectorSet(0, 1, 0, 0);
+	XMVECTOR yAxis = XMVectorSet(1, 0, 0, 0);
 	XMVECTOR zAxis = XMVectorSet(0, 0, 1, 0);
 
-	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, bear->RY);
-	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, bear->RX);
-	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, bear->RZ);
+	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, getRX());
+	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, getRY());
+	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, getRZ());
 
-	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(zRotation, yRotation), xRotation);
-	XMMATRIX matRotation = XMMatrixRotationQuaternion(combinedRotation);
-	*/
+	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(yRotation, zRotation), xRotation);
+	matRotations = XMMatrixRotationQuaternion(combinedRotation); */
 
 	//Calculate current direction
 	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());

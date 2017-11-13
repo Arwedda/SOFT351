@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>Start of OJB Loader</ProjectName>
+    <ProjectName>OBJ Loader</ProjectName>
     <ProjectGuid>{D29C6982-A589-4081-89B1-91E78D7C41E2}</ProjectGuid>
     <RootNamespace>Tutorial07 - Textures and Constant buffers</RootNamespace>
     <Keyword>Win32Proj</Keyword>
@@ -372,7 +372,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Start of OBJ Loader.cpp">
+    <ClCompile Include="OBJ Loader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
@@ -381,11 +381,11 @@
     <ResourceCompile Include="Tutorial07 - Textures and Constant buffers.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Start of OBJ loader PS.hlsl">
+    <None Include="OBJ loader PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
-    <None Include="Start of OBJ loader VS.hlsl">
+    <None Include="OBJ loader VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>

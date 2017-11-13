@@ -164,7 +164,7 @@ c:\users\jkell\desktop\soft351\flying thing [oop]\bear.cpp(100): warning C4458: 
 c:\users\jkell\desktop\soft351\flying thing [oop]\bear.cpp(106): warning C4458: declaration of 'speed' hides class member
   c:\users\jkell\desktop\soft351\flying thing [oop]\bear.h(14): note: see declaration of 'Bear::speed'
 c:\users\jkell\desktop\soft351\flying thing [oop]\bear.cpp(107): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\jkell\desktop\soft351\flying thing [oop]\bear.cpp(122): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jkell\desktop\soft351\flying thing [oop]\bear.cpp(123): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   DXUTDevice11.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'

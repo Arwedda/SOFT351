@@ -168,7 +168,7 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 void Render();
 void charStrToWideChar(WCHAR *dest, char *source);
 void XMFLOAT3normalise(XMFLOAT3 *toNormalise);
-SortOfMeshSubset *LoadMesh(LPSTR filename);
+SortOfMeshSubset *LoadMesh(LPSTR filename, LPSTR mtlFilename);
 
 
 
@@ -489,9 +489,9 @@ HRESULT InitDevice()
 	//**************************************************************************//
 	// Load the obj mesh, NOT COMPLETE.											//
 	//**************************************************************************//	
-	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Cup\\Cup.obj");
-	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Textured_triangulated_Cube\\cube.obj");
-	SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\pig\\pig.obj");
+	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Cup\\Cup.obj", "Media\\Cup\\Cup.mtl");
+	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Textured_triangulated_Cube\\cube.obj", "Media\\Textured_triangulated_Cube\\cube.mtl");
+	SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\pig\\pig.obj", "Media\\pig\\pig.mtl");
 
 	//**************************************************************************//
 	// Create the vertex buffer.												//
@@ -869,7 +869,7 @@ struct FaceLine {
 //																			//
 // ...And only works with meshes in exactly the right format.				//
 //**************************************************************************//
-SortOfMeshSubset *LoadMesh(LPSTR filename)
+SortOfMeshSubset *LoadMesh(LPSTR filename, LPSTR mtlFilename)
 {
 	std::wifstream          fileStream;
 	std::wstring            line;
@@ -891,7 +891,6 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 		std::wstring vTexture = L"vt"; //vt
 		std::wstring vNormal = L"vn"; //
 		std::wstring face = L"f";//f
-		std::wstring mtl = L"mt"; //mt
 
 		WCHAR first[7];
 		WCHAR oldStyleStr[200];
@@ -956,12 +955,13 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			face.VecNormal = (vecNormals[vn3 - 1]);
 			vecFaces.push_back(face);
 		}
-		else if (line.compare(0, 2, mtl)) {
-			/*WCHAR second[7];
-			std::wifstream          mtlStream;
-			swscanf(oldStyleStr, L"%7s%7s", first, second);
-			mtlStream.open("Media\\pig\\" + second[0] + second[1] + second[2] + second[3] + second[4] + second[5] + second[6] + second[7]);*/
-		}
+	}
+
+	fileStream.open(mtlFilename);
+	isOpen = fileStream.is_open();
+
+	while (std::getline(fileStream, line)) {
+
 	}
 
 	//******************************************************************//

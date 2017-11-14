@@ -168,7 +168,7 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 void Render();
 void charStrToWideChar(WCHAR *dest, char *source);
 void XMFLOAT3normalise(XMFLOAT3 *toNormalise);
-SortOfMeshSubset *LoadMesh(LPSTR filename);
+SortOfMeshSubset *LoadMesh(LPSTR filename, LPSTR mtlFilename);
 
 
 
@@ -489,9 +489,9 @@ HRESULT InitDevice()
 	//**************************************************************************//
 	// Load the obj mesh, NOT COMPLETE.											//
 	//**************************************************************************//	
-	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Cup\\Cup.obj");
-	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Textured_triangulated_Cube\\cube.obj");
-	SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\pig\\pig.obj");
+	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Cup\\Cup.obj", "Media\\Cup\\Cup.mtl");
+	//SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\Textured_triangulated_Cube\\cube.obj", "Media\\Textured_triangulated_Cube\\cube.mtl");
+	SortOfMeshSubset *sortOfMesh = LoadMesh("Media\\pig\\pig.obj", "Media\\pig\\pig.mtl");
 
 	//**************************************************************************//
 	// Create the vertex buffer.												//
@@ -841,19 +841,6 @@ std::wstring TrimEnd(std::wstring s)
 	return s;
 }
 
-struct XMUINT3 {
-	uint32_t x;
-	uint32_t y;
-	uint32_t z;
-};
-
-struct FaceLine {
-	XMUINT3 *a;
-	XMUINT3 *b;
-	XMUINT3 *c;
-};
-
-
 //**************************************************************************//
 // Load the obj file into an array.  Everything here is wide (unicode)		//
 //strings, hence the "w"s on the front of everything.						//
@@ -869,7 +856,7 @@ struct FaceLine {
 //																			//
 // ...And only works with meshes in exactly the right format.				//
 //**************************************************************************//
-SortOfMeshSubset *LoadMesh(LPSTR filename)
+SortOfMeshSubset *LoadMesh(LPSTR filename, LPSTR mtlFilename)
 {
 	std::wifstream          fileStream;
 	std::wstring            line;
@@ -884,15 +871,13 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 	fileStream.open(filename);
 	bool isOpen = fileStream.is_open();		//debugging only.
 
-	while (std::getline(fileStream, line))
-	{
-		line = TrimStart(line);
-		std::wstring vertex = L"v "; //v space
-		std::wstring vTexture = L"vt"; //vt
-		std::wstring vNormal = L"vn"; //
-		std::wstring face = L"f";//f
-		std::wstring mtl = L"mt"; //mt
+	std::wstring vertex = L"v "; //v space
+	std::wstring vTexture = L"vt"; //vt
+	std::wstring vNormal = L"vn"; //vn
+	std::wstring face = L"f";//f
 
+	while (std::getline(fileStream, line)) {
+		line = TrimStart(line);
 		WCHAR first[7];
 		WCHAR oldStyleStr[200];
 		wcscpy(oldStyleStr, line.c_str());
@@ -909,20 +894,17 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			XMFLOAT3 v;
 			v.x = x; v.y = y; v.z = z;
 			vectorVertices.push_back(v);
-		}
-		else if (line.compare(0, 2, vTexture) == 0) {
+		} else if (line.compare(0, 2, vTexture) == 0) {
 			swscanf(oldStyleStr, L"%3s%f%f", first, &x, &y);
 			XMFLOAT2 v;
 			v.x = x; v.y = y;
 			vecTextures.push_back(v);
-		}
-		else if (line.compare(0, 2, vNormal) == 0) {
+		} else if (line.compare(0, 2, vNormal) == 0) {
 			swscanf(oldStyleStr, L"%3s%f%f%f", first, &x, &y, &z);
 			XMFLOAT3 v;
 			v.x = x; v.y = y; v.z = z;
 			vecNormals.push_back(v);
-		}
-		else if (line.compare(0, 1, face) == 0) {
+		} else if (line.compare(0, 1, face) == 0) {
 			WCHAR slash1[5];
 			WCHAR slash2[5];
 			WCHAR slash3[5];
@@ -956,11 +938,68 @@ SortOfMeshSubset *LoadMesh(LPSTR filename)
 			face.VecNormal = (vecNormals[vn3 - 1]);
 			vecFaces.push_back(face);
 		}
-		else if (line.compare(0, 2, mtl)) {
-			/*WCHAR second[7];
-			std::wifstream          mtlStream;
-			swscanf(oldStyleStr, L"%7s%7s", first, second);
-			mtlStream.open("Media\\pig\\" + second[0] + second[1] + second[2] + second[3] + second[4] + second[5] + second[6] + second[7]);*/
+	}
+
+	std::wifstream          mtlStream;
+	std::wstring			mtlLine;
+
+	mtlStream.open(mtlFilename);
+	bool mtlOpen = mtlStream.is_open();
+
+	std::vector <float> specularExponents(0);
+	std::vector <XMFLOAT3> kAmbients(0);
+	std::vector <XMFLOAT3> kDiffuses(0);
+	std::vector <XMFLOAT3> kSpeculars(0);
+	std::vector <float> niValues(0);
+	std::vector <float> dValues(0);
+	std::vector <float> illuminationModels(0);
+
+	std::wstring findNS = L"Ns"; //"Ns"
+	std::wstring findKA = L"Ka"; //"Ka"
+	std::wstring findKD = L"Kd"; //"Kd"
+	std::wstring findKS = L"Ks"; //"Ks"
+	std::wstring findNI = L"Ni"; //"Ni"
+	std::wstring findD = L"d"; //"d"
+	std::wstring findIllum = L"illum"; //"illum"
+
+	while (std::getline(mtlStream, mtlLine)) {
+		mtlLine = TrimStart(mtlLine);
+		WCHAR first[7];
+		WCHAR oldStyleStr[200];
+		wcscpy(oldStyleStr, mtlLine.c_str());
+
+		float x, y, z;
+		if (mtlLine.compare(0, 2, findNS) == 0) {
+			float specularExponent;
+			swscanf(oldStyleStr, L"%2s%f", first, &specularExponent);
+			specularExponents.push_back(specularExponent);
+		} else if (mtlLine.compare(0, 2, findKA) == 0) {
+			XMFLOAT3 kAmbient;
+			swscanf(oldStyleStr, L"%3s%f%f%f", first, &x, &y, &z);
+			kAmbient.x = x; kAmbient.y = y; kAmbient.z = z;
+			kAmbients.push_back(kAmbient);
+		} else if (mtlLine.compare(0, 2, findKD) == 0) {
+			XMFLOAT3 kDiffuse;
+			swscanf(oldStyleStr, L"%3s%f%f%f", first, &x, &y, &z);
+			kDiffuse.x = x; kDiffuse.y = y; kDiffuse.z = z;
+			kDiffuses.push_back(kDiffuse);
+		} else if (mtlLine.compare(0, 2, findKS) == 0) {
+			XMFLOAT3 kSpecular;
+			swscanf(oldStyleStr, L"%3s%f%f%f", first, &x, &y, &z);
+			kSpecular.x = x; kSpecular.y = y; kSpecular.z = z;
+			kSpeculars.push_back(kSpecular);
+		} else if (mtlLine.compare(0, 2, findNI) == 0) {
+			float ni;
+			swscanf(oldStyleStr, L"%3s%f", first, &ni);
+			niValues.push_back(ni);
+		} else if (mtlLine.compare(0, 1, findD) == 0) {
+			float d;
+			swscanf(oldStyleStr, L"%2s%f", first, &d);
+			dValues.push_back(d);
+		} else if (mtlLine.compare(0, 5, findIllum) == 0) {
+			int illuminationModel;
+			swscanf(oldStyleStr, L"%6s%d", first, &illuminationModel);
+			illuminationModels.push_back(illuminationModel);
 		}
 	}
 

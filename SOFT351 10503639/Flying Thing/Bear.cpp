@@ -6,7 +6,7 @@ Bear::Bear()
 	maxForward = 10.0;
 	maxReverse = 3.0;
 	dragCoefficient = 0.5;		//Playing with arbitrary numbers
-	mass = 300.0;				//Brown bear (heaviest) are up to 600kg
+	mass = 300.0;				//Google says bears generally are a few hundred kilos
 	maxTilt = 0.52;
 	maxClimb = 0.79;
 	maxDescent = 1.55;
@@ -115,6 +115,7 @@ void Bear::fall(float gravityFallSpeed) {
 	}
 	else {
 		setSpeed(0.0);
+		setFallSpeed(0.0);
 		setY(0.0);
 	}
 }

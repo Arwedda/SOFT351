@@ -38,27 +38,13 @@ public:
 	ID3D11VertexShader *pVertexShader = NULL;
 	CDXUTSDKMesh *mesh = NULL;
 
-
 	struct CB_VS_PER_OBJECT
 	{
 		XMMATRIX matWorldViewProjection;
-		XMMATRIX matWorld;				// needed to transform the normals.
+		XMMATRIX matWorld;
 	};
 
 	UINT      textureNumber;
-	//**********************************************************************/
-	// This is where encapsulation falls down some.  The shader file has its//
-	// lighting attributes.  This doesn't really make sense surely light is //
-	// a globl thing, not an attribute of an object?  It makes partial sense//
-	// here, as I am assuming that in a simple world. all objects will share//
-	// the same shader.														//
-	//**********************************************************************//
-	/*	XMVECTOR		vecLightDirection;				//w value unused.
-	XMFLOAT4		lightDiffuseColour;				//w value unused.
-	XMFLOAT4		LightAmbientColour;				//w value unused.
-	//**********************************************************************/
-	// Public methods.														//
-	//**********************************************************************//
 public:
 	Thing3D();
 	~Thing3D();

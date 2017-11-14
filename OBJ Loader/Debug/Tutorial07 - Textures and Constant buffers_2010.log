@@ -1,5 +1,4 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Start of OJB Loader.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  OBJ Loader.cpp
+﻿  OBJ Loader.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
@@ -94,23 +93,41 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.inl(1269): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(898): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(883): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstring.h(121): note: see declaration of 'wcscpy'
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(932): warning C4456: declaration of 'face' hides previous local declaration
-  c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(893): note: see declaration of 'face'
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(940): warning C4244: 'argument': conversion from 'UINT' to 'unsigned short', possible loss of data
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(941): warning C4244: 'argument': conversion from 'UINT' to 'unsigned short', possible loss of data
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(942): warning C4244: 'argument': conversion from 'UINT' to 'unsigned short', possible loss of data
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(989): warning C4244: '=': conversion from 'int' to 'USHORT', possible loss of data
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(908): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(914): warning C4456: declaration of 'face' hides previous local declaration
+  c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(877): note: see declaration of 'face'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(922): warning C4244: 'argument': conversion from 'UINT' to 'unsigned short', possible loss of data
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(923): warning C4244: 'argument': conversion from 'UINT' to 'unsigned short', possible loss of data
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(924): warning C4244: 'argument': conversion from 'UINT' to 'unsigned short', possible loss of data
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(969): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstring.h(121): note: see declaration of 'wcscpy'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(1002): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(1028): warning C4244: '=': conversion from 'int' to 'USHORT', possible loss of data
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(893): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(914): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(898): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(920): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(903): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(935): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(917): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
-c:\users\jkellaway\documents\github\soft351\obj loader\obj loader.cpp(885): warning C4189: 'isOpen': local variable is initialized but not referenced
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(974): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(978): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(983): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(988): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(993): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(997): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(1001): warning C4996: 'swscanf': This function or variable may be unsafe. Consider using swscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(2037): note: see declaration of 'swscanf'
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(872): warning C4189: 'isOpen': local variable is initialized but not referenced
+c:\users\jkell\desktop\soft351\soft351 10503639\obj loader\obj loader.cpp(947): warning C4189: 'mtlOpen': local variable is initialized but not referenced
 OBJ Loader.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
-  Tutorial07 - Textures and Constant buffers_2010.vcxproj -> C:\Users\jkellaway\Documents\GitHub\SOFT351\OBJ Loader\Debug\OBJ Loader.exe
-  Tutorial07 - Textures and Constant buffers_2010.vcxproj -> C:\Users\jkellaway\Documents\GitHub\SOFT351\OBJ Loader\Debug\OBJ Loader.pdb (Full PDB)
+  Tutorial07 - Textures and Constant buffers_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\SOFT351 10503639\OBJ Loader\Debug\OBJ Loader.exe
+  Tutorial07 - Textures and Constant buffers_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\SOFT351 10503639\OBJ Loader\Debug\OBJ Loader.pdb (Full PDB)

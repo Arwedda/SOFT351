@@ -50,7 +50,6 @@
 #include "DXUTsettingsDlg.h"
 #include "SDKmisc.h"
 #include "SDKMesh.h"
-#include <xnamath.h>
 #include "resource.h"
 #include "Thing3D.h"
 #include "Bear.h"
@@ -69,7 +68,6 @@ CDXUTDirectionWidget        g_LightControl;			// Not used by Nigel.
 
 float                       g_fLightScale;
 int                         g_nNumActiveLights;
-int                         g_nActiveLight;
 bool                        g_bShowHelp = false;    // If true, it renders the UI control text
 int							g_width = 800;
 int							g_height = 600;;
@@ -107,7 +105,7 @@ float		horizontalRY		= 0.0;
 float		horizontalRZ		= 0.0;
 float		ground				= 0.0;
 float		gravityFallSpeed	= 9.8 / 500000;		//Gravity fall speed with scaling (since 9.8 m/frame/frame seems too fast)
-float		airDensity			= 1.2f;				// Air at 1 atm pressure, at around 20 degrees Celcius
+float		airDensity			= 1.2;				// Air at 1 atm pressure, at around 20 degrees Celsius
 float		cameraYZoom			= 2.0;
 float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
@@ -159,7 +157,7 @@ struct CB_PS_PER_FRAME
 };
 
 XMFLOAT4	lDiffuseColour(1.0, 1.0, 1.0, 1.0);			// Alpha unused
-XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1.0);	// Alpha unused	
+XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1.0);			// Alpha unused	
 XMFLOAT4	lSpecularColour(1.0, 1.0, 1.0, 1.0);		// Alpha unused
 UINT        materialShinyness = 80.0;
 
@@ -236,7 +234,7 @@ void InitApp();
 void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
 void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender, const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow);
-void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender);
+void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender, bool isShadow);
 void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender);
 bool isNotTurning();
 
@@ -290,6 +288,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	DXUTCreateWindow(L"Tutorial 09 - Meshes Using DXUT Helper Classes");
 	DXUTCreateDevice(D3D_FEATURE_LEVEL_9_2, true, 800, 600);
 	//DXUTCreateDevice(true, 640, 480);
+
 	DXUTMainLoop(); // Enter into the DXUT render loop
 
 	return DXUTGetExitCode();
@@ -796,19 +795,17 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	//**************************************************************************//
 	XMVECTOR Eye;
 	XMVECTOR At;
-	XMVECTOR Up;
+	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	if (!isBearView) { //Base / 3rd "person" view
 		Eye = XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f);
 		At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	}
 	else { //Follow the bear
 		Eye = XMVectorSet(bear->getX() - XMVectorGetX(vecRear),
 			(bear->getY() - XMVectorGetY(vecRear)) + (cameraYZoom - cameraStabiliser),
 			bear->getZ() - XMVectorGetZ(vecRear), 0) * 10;
 		At = XMVectorSet(bear->getX(), bear->getY(), bear->getZ(), 0.0f) * 10;
-		Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	}
 
 	XMMATRIX matView;
@@ -847,10 +844,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	// vector.  It is kind-a-silly doing this every frame unless the	//
 	// light moves.														//
 	//******************************************************************//
-	float    fAmbient = 0.1f;
 	XMVECTOR vecLightDirection = XMVectorSet(-1, 1, -2, 0);  // 4th value unused.
 	vecLightDirection = XMVector3Normalize(vecLightDirection);
-
 
 	CB_PS_PER_FRAME CBPerFrame;
 	CBPerFrame.vecLight = vecLightDirection;
@@ -862,12 +857,10 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	pd3dImmediateContext->UpdateSubresource(g_pcbPSPerFrame, 0, NULL, &CBPerFrame, 0, 0);
 	pd3dImmediateContext->PSSetConstantBuffers(1, 1, &g_pcbPSPerFrame);
 
-
 	CB_PS_PER_OBJECT CBPerObject;
 	CBPerObject.m_vObjectColor = XMFLOAT4(1, 1, 1, 1);
 	pd3dImmediateContext->UpdateSubresource(g_pcbPSPerObject, 0, NULL, &CBPerObject, 0, 0);
 	pd3dImmediateContext->PSSetConstantBuffers(0, 1, &g_pcbPSPerObject);
-
 
 	pd3dImmediateContext->PSSetSamplers(0, 1, &g_pSamLinear);
 
@@ -940,16 +933,14 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 
 void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender,
 	const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow) {
+//	XMMATRIX matWorld;
+//	XMMATRIX matWorldViewProjection;
 	CB_VS_PER_OBJECT CBMatrices;
 	CBMatrices.matWorld = XMMatrixTranspose(matWorld);
 	CBMatrices.matWorldViewProj = XMMatrixTranspose(matWorldViewProjection);
 	pd3dImmediateContext->UpdateSubresource(g_pcbVSPerObject, 0, NULL, &CBMatrices, 0, 0);
 	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
-	if (isShadow) {
-		RenderShadow(pd3dImmediateContext, toRender);
-	} else {
-		RenderMesh(pd3dImmediateContext, toRender);
-	}
+	RenderMesh(pd3dImmediateContext, toRender, isShadow);
 }
 
 
@@ -957,7 +948,7 @@ void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRe
 //**************************************************************************//
 // Render a CDXUTSDKMesh, using the Device Context specified.				//
 //**************************************************************************//
-void RenderMesh(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender)
+void RenderMesh(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender, bool isShadow)
 {
 	//Get the mesh
 	//IA setup
@@ -992,58 +983,16 @@ void RenderMesh(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender)
 		// At the moment we load a texture into video memory every frame, which is	//
 		// HORRIBLE, we need to create more Texture2D variables.					//
 		//**************************************************************************//
-		pDiffuseRV = toRender->GetMaterial(pSubset->MaterialID)->pDiffuseRV11;
+		if (!isShadow) {
+			pDiffuseRV = toRender->GetMaterial(pSubset->MaterialID)->pDiffuseRV11;
+		}
+
 		pContext->PSSetShaderResources(0, 1, &pDiffuseRV);
 
 		pContext->DrawIndexed((UINT)pSubset->IndexCount, 0, (UINT)pSubset->VertexStart);
 	}
 
 }
-
-void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender) {
-	//Get the mesh
-	//IA setup
-	pContext->IASetInputLayout(g_pVertexLayout11);
-	UINT Strides[1];
-	UINT Offsets[1];
-	ID3D11Buffer* pVB[1];
-	pVB[0] = toRender->GetVB11(0, 0);
-	Strides[0] = (UINT)toRender->GetVertexStride(0, 0);
-	Offsets[0] = 0;
-	pContext->IASetVertexBuffers(0, 1, pVB, Strides, Offsets);
-	pContext->IASetIndexBuffer(toRender->GetIB11(0), toRender->GetIBFormat11(0), 0);
-
-
-	UINT                      numSubsets = toRender->GetNumSubsets(0);
-	boolean                   mustRestoreOriginalTexture = false;
-	ID3D11ShaderResourceView  *pDiffuseRV = NULL;
-	SDKMESH_SUBSET			  *pSubset = NULL;
-	D3D11_PRIMITIVE_TOPOLOGY  PrimType;
-
-
-
-	//**************************************************************************//
-	// Render each subset.														//
-	//**************************************************************************//
-	for (UINT subset = 0; subset < numSubsets; ++subset)
-	{
-		pSubset = NULL;
-
-		// Get the subset
-		pSubset = toRender->GetSubset(0, subset);
-
-		PrimType = CDXUTSDKMesh::GetPrimitiveType11((SDKMESH_PRIMITIVE_TYPE)pSubset->PrimitiveType);
-		pContext->IASetPrimitiveTopology(PrimType);
-
-		pContext->PSSetShaderResources(0, 1, &pDiffuseRV);
-		mustRestoreOriginalTexture = true;
-
-
-		pContext->DrawIndexed((UINT)pSubset->IndexCount, 0, (UINT)pSubset->VertexStart);
-	}
-
-}
-
 
 //--------------------------------------------------------------------------------------
 // Release D3D11 resources created in OnD3D11ResizedSwapChain 

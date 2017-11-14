@@ -1,4 +1,4 @@
-﻿  Flying Thing.cpp
+﻿  Bear.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
@@ -94,10 +94,11 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.i
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkell\desktop\soft351\flying thing\thing3d.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-c:\users\jkell\desktop\soft351\flying thing\flying thing.cpp(111): warning C4316: 'Bear': object allocated on the heap may not be aligned 16
-c:\users\jkell\desktop\soft351\flying thing\flying thing.cpp(162): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
-c:\users\jkell\desktop\soft351\flying thing\flying thing.cpp(856): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
-c:\users\jkell\desktop\soft351\flying thing\flying thing.cpp(901): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
-c:\users\jkell\desktop\soft351\flying thing\flying thing.cpp(771): warning C4101: 'hr': unreferenced local variable
+c:\users\jkell\desktop\soft351\flying thing\bear.cpp(100): warning C4458: declaration of 'speed' hides class member
+  c:\users\jkell\desktop\soft351\flying thing\bear.h(14): note: see declaration of 'Bear::speed'
+c:\users\jkell\desktop\soft351\flying thing\bear.cpp(106): warning C4458: declaration of 'speed' hides class member
+  c:\users\jkell\desktop\soft351\flying thing\bear.h(14): note: see declaration of 'Bear::speed'
+c:\users\jkell\desktop\soft351\flying thing\bear.cpp(107): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jkell\desktop\soft351\flying thing\bear.cpp(124): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\Flying Thing\Debug\Flying Thing.exe
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\SOFT351\Flying Thing\Debug\Flying Thing.pdb (Full PDB)

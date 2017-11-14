@@ -68,7 +68,6 @@ CDXUTDirectionWidget        g_LightControl;			// Not used by Nigel.
 
 float                       g_fLightScale;
 int                         g_nNumActiveLights;
-int                         g_nActiveLight;
 bool                        g_bShowHelp = false;    // If true, it renders the UI control text
 int							g_width = 800;
 int							g_height = 600;;
@@ -106,7 +105,7 @@ float		horizontalRY		= 0.0;
 float		horizontalRZ		= 0.0;
 float		ground				= 0.0;
 float		gravityFallSpeed	= 9.8 / 500000;		//Gravity fall speed with scaling (since 9.8 m/frame/frame seems too fast)
-float		airDensity			= 1.2f;				// Air at 1 atm pressure, at around 20 degrees Celcius
+float		airDensity			= 1.2;				// Air at 1 atm pressure, at around 20 degrees Celsius
 float		cameraYZoom			= 2.0;
 float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
@@ -158,7 +157,7 @@ struct CB_PS_PER_FRAME
 };
 
 XMFLOAT4	lDiffuseColour(1.0, 1.0, 1.0, 1.0);			// Alpha unused
-XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1.0);	// Alpha unused	
+XMFLOAT4	lAmbientColour(0.2, 0.2, 0.2, 1.0);			// Alpha unused	
 XMFLOAT4	lSpecularColour(1.0, 1.0, 1.0, 1.0);		// Alpha unused
 UINT        materialShinyness = 80.0;
 
@@ -289,6 +288,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	DXUTCreateWindow(L"Tutorial 09 - Meshes Using DXUT Helper Classes");
 	DXUTCreateDevice(D3D_FEATURE_LEVEL_9_2, true, 800, 600);
 	//DXUTCreateDevice(true, 640, 480);
+
 	DXUTMainLoop(); // Enter into the DXUT render loop
 
 	return DXUTGetExitCode();

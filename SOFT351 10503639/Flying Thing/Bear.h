@@ -18,6 +18,7 @@ private:
 	float		maxClimb, maxDescent;			//Manual climb/descend rate
 	float		wingRest, wingPosition;			//Wing angle
 public:
+	XMVECTOR vecRear;
 	Bear();
 	~Bear();
 	float getSpeed();
@@ -50,6 +51,6 @@ public:
 	void levelOut(float fElapsedTime, float horizontalRY);
 	bool inAir(float ground);
 	void roar();
-	XMVECTOR move(float fElapsedTime);
+	void move(float fElapsedTime);
 };
 #endif

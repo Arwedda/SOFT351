@@ -1,5 +1,5 @@
+#include "DXUT.h"
 #include "Thing3D.h";
-
 
 Thing3D::Thing3D() {
 	x = 0.0;
@@ -13,7 +13,7 @@ Thing3D::Thing3D() {
 	sz = 10.0;
 	//frameTime = 0;
 	initialDirection = XMVectorSet(0, 0, -2, 0);
-	currentDir = initialDirection;
+	currentDir = XMVectorSet(0, 0, -2, 0);
 	matRotations = XMMatrixRotationRollPitchYaw(0, 0, 0);
 	matScale = XMMatrixScaling(sx, sy, sz);
 	matTranslate = XMMatrixTranslation(x, y, z);

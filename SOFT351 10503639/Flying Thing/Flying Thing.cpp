@@ -784,7 +784,7 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
 	pd3dImmediateContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
-	XMVECTOR vecRear = bear->move(fElapsedTime);
+	bear->move(fElapsedTime);
 
 	//**************************************************************************//
 	// Initialize the view matrix.  What you do to the viewer matrix moves the  //
@@ -802,9 +802,9 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 		At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	else { //Follow the bear
-		Eye = XMVectorSet(bear->getX() - XMVectorGetX(vecRear),
-			(bear->getY() - XMVectorGetY(vecRear)) + (cameraYZoom - cameraStabiliser),
-			bear->getZ() - XMVectorGetZ(vecRear), 0) * 10;
+		Eye = XMVectorSet(bear->getX() - XMVectorGetX(bear->vecRear),
+			(bear->getY() - XMVectorGetY(bear->vecRear)) + (cameraYZoom - cameraStabiliser),
+			bear->getZ() - XMVectorGetZ(bear->vecRear), 0) * 10;
 		At = XMVectorSet(bear->getX(), bear->getY(), bear->getZ(), 0.0f) * 10;
 	}
 

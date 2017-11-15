@@ -1,3 +1,4 @@
+#include "DXUT.h"
 #include "Bear.h"
 
 Bear::Bear()
@@ -12,9 +13,11 @@ Bear::Bear()
 	maxDescent = 1.55;
 	wingRest = -0.44;
 	wingPosition = -0.44;
+	vecRear = XMVectorSet(0, 0, -2, 0) * -3;
 }
 
 Bear::~Bear() {
+	vecRear;
 }
 
 float Bear::getSpeed() {
@@ -167,7 +170,7 @@ void Bear::roar() {
 	PlaySound(L"Media\\Bear\\roar.wav", NULL, SND_ASYNC | SND_NOSTOP);
 }
 
-XMVECTOR Bear::move(float fElapsedTime) {
+void Bear::move(float fElapsedTime) {
 	/* //Quaternion rotation - sort of works, not quite right sometimes
 	XMVECTOR xAxis = XMVectorSet(0, 1, 0, 0);
 	XMVECTOR yAxis = XMVectorSet(1, 0, 0, 0);
@@ -184,7 +187,7 @@ XMVECTOR Bear::move(float fElapsedTime) {
 	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
 	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
 	currentDir = XMVector3Normalize(currentDir);
-	XMVECTOR vecRear = currentDir * -3;
+	vecRear = currentDir * -3;
 
 	//Move bear in that direction by the speed
 	currentDir *= getSpeed() * fElapsedTime;
@@ -192,6 +195,4 @@ XMVECTOR Bear::move(float fElapsedTime) {
 	setX(getX() + XMVectorGetX(currentDir));
 	setY(getY() + XMVectorGetY(currentDir));
 	setZ(getZ() + XMVectorGetZ(currentDir));
-
-	return vecRear;
 }

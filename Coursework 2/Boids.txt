@@ -1,0 +1,11 @@
+Get OOP drawing itself
+Matrix of spawn locations
+Spawn models
+Get them detecting range
+Follow mode
+Rotate as moving
+boids mechanics:
+	Separation: steer to avoid crowding local flockmates
+	Alignment: steer towards the average heading of local flockmates
+	Cohesion: steer to move toward the average position of local flockmates
+http://www.red3d.com/cwr/boids/

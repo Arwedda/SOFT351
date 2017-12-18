@@ -99,6 +99,9 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Boids.cpp" />
+    <ClCompile Include="Boid.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -111,6 +114,9 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Thing3D.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Boid.h">
       <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>

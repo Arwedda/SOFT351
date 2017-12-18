@@ -20,6 +20,25 @@ Thing3D::Thing3D() {
 	textureNumber = 0;
 }
 
+Thing3D::Thing3D(float setX, float setY, float setZ) {
+	x = setX;
+	y = setY;
+	z = setZ;
+	rx = -2.0;
+	ry = 0.0;
+	rz = 0.0;
+	sx = 10.0;
+	sy = 10.0;
+	sz = 10.0;
+	//frameTime = 0;
+	initialDirection = XMVectorSet(0, 0, -2, 0);
+	currentDir = XMVectorSet(0, 0, -2, 0);
+	matRotations = XMMatrixRotationRollPitchYaw(0, 0, 0);
+	matScale = XMMatrixScaling(sx, sy, sz);
+	matTranslate = XMMatrixTranslation(x, y, z);
+	textureNumber = 0;
+}
+
 Thing3D::~Thing3D() {
 	if (pcbVSPerObject)
 	SAFE_DELETE(pcbVSPerObject);

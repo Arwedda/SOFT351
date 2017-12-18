@@ -53,6 +53,7 @@
 #include "resource.h"
 #include "Thing3D.h"
 #include "Bear.h"
+#include "Boid.h"
 
 //**************************************************************************//
 // Global Variables.  There are many global variables here (we aren't OO	//
@@ -109,6 +110,8 @@ float		airDensity			= 1.2;				// Air at 1 atm pressure, at around 20 degrees Cel
 float		cameraYZoom			= 2.0;
 float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
+Boid*		flock[100];
+Boid*		boid				= new Boid(1.0, 1.0, 1.0);
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -235,8 +238,9 @@ void RenderText();
 void charStrToWideChar(WCHAR *dest, char *source);
 void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender, const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender, bool isShadow);
-void RenderShadow(ID3D11DeviceContext *pContext, CDXUTSDKMesh *toRender);
 bool isNotTurning();
+void spawnFlock(int flockSize);
+void updateFlock(int flockSize);
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -288,6 +292,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	DXUTCreateWindow(L"Tutorial 09 - Meshes Using DXUT Helper Classes");
 	DXUTCreateDevice(D3D_FEATURE_LEVEL_9_2, true, 800, 600);
 	//DXUTCreateDevice(true, 640, 480);
+	spawnFlock(sizeof(flock) / sizeof(*flock));
 
 	DXUTMainLoop(); // Enter into the DXUT render loop
 
@@ -912,6 +917,13 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMMATRIX matRightWingShadowWorldViewProjection = matRightWingShadowWorld * matView * matProjection;
 	prepareRender(pd3dImmediateContext, &meshWing, matRightWingShadowWorld, matRightWingShadowWorldViewProjection, true);
 
+	//Boid
+	XMMATRIX matBoidTranslate = XMMatrixTranslation(boid->getX(), boid->getY(), boid->getZ());
+	XMMATRIX matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
+	XMMATRIX matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
+	XMMATRIX matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
+	prepareRender(pd3dImmediateContext, &meshBear, matBoidWorld, matBoidWorldViewProjection, false);
+
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
 	XMMATRIX matSkyRotate = XMMatrixRotationY(timeGetTime() * worldSpinRate);
@@ -931,6 +943,34 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	DXUT_EndPerfEvent();
 }
 
+void spawnFlock(int flockSize) {
+	int rows = pow(flockSize, 0.5);
+	int columns = flockSize / rows;
+	int arrayIndex = 0;
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			boid = new Boid(i, j, -0.5);
+			flock[arrayIndex] = boid;
+			arrayIndex += 1;
+		}
+	}
+}
+
+void updateFlock(int flockSize) {
+	int rows = pow(flockSize, 0.5);
+	int columns = flockSize / rows;
+	int arrayIndex = 0;
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			boid = new Boid(i, j, -0.5);
+			flock[arrayIndex] = boid;
+			arrayIndex += 1;
+		}
+	}
+}
+
 void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender,
 	const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow) {
 //	XMMATRIX matWorld;
@@ -942,8 +982,6 @@ void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRe
 	pd3dImmediateContext->VSSetConstantBuffers(0, 1, &g_pcbVSPerObject);
 	RenderMesh(pd3dImmediateContext, toRender, isShadow);
 }
-
-
 
 //**************************************************************************//
 // Render a CDXUTSDKMesh, using the Device Context specified.				//

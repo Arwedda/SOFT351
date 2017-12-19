@@ -111,7 +111,7 @@ float		cameraYZoom			= 2.0;
 float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
 Boid*		flock[100];
-Boid*		boid				= new Boid(1.0, 1.0, 1.0);
+int			flockSize			= sizeof(flock) / sizeof(*flock);
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -239,8 +239,8 @@ void charStrToWideChar(WCHAR *dest, char *source);
 void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender, const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender, bool isShadow);
 bool isNotTurning();
-void spawnFlock(int flockSize);
-void updateFlock(int flockSize);
+void spawnFlock();
+void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matView);
 
 //**************************************************************************//
 // A Windows program always kicks off in WinMain.							//
@@ -292,7 +292,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	DXUTCreateWindow(L"Tutorial 09 - Meshes Using DXUT Helper Classes");
 	DXUTCreateDevice(D3D_FEATURE_LEVEL_9_2, true, 800, 600);
 	//DXUTCreateDevice(true, 640, 480);
-	spawnFlock(sizeof(flock) / sizeof(*flock));
+	spawnFlock();
 
 	DXUTMainLoop(); // Enter into the DXUT render loop
 
@@ -420,6 +420,30 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 
 	if (isSpaceDown) {
 		bear->roar();
+	}
+
+	for (int i = 0; i < flockSize; i++) {
+		if (!flock[i]->isInFlock()) {
+			if (flock[i]->isNear(bear->getX(), bear->getY(), bear->getZ())) {
+				flock[i]->joinFlock();
+				flock[i]->setRX(bear->getRX());
+				flock[i]->setRY(bear->getRY());
+				flock[i]->setRZ(bear->getRZ());
+			} else {
+				for (int j = i + 1; j < flockSize; j++) {
+					if (flock[i]->isNear(flock[j])) {
+						flock[i]->joinFlock();
+						flock[i]->setRX(bear->getRX());
+						flock[i]->setRY(bear->getRY());
+						flock[i]->setRZ(bear->getRZ());
+					}
+				}
+			}
+		} else {
+			flock[i]->setRX(bear->getRX());
+			flock[i]->setRY(bear->getRY());
+			flock[i]->setRZ(bear->getRZ());
+		}
 	}
 }
 
@@ -917,12 +941,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMMATRIX matRightWingShadowWorldViewProjection = matRightWingShadowWorld * matView * matProjection;
 	prepareRender(pd3dImmediateContext, &meshWing, matRightWingShadowWorld, matRightWingShadowWorldViewProjection, true);
 
-	//Boid
-	XMMATRIX matBoidTranslate = XMMatrixTranslation(boid->getX(), boid->getY(), boid->getZ());
-	XMMATRIX matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
-	XMMATRIX matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
-	XMMATRIX matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
-	prepareRender(pd3dImmediateContext, &meshBear, matBoidWorld, matBoidWorldViewProjection, false);
+	//Boids
+	updateFlock(pd3dImmediateContext, matView);
 
 	//Skybox
 	XMMATRIX matSkyTranslate = XMMatrixTranslation(XMVectorGetX(Eye) * 2, XMVectorGetY(Eye) * 2, XMVectorGetZ(Eye) * 2);
@@ -943,29 +963,48 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	DXUT_EndPerfEvent();
 }
 
-void spawnFlock(int flockSize) {
+void spawnFlock() {
 	int rows = pow(flockSize, 0.5);
 	int columns = flockSize / rows;
 	int arrayIndex = 0;
+	Boid* boid;
+
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
-			boid = new Boid(i, j, -0.5);
+			boid = new Boid(i * 10 - 50, 0, j * 10 - 50);
 			flock[arrayIndex] = boid;
 			arrayIndex += 1;
 		}
 	}
 }
 
-void updateFlock(int flockSize) {
+void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matView) {
 	int rows = pow(flockSize, 0.5);
 	int columns = flockSize / rows;
 	int arrayIndex = 0;
+	XMMATRIX matBoidTranslate;
+	XMMATRIX matBoidRotate; 
+	XMMATRIX matBoidScale;
+	XMMATRIX matBoidWorld;
+	XMMATRIX matBoidWorldViewProjection;
+	Boid* boid;
+
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
-			boid = new Boid(i, j, -0.5);
-			flock[arrayIndex] = boid;
+			boid = flock[arrayIndex];
+			matBoidTranslate = XMMatrixTranslation(boid->getX(), boid->getY(), boid->getZ());
+
+			matBoidRotate = XMMatrixRotationRollPitchYaw(boid->getRY(), boid->getRX(), boid->getRZ());
+
+			matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
+			
+			//matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
+			matBoidWorld = matBoidRotate * matBoidTranslate * matBoidScale;
+
+			matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
+			prepareRender(pd3dImmediateContext, &meshBear, matBoidWorld, matBoidWorldViewProjection, false);
 			arrayIndex += 1;
 		}
 	}

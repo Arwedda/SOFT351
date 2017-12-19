@@ -14,6 +14,7 @@ Boid::Boid()
 	wingRest = -0.44;
 	wingPosition = -0.44;
 	vecRear = XMVectorSet(0, 0, -2, 0) * -3;
+	inFlock = false;
 }
 
 Boid::Boid(float setX, float setY, float setZ)
@@ -29,6 +30,7 @@ Boid::Boid(float setX, float setY, float setZ)
 	wingRest = -0.44;
 	wingPosition = -0.44;
 	vecRear = XMVectorSet(0, 0, -2, 0) * -3;
+	inFlock = false;
 }
 
 Boid::~Boid() {
@@ -205,4 +207,30 @@ void Boid::move(float fElapsedTime) {
 	setX(getX() + XMVectorGetX(currentDir));
 	setY(getY() + XMVectorGetY(currentDir));
 	setZ(getZ() + XMVectorGetZ(currentDir));
+}
+
+void Boid::joinFlock() {
+	inFlock = true;
+}
+
+bool Boid::isInFlock() {
+	return inFlock;
+}
+
+bool Boid::isNear(Boid* flockMember) {
+	float a = hypot(getX(), hypot(getY(), getZ()));
+	float b = hypot(flockMember->getX(), hypot(flockMember->getY(), flockMember->getZ()));
+	if (-0.5 <= a - b && a - b <= 0.5) {
+		joinFlock();
+	}
+	return isInFlock();
+}
+
+bool Boid::isNear(float bearX, float bearY, float bearZ) {
+	float a = hypot(getX(), hypot(getY(), getZ()));
+	float b = hypot(bearX, hypot(bearY, bearZ));
+	if (-0.5 <= a - b && a - b <= 0.5) {
+		joinFlock();
+	}
+	return isInFlock();
 }

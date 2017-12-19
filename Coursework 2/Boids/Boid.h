@@ -17,6 +17,8 @@ private:
 	float		maxTilt;						//Tilt whilst turning
 	float		maxClimb, maxDescent;			//Manual climb/descend rate
 	float		wingRest, wingPosition;			//Wing angle
+
+	bool inFlock;
 public:
 	XMVECTOR vecRear;
 	Boid();
@@ -52,5 +54,9 @@ public:
 	void levelOut(float fElapsedTime, float horizontalRY);
 	bool inAir(float ground);
 	void move(float fElapsedTime);
+	void joinFlock();
+	bool isInFlock();
+	bool isNear(Boid* flockMember);
+	bool isNear(float bearX, float bearY, float bearZ);
 };
 #endif

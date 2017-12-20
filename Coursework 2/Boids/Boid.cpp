@@ -182,6 +182,40 @@ bool Boid::inAir(float ground) {
 	return (getY() > ground);
 }
 
+
+void Boid::joinFlock() {
+	inFlock = true;
+}
+
+bool Boid::isInFlock() {
+	return inFlock;
+}
+
+bool Boid::isNear(Boid* flockMember, float range) {
+	float deltaX = abs(long (getX() - flockMember->getX()));
+	float deltaY = abs(long (getY() - flockMember->getY()));
+	float deltaZ = abs(long (getZ() - flockMember->getZ()));
+
+	return (deltaX + deltaY + deltaZ <= range);
+}
+
+bool Boid::isNear(float bearX, float bearY, float bearZ, float range) {
+	float deltaX = abs(long (getX() - bearX));
+	float deltaY = abs(long (getY() - bearY));
+	float deltaZ = abs(long (getZ() - bearZ));
+
+	return (deltaX + deltaY + deltaZ <= range);
+}
+
+void Boid::follow(float fElapsedTime, bool tooClose) {
+	if (-maxForward < speed && !tooClose) {
+		speed -= fElapsedTime * 3;
+	} else {
+		speed += fElapsedTime * 3;
+	}
+	move(fElapsedTime);
+}
+
 void Boid::move(float fElapsedTime) {
 	/* //Quaternion rotation - sort of works, not quite right sometimes
 	XMVECTOR xAxis = XMVectorSet(0, 1, 0, 0);
@@ -209,32 +243,6 @@ void Boid::move(float fElapsedTime) {
 	setZ(getZ() + XMVectorGetZ(currentDir));
 }
 
-void Boid::joinFlock() {
-	inFlock = true;
-}
+void Boid::faceBear(XMVECTOR bearDir) {
 
-bool Boid::isInFlock() {
-	return inFlock;
-}
-
-bool Boid::isNear(Boid* flockMember, float range) {
-	float deltaX = abs(long (getX() - flockMember->getX()));
-	float deltaY = abs(long (getY() - flockMember->getY()));
-	float deltaZ = abs(long (getZ() - flockMember->getZ()));
-
-	if (deltaX + deltaY + deltaZ <= range) {
-		joinFlock();
-	}
-	return isInFlock();
-}
-
-bool Boid::isNear(float bearX, float bearY, float bearZ, float range) {
-	float deltaX = abs(long (getX() - bearX));
-	float deltaY = abs(long (getY() - bearY));
-	float deltaZ = abs(long (getZ() - bearZ));
-
-	if (deltaX + deltaY + deltaZ <= range) {
-		joinFlock();
-	}
-	return isInFlock();
 }

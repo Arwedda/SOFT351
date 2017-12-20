@@ -53,10 +53,13 @@ public:
 	void straightenUp(float fElapsedTime, float horizontalRZ);
 	void levelOut(float fElapsedTime, float horizontalRY);
 	bool inAir(float ground);
-	void move(float fElapsedTime);
+
 	void joinFlock();
 	bool isInFlock();
 	bool isNear(Boid* flockMember, float range);
 	bool isNear(float bearX, float bearY, float bearZ, float range);
+	void follow(float fElapsedTime, bool tooClose);
+	void move(float fElapsedTime);
+	void faceBear(XMVECTOR bearDir);
 };
 #endif

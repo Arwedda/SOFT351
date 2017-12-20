@@ -240,6 +240,8 @@ void charStrToWideChar(WCHAR *dest, char *source);
 void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRender, const XMMATRIX &matWorld, const XMMATRIX &matWorldViewProjection, bool isShadow);
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender, bool isShadow);
 bool isNotTurning();
+void keyboardInput(float fElapsedTime);
+void flockInteraction(float fElapsedTime);
 void spawnFlock();
 void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matView);
 
@@ -350,6 +352,11 @@ bool CALLBACK ModifyDeviceSettings(DXUTDeviceSettings* pDeviceSettings, void* pU
 //**************************************************************************//
 void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 {
+	keyboardInput(fElapsedTime);
+	flockInteraction(fElapsedTime);
+}
+
+void keyboardInput(float fElapsedTime) {
 	//Handles turning including a tilt to simulate re-proportioning weight
 	//If neither are pressed straightens Z-axis
 	if (isLeftArrowDown) {
@@ -409,7 +416,8 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 		bear->restWings();
 		if (bear->inAir(ground)) {
 			bear->fall(gravityFallSpeed);
-		} else {
+		}
+		else {
 			bear->slowGround();
 		}
 	}
@@ -422,28 +430,38 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 	if (isSpaceDown) {
 		bear->roar();
 	}
+}
 
+void flockInteraction(float fElapsedTime) {
+	float bearX = bear->getX();
+	float bearY = bear->getY();
+	float bearZ = bear->getZ();
+	XMVECTOR bearDir = XMVectorSet(bearX, bearY, bearZ, 0.0f);
+
+	//For each boid
 	for (int i = 0; i < flockSize; i++) {
+		//If it is not in the flock see if it is
 		if (!flock[i]->isInFlock()) {
-			if (flock[i]->isNear(bear->getX(), bear->getY(), bear->getZ(), range)) {
+			if (flock[i]->isNear(bearX, bearY, bearZ, range)) {
 				flock[i]->joinFlock();
 				flock[i]->setRX(bear->getRX());
 				flock[i]->setRY(bear->getRY());
 				flock[i]->setRZ(bear->getRZ());
-			} else {
+			}
+			else {
 				for (int j = i + 1; j < flockSize; j++) {
 					if (flock[i]->isNear(flock[j], range)) {
 						flock[i]->joinFlock();
-						flock[i]->setRX(bear->getRX());
-						flock[i]->setRY(bear->getRY());
-						flock[i]->setRZ(bear->getRZ());
+						flock[i]->faceBear(bearDir);
 					}
 				}
 			}
-		} else {
-			flock[i]->setRX(bear->getRX());
-			flock[i]->setRY(bear->getRY());
-			flock[i]->setRZ(bear->getRZ());
+		} else { //If it is in the flock, be a boid
+			//Face the bear
+			flock[i]->faceBear(bearDir);
+			//Follow the bear
+			//flock[i]->follow(fElapsedTime, flock[i]->isNear(bearX, bearY, bearZ, range));
+
 		}
 	}
 }

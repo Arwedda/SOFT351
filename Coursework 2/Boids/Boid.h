@@ -60,6 +60,6 @@ public:
 	bool isNear(float bearX, float bearY, float bearZ, float range);
 	void follow(float fElapsedTime, bool tooClose);
 	void move(float fElapsedTime);
-	void faceBear(XMVECTOR bearDir);
+	void faceBear(XMVECTOR bearDir, float fElapsedTime);
 };
 #endif

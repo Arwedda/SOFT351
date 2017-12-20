@@ -243,6 +243,28 @@ void Boid::move(float fElapsedTime) {
 	setZ(getZ() + XMVectorGetZ(currentDir));
 }
 
-void Boid::faceBear(XMVECTOR bearDir) {
+void Boid::faceBear(XMVECTOR bearDir, float fElapsedTime) {
+	float targetX = abs(long (XMVectorGetX(bearDir) - getRX()));
+	float targetY = abs(long (XMVectorGetY(bearDir) - getRY()));
+	float targetZ = abs(long (XMVectorGetZ(bearDir) - getRZ()));
 
+	XMVECTOR boidToBear = XMVectorSet(targetX, targetY, targetZ, 0.0);
+	boidToBear = XMVector3Normalize(boidToBear);
+
+	XMVECTOR result = XMVector3Dot(bearDir, boidToBear);
+	
+	float targetRX = XMVectorGetX(result);
+	float targetRY = XMVectorGetY(result);
+	float targetRZ = XMVectorGetZ(result);
+
+	if (targetRX < 0) {
+		turnRight(fElapsedTime);
+	} else if (0 < targetRX) {
+		turnLeft(fElapsedTime);
+	}
+	if (targetRY < 0) {
+		tiltDown(fElapsedTime);
+	} else if (0 < targetRY) {
+		tiltUp(fElapsedTime);
+	}
 }

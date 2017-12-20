@@ -452,13 +452,13 @@ void flockInteraction(float fElapsedTime) {
 				for (int j = i + 1; j < flockSize; j++) {
 					if (flock[i]->isNear(flock[j], range)) {
 						flock[i]->joinFlock();
-						flock[i]->faceBear(bearDir);
+						flock[i]->faceBear(bearDir, fElapsedTime);
 					}
 				}
 			}
 		} else { //If it is in the flock, be a boid
 			//Face the bear
-			flock[i]->faceBear(bearDir);
+			flock[i]->faceBear(bearDir, fElapsedTime);
 			//Follow the bear
 			//flock[i]->follow(fElapsedTime, flock[i]->isNear(bearX, bearY, bearZ, range));
 

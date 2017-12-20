@@ -1,9 +1,4 @@
 Get OOP drawing itself
-Get them detecting range
-	>boolean array
-	>cycle through 0s
-	>comp to user and 1s
-	>if within range, join flock
 Follow mode
 Rotate as moving
 boids mechanics:

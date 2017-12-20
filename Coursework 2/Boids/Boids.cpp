@@ -112,6 +112,7 @@ float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
+float		range				= 1.0;
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -424,14 +425,14 @@ void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
 
 	for (int i = 0; i < flockSize; i++) {
 		if (!flock[i]->isInFlock()) {
-			if (flock[i]->isNear(bear->getX(), bear->getY(), bear->getZ())) {
+			if (flock[i]->isNear(bear->getX(), bear->getY(), bear->getZ(), range)) {
 				flock[i]->joinFlock();
 				flock[i]->setRX(bear->getRX());
 				flock[i]->setRY(bear->getRY());
 				flock[i]->setRZ(bear->getRZ());
 			} else {
 				for (int j = i + 1; j < flockSize; j++) {
-					if (flock[i]->isNear(flock[j])) {
+					if (flock[i]->isNear(flock[j], range)) {
 						flock[i]->joinFlock();
 						flock[i]->setRX(bear->getRX());
 						flock[i]->setRY(bear->getRY());

@@ -217,19 +217,23 @@ bool Boid::isInFlock() {
 	return inFlock;
 }
 
-bool Boid::isNear(Boid* flockMember) {
-	float a = hypot(getX(), hypot(getY(), getZ()));
-	float b = hypot(flockMember->getX(), hypot(flockMember->getY(), flockMember->getZ()));
-	if (-0.5 <= a - b && a - b <= 0.5) {
+bool Boid::isNear(Boid* flockMember, float range) {
+	float deltaX = abs(long (getX() - flockMember->getX()));
+	float deltaY = abs(long (getY() - flockMember->getY()));
+	float deltaZ = abs(long (getZ() - flockMember->getZ()));
+
+	if (deltaX + deltaY + deltaZ <= range) {
 		joinFlock();
 	}
 	return isInFlock();
 }
 
-bool Boid::isNear(float bearX, float bearY, float bearZ) {
-	float a = hypot(getX(), hypot(getY(), getZ()));
-	float b = hypot(bearX, hypot(bearY, bearZ));
-	if (-0.5 <= a - b && a - b <= 0.5) {
+bool Boid::isNear(float bearX, float bearY, float bearZ, float range) {
+	float deltaX = abs(long (getX() - bearX));
+	float deltaY = abs(long (getY() - bearY));
+	float deltaZ = abs(long (getZ() - bearZ));
+
+	if (deltaX + deltaY + deltaZ <= range) {
 		joinFlock();
 	}
 	return isInFlock();

@@ -157,10 +157,12 @@ Boid.cpp(126): warning C4458: declaration of 'speed' hides class member
   c:\users\jkell\desktop\coursework\coursework 2\boids\Boid.h(14): note: see declaration of 'Boid::speed'
 Boid.cpp(127): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 Boid.cpp(144): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(221): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(222): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(230): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(231): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(221): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(222): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(223): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(232): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(233): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(234): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
   DXUTDevice11.cpp
   DXUTDevice9.cpp
   DXUTmisc.cpp
@@ -269,14 +271,14 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl
 c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
 c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
 c:\users\jkell\desktop\coursework\coursework 2\boids\Boid.h(23): warning C4324: 'Boid': structure was padded due to alignment specifier
-Boids.cpp(165): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
-Boids.cpp(885): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
-Boids.cpp(930): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
-Boids.cpp(800): warning C4101: 'hr': unreferenced local variable
-Boids.cpp(967): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Boids.cpp(975): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Boids.cpp(983): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Boids.cpp(1118): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+Boids.cpp(166): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
+Boids.cpp(886): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+Boids.cpp(931): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
+Boids.cpp(801): warning C4101: 'hr': unreferenced local variable
+Boids.cpp(968): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(976): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Boids.cpp(984): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(1119): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   BasicHLSL9.cpp
   Generating Code...
 c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(152): warning C4702: unreachable code

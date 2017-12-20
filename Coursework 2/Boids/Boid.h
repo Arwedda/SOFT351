@@ -56,7 +56,7 @@ public:
 	void move(float fElapsedTime);
 	void joinFlock();
 	bool isInFlock();
-	bool isNear(Boid* flockMember);
-	bool isNear(float bearX, float bearY, float bearZ);
+	bool isNear(Boid* flockMember, float range);
+	bool isNear(float bearX, float bearY, float bearZ, float range);
 };
 #endif

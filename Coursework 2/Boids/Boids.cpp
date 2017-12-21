@@ -54,6 +54,7 @@
 #include "Thing3D.h"
 #include "Bear.h"
 #include "Boid.h"
+#include <vector>
 
 //**************************************************************************//
 // Global Variables.  There are many global variables here (we aren't OO	//
@@ -295,6 +296,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	DXUTCreateWindow(L"Tutorial 09 - Meshes Using DXUT Helper Classes");
 	DXUTCreateDevice(D3D_FEATURE_LEVEL_9_2, true, 800, 600);
 	//DXUTCreateDevice(true, 640, 480);
+	
 	spawnFlock();
 
 	DXUTMainLoop(); // Enter into the DXUT render loop
@@ -440,29 +442,23 @@ void flockInteraction(float fElapsedTime) {
 
 	//For each boid
 	for (int i = 0; i < flockSize; i++) {
-		//If it is not in the flock see if it is
-		if (!flock[i]->isInFlock()) {
-			if (flock[i]->isNear(bearX, bearY, bearZ, range)) {
-				flock[i]->joinFlock();
-				flock[i]->setRX(bear->getRX());
-				flock[i]->setRY(bear->getRY());
-				flock[i]->setRZ(bear->getRZ());
+		std::vector<Boid*> localFlock;
+		//Cycle through other boids to determine local flock
+		for (int j = 0; j < flockSize; j++) {
+			if ((flock[i]->isNear(flock[j], range)) && (i != j)) {
+				localFlock.push_back(flock[j]);
 			}
-			else {
-				for (int j = i + 1; j < flockSize; j++) {
-					if (flock[i]->isNear(flock[j], range)) {
-						flock[i]->joinFlock();
-						flock[i]->faceBear(bearDir, fElapsedTime);
-					}
-				}
-			}
-		} else { //If it is in the flock, be a boid
-			//Face the bear
-			flock[i]->faceBear(bearDir, fElapsedTime);
-			//Follow the bear
-			//flock[i]->follow(fElapsedTime, flock[i]->isNear(bearX, bearY, bearZ, range));
-
 		}
+		//If no nearby boids, explore
+		if (localFlock.empty()) {
+			flock[i]->turnRandomly(fElapsedTime);
+		} else { //Otherwise, follow the flock
+			flock[i]->separation(localFlock);
+			flock[i]->alignment(localFlock);
+			flock[i]->cohesion(localFlock, fElapsedTime);
+			//flock[i]->straightenUp(fElapsedTime, horizontalRZ);
+		}
+			flock[i]->move(fElapsedTime);
 	}
 }
 

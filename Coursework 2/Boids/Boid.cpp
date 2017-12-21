@@ -1,6 +1,10 @@
 #include "DXUT.h"
 #include "Boid.h"
 
+std::mt19937 rng;
+std::uniform_int_distribution<uint32_t> roll(1,3);
+
+
 Boid::Boid()
 	:Thing3D() {
 	speed = 0.0;
@@ -13,8 +17,7 @@ Boid::Boid()
 	maxDescent = 1.55;
 	wingRest = -0.44;
 	wingPosition = -0.44;
-	vecRear = XMVectorSet(0, 0, -2, 0) * -3;
-	inFlock = false;
+	rng.seed(std::time(0));
 }
 
 Boid::Boid(float setX, float setY, float setZ)
@@ -29,13 +32,137 @@ Boid::Boid(float setX, float setY, float setZ)
 	maxDescent = 1.55;
 	wingRest = -0.44;
 	wingPosition = -0.44;
-	vecRear = XMVectorSet(0, 0, -2, 0) * -3;
-	inFlock = false;
+	rng.seed(std::time(0));
 }
 
 Boid::~Boid() {
-	vecRear;
 }
+
+
+bool Boid::isNear(Boid* flockMember, float range) {
+	float deltaX = abs(long (getX() - flockMember->getX()));
+	float deltaY = abs(long (getY() - flockMember->getY()));
+	float deltaZ = abs(long (getZ() - flockMember->getZ()));
+
+	return (deltaX + deltaY + deltaZ <= range);
+}
+
+bool Boid::isNear(float bearX, float bearY, float bearZ, float range) {
+	float deltaX = abs(long (getX() - bearX));
+	float deltaY = abs(long (getY() - bearY));
+	float deltaZ = abs(long (getZ() - bearZ));
+
+	return (deltaX + deltaY + deltaZ <= range);
+}
+
+void Boid::follow(float fElapsedTime, bool tooClose) {
+	if (-maxForward < speed && !tooClose) {
+		speed -= fElapsedTime * 3;
+	} else {
+		speed += fElapsedTime * 3;
+	}
+	move(fElapsedTime);
+}
+
+void Boid::move(float fElapsedTime) {
+	/* //Quaternion rotation - sort of works, not quite right sometimes
+	XMVECTOR xAxis = XMVectorSet(0, 1, 0, 0);
+	XMVECTOR yAxis = XMVectorSet(1, 0, 0, 0);
+	XMVECTOR zAxis = XMVectorSet(0, 0, 1, 0);
+
+	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, getRX());
+	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, getRY());
+	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, getRZ());
+
+	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(yRotation, zRotation), xRotation);
+	matRotations = XMMatrixRotationQuaternion(combinedRotation); */
+
+	//Calculate current direction
+	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
+	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
+	currentDir = XMVector3Normalize(currentDir);
+
+	//Move bear in that direction by the speed
+	currentDir *= getSpeed() * fElapsedTime;
+
+	setX(getX() + XMVectorGetX(currentDir));
+	setY(getY() + XMVectorGetY(currentDir));
+	setZ(getZ() + XMVectorGetZ(currentDir));
+}
+
+void Boid::faceBear(XMVECTOR bearDir, float fElapsedTime) {
+
+
+}
+
+void Boid::separation(std::vector<Boid*> flock) {
+	//Separation: steer to avoid crowding local flockmates 
+	if (!flock.empty()) {
+
+	}
+}
+
+void Boid::alignment(std::vector<Boid*> flock) {
+	//Alignment: steer towards the average heading of local flockmates 
+	if (!flock.empty()) {
+
+	}
+}
+
+void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
+	//Cohesion: steer to move toward the average position of local flockmates
+	if (!flock.empty()) {
+
+	}
+}
+
+void Boid::turnRandomly(float fElapsedTime) {
+	int decision = roll(rng);
+	switch (decision) {
+	case 1:
+		turnLeft(fElapsedTime);
+		//tiltLeft(fElapsedTime);
+		break;
+	case 2:
+		turnRight(fElapsedTime);
+		//tiltRight(fElapsedTime);
+		break;
+		//case 3: forward
+	}
+}
+
+void Boid::turnLeft(float fElapsedTime) {
+	setRX(getRX() - fElapsedTime * 3);
+}
+
+void Boid::tiltLeft(float fElapsedTime) {
+	if (getRZ() < maxTilt) {
+		setRZ(getRZ() + fElapsedTime * 3);
+	}
+}
+
+void Boid::turnRight(float fElapsedTime) {
+	setRX(getRX() + fElapsedTime * 3);
+}
+
+void Boid::tiltRight(float fElapsedTime) {
+	if (getRZ() > -maxTilt) {
+		setRZ(getRZ() - fElapsedTime * 3);
+	}
+}
+
+void Boid::straightenUp(float fElapsedTime, float horizontalRZ) {
+	if (getRZ() < horizontalRZ) {
+		setRZ(getRZ() + fElapsedTime * 3);
+	}
+	else if (getRZ() > horizontalRZ) {
+		setRZ(getRZ() - fElapsedTime * 3);
+	}
+}
+
+
+
+
 
 float Boid::getSpeed() {
 	return speed;
@@ -84,26 +211,6 @@ void Boid::setWingPosition(float newWingPosition) {
 	wingPosition = newWingPosition;
 }
 
-void Boid::turnLeft(float fElapsedTime) {
-	setRX(getRX() - fElapsedTime * 3);
-}
-
-void Boid::tiltLeft(float fElapsedTime) {
-	if (getRZ() < maxTilt) {
-		setRZ(getRZ() + fElapsedTime * 3);
-	}
-}
-
-void Boid::turnRight(float fElapsedTime) {
-	setRX(getRX() + fElapsedTime * 3);
-}
-
-void Boid::tiltRight(float fElapsedTime) {
-	if (getRZ() > -maxTilt) {
-		setRZ(getRZ() - fElapsedTime * 3);
-	}
-}
-
 void Boid::forward(float fElapsedTime) {
 	if (speed > -maxForward) {
 		speed -= fElapsedTime * 3;
@@ -150,15 +257,6 @@ void Boid::restWings() {
 	}
 }
 
-void Boid::straightenUp(float fElapsedTime, float horizontalRZ) {
-	if (getRZ() < horizontalRZ) {
-		setRZ(getRZ() + fElapsedTime * 3);
-	}
-	else if (getRZ() > horizontalRZ) {
-		setRZ(getRZ() - fElapsedTime * 3);
-	}
-}
-
 void Boid::tiltUp(float fElapsedTime) {
 	if (getRY() > -getMaxClimb()) {
 		setRY(getRY() - fElapsedTime * 3);
@@ -180,91 +278,4 @@ void Boid::levelOut(float fElapsedTime, float horizontalRY) {
 
 bool Boid::inAir(float ground) {
 	return (getY() > ground);
-}
-
-
-void Boid::joinFlock() {
-	inFlock = true;
-}
-
-bool Boid::isInFlock() {
-	return inFlock;
-}
-
-bool Boid::isNear(Boid* flockMember, float range) {
-	float deltaX = abs(long (getX() - flockMember->getX()));
-	float deltaY = abs(long (getY() - flockMember->getY()));
-	float deltaZ = abs(long (getZ() - flockMember->getZ()));
-
-	return (deltaX + deltaY + deltaZ <= range);
-}
-
-bool Boid::isNear(float bearX, float bearY, float bearZ, float range) {
-	float deltaX = abs(long (getX() - bearX));
-	float deltaY = abs(long (getY() - bearY));
-	float deltaZ = abs(long (getZ() - bearZ));
-
-	return (deltaX + deltaY + deltaZ <= range);
-}
-
-void Boid::follow(float fElapsedTime, bool tooClose) {
-	if (-maxForward < speed && !tooClose) {
-		speed -= fElapsedTime * 3;
-	} else {
-		speed += fElapsedTime * 3;
-	}
-	move(fElapsedTime);
-}
-
-void Boid::move(float fElapsedTime) {
-	/* //Quaternion rotation - sort of works, not quite right sometimes
-	XMVECTOR xAxis = XMVectorSet(0, 1, 0, 0);
-	XMVECTOR yAxis = XMVectorSet(1, 0, 0, 0);
-	XMVECTOR zAxis = XMVectorSet(0, 0, 1, 0);
-
-	XMVECTOR xRotation = XMQuaternionRotationAxis(xAxis, getRX());
-	XMVECTOR yRotation = XMQuaternionRotationAxis(yAxis, getRY());
-	XMVECTOR zRotation = XMQuaternionRotationAxis(zAxis, getRZ());
-
-	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(yRotation, zRotation), xRotation);
-	matRotations = XMMatrixRotationQuaternion(combinedRotation); */
-
-	//Calculate current direction
-	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
-	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
-	currentDir = XMVector3Normalize(currentDir);
-	vecRear = currentDir * -3;
-
-	//Move bear in that direction by the speed
-	currentDir *= getSpeed() * fElapsedTime;
-
-	setX(getX() + XMVectorGetX(currentDir));
-	setY(getY() + XMVectorGetY(currentDir));
-	setZ(getZ() + XMVectorGetZ(currentDir));
-}
-
-void Boid::faceBear(XMVECTOR bearDir, float fElapsedTime) {
-	float targetX = abs(long (XMVectorGetX(bearDir) - getRX()));
-	float targetY = abs(long (XMVectorGetY(bearDir) - getRY()));
-	float targetZ = abs(long (XMVectorGetZ(bearDir) - getRZ()));
-
-	XMVECTOR boidToBear = XMVectorSet(targetX, targetY, targetZ, 0.0);
-	boidToBear = XMVector3Normalize(boidToBear);
-
-	XMVECTOR result = XMVector3Dot(bearDir, boidToBear);
-	
-	float targetRX = XMVectorGetX(result);
-	float targetRY = XMVectorGetY(result);
-	float targetRZ = XMVectorGetZ(result);
-
-	if (targetRX < 0) {
-		turnRight(fElapsedTime);
-	} else if (0 < targetRX) {
-		turnLeft(fElapsedTime);
-	}
-	if (targetRY < 0) {
-		tiltDown(fElapsedTime);
-	} else if (0 < targetRY) {
-		tiltUp(fElapsedTime);
-	}
 }

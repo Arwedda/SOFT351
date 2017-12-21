@@ -1,9 +1,10 @@
 Get OOP drawing itself
-Follow mode:
-	Head towards bear
-	Gain speed up to max speed over time
-	Maintain minimum distance from bear
-	Face towards bear
+Random mode:
+	Randomly turn
+	Accellerate until 1
+	Random accelleration/decelleration
+	Decellerate at 5
+	Move in direction at speed
 boids mechanics:
 	Separation: steer to avoid crowding local flockmates
 	Alignment: steer towards the average heading of local flockmates

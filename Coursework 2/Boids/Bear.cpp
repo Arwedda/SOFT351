@@ -17,7 +17,6 @@ Bear::Bear()
 }
 
 Bear::~Bear() {
-	vecRear;
 }
 
 float Bear::getSpeed() {

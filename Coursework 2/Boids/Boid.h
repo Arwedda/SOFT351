@@ -1,4 +1,7 @@
 #include "Thing3D.h"
+#include <vector>
+#include <ctime>
+#include <random>
 #ifndef BoidH   //Guards, as usual.
 #define BoidH
 
@@ -18,12 +21,26 @@ private:
 	float		maxClimb, maxDescent;			//Manual climb/descend rate
 	float		wingRest, wingPosition;			//Wing angle
 
-	bool inFlock;
 public:
-	XMVECTOR vecRear;
 	Boid();
 	Boid(float setX, float setY, float setZ);
 	~Boid();
+	bool isNear(Boid* flockMember, float range);
+	bool isNear(float bearX, float bearY, float bearZ, float range);
+	void follow(float fElapsedTime, bool tooClose);
+	void move(float fElapsedTime);
+	void faceBear(XMVECTOR bearDir, float fElapsedTime);
+	void separation(std::vector<Boid*> flock);
+	void alignment(std::vector<Boid*> flock);
+	void cohesion(std::vector<Boid*> flock, float fElapsedTime);
+	void Boid::turnRandomly(float fElapsedTime);
+	void turnLeft(float fElapsedTime);
+	void tiltLeft(float fElapsedTime);
+	void turnRight(float fElapsedTime);
+	void tiltRight(float fElapsedTime);
+	void straightenUp(float fElapsedTime, float horizontalRZ);
+
+
 	float getSpeed();
 	void setSpeed(float newSpeed);
 	float getFallSpeed();
@@ -36,11 +53,6 @@ public:
 	float getWingRest();
 	float getWingPosition();
 	void setWingPosition(float newWingPosition);
-
-	void turnLeft(float fElapsedTime);
-	void tiltLeft(float fElapsedTime);
-	void turnRight(float fElapsedTime);
-	void tiltRight(float fElapsedTime);
 	void tiltUp(float fElapsedTime);
 	void tiltDown(float fElapsedTime);
 	void forward(float fElapsedTime);
@@ -50,16 +62,7 @@ public:
 	void fall(float fElapsedTime);
 	void wingFlap();
 	void restWings();
-	void straightenUp(float fElapsedTime, float horizontalRZ);
 	void levelOut(float fElapsedTime, float horizontalRY);
 	bool inAir(float ground);
-
-	void joinFlock();
-	bool isInFlock();
-	bool isNear(Boid* flockMember, float range);
-	bool isNear(float bearX, float bearY, float bearZ, float range);
-	void follow(float fElapsedTime, bool tooClose);
-	void move(float fElapsedTime);
-	void faceBear(XMVECTOR bearDir, float fElapsedTime);
 };
 #endif

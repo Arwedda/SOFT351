@@ -30,8 +30,8 @@ public:
 	void follow(float fElapsedTime, bool tooClose);
 	void move(float fElapsedTime);
 	void faceBear(XMVECTOR bearDir, float fElapsedTime);
-	void separation(std::vector<Boid*> flock);
-	void alignment(std::vector<Boid*> flock);
+	void separation(std::vector<Boid*> flock, float minProximity);
+	void alignment(std::vector<Boid*> flock, float fElapsedTime);
 	void cohesion(std::vector<Boid*> flock, float fElapsedTime);
 	void moveRandomly(float fElapsedTime);
 	void turnRandomly(float fElapsedTime);

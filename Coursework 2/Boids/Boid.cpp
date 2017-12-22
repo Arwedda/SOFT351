@@ -96,24 +96,50 @@ void Boid::faceBear(XMVECTOR bearDir, float fElapsedTime) {
 
 }
 
-void Boid::separation(std::vector<Boid*> flock) {
+void Boid::separation(std::vector<Boid*> flock, float minProximity) {
+	Boid neighbour;
 	//Separation: steer to avoid crowding local flockmates 
-	if (!flock.empty()) {
-
+	while (!flock.empty()) {
+		if (isNear(flock.back(), minProximity)) {
+			//Calculate angle between my Curr direction and flockmate
+			//Set goal direction 180 degrees from it (turn 180 - curr angle away)
+			//Turn in that direction with turnleft/turnright(fElapsedTime)
+		}
+		flock.pop_back();
 	}
 }
 
-void Boid::alignment(std::vector<Boid*> flock) {
+void Boid::alignment(std::vector<Boid*> flock, float fElapsedTime) {
+	float myRX = getRX();
+	float myRY = getRY();
+	float goalRX = myRX;
+	float goalRY = myRY;
+	int flockSize = flock.size() + 1;
 	//Alignment: steer towards the average heading of local flockmates 
-	if (!flock.empty()) {
-
+	while (!flock.empty()) {
+		//Make total RX, RY
+		goalRX += flock.back()->getRX();
+		goalRY += flock.back()->getRY();
+		flock.pop_back();
+	}
+	//Divide each by flock size + 1 (because flock includes this boid)
+	goalRX = goalRX / flockSize;
+	goalRY = goalRY / flockSize;
+	//Turn that way
+	if (myRX < goalRX) {
+		turnRight(fElapsedTime);
+	} else if (goalRX < myRX) {
+		turnLeft(fElapsedTime);
 	}
 }
 
 void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
 	//Cohesion: steer to move toward the average position of local flockmates
-	if (!flock.empty()) {
+	while (!flock.empty()) {
+		//Make total X, Y, Zs
+		//Divide each by flock size
 
+		flock.pop_back();
 	}
 }
 

@@ -113,7 +113,8 @@ float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
-float		range				= 1.0;
+float		neighbourRange		= 5.0;
+float		minProximity		= 2.0;
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -445,7 +446,7 @@ void flockInteraction(float fElapsedTime) {
 		std::vector<Boid*> localFlock;
 		//Cycle through other boids to determine local flock
 		for (int j = 0; j < flockSize; j++) {
-			if ((flock[i]->isNear(flock[j], range)) && (i != j)) {
+			if ((flock[i]->isNear(flock[j], neighbourRange)) && (i != j)) {
 				localFlock.push_back(flock[j]);
 			}
 		}
@@ -453,8 +454,8 @@ void flockInteraction(float fElapsedTime) {
 		if (localFlock.empty()) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, follow the flock
-			flock[i]->separation(localFlock);
-			flock[i]->alignment(localFlock);
+			flock[i]->separation(localFlock, minProximity);
+			flock[i]->alignment(localFlock, fElapsedTime);
 			flock[i]->cohesion(localFlock, fElapsedTime);
 		}
 			flock[i]->move(fElapsedTime);

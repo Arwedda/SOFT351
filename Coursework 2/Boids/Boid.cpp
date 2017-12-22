@@ -2,14 +2,15 @@
 #include "Boid.h"
 
 std::mt19937 rng;
-std::uniform_int_distribution<uint32_t> roll(1,3);
+std::uniform_int_distribution<uint32_t> turn(1, 3);
+std::uniform_int_distribution<uint32_t> acceleration(1, 3);
 
 
 Boid::Boid()
 	:Thing3D() {
 	speed = 0.0;
 	maxForward = 10.0;
-	maxReverse = 3.0;
+	maxReverse = 0.0;
 	dragCoefficient = 0.5;		//Playing with arbitrary numbers
 	mass = 300.0;				//Google says bears generally are a few hundred kilos
 	maxTilt = 0.52;
@@ -24,7 +25,7 @@ Boid::Boid(float setX, float setY, float setZ)
 	:Thing3D(setX, setY, setZ) {
 	speed = 0.0;
 	maxForward = 10.0;
-	maxReverse = 3.0;
+	maxReverse = 0.0;
 	dragCoefficient = 0.5;		//Playing with arbitrary numbers
 	mass = 300.0;				//Google says bears generally are a few hundred kilos
 	maxTilt = 0.52;
@@ -116,18 +117,49 @@ void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
 	}
 }
 
+void Boid::moveRandomly(float fElapsedTime) {
+	turnRandomly(fElapsedTime);
+	adjustSpeed(fElapsedTime);
+}
+
 void Boid::turnRandomly(float fElapsedTime) {
-	int decision = roll(rng);
+	int decision = turn(rng);
 	switch (decision) {
 	case 1:
 		turnLeft(fElapsedTime);
-		//tiltLeft(fElapsedTime);
 		break;
 	case 2:
 		turnRight(fElapsedTime);
-		//tiltRight(fElapsedTime);
 		break;
 		//case 3: forward
+	}
+}
+
+//Random speed adjustments that encourages boids to be moving
+//at approximately half speed
+void Boid::adjustSpeed(float fElapsedTime) {
+	int decision = acceleration(rng);
+	//Below half speed
+	if (getSpeed() >= (-getMaxForward() / 2)) {
+		switch (decision) {
+			case 1:
+			case 2:
+				forward(fElapsedTime);
+				break;
+			case 3:
+				reverse(fElapsedTime);
+				break;
+		}
+	} else { //Above half speed 
+		switch (decision) {
+			case 1:
+				forward(fElapsedTime);
+				break;
+			case 2:
+			case 3:
+				reverse(fElapsedTime);
+				break;
+		}
 	}
 }
 
@@ -135,14 +167,30 @@ void Boid::turnLeft(float fElapsedTime) {
 	setRX(getRX() - fElapsedTime * 3);
 }
 
+void Boid::turnRight(float fElapsedTime) {
+	setRX(getRX() + fElapsedTime * 3);
+}
+
+void Boid::forward(float fElapsedTime) {
+	if (speed > -maxForward) {
+		speed -= fElapsedTime * 3;
+	}
+}
+
+void Boid::reverse(float fElapsedTime) {
+	if (speed < maxReverse) {
+		speed += fElapsedTime * 3;
+	}
+}
+
+
+
+
+
 void Boid::tiltLeft(float fElapsedTime) {
 	if (getRZ() < maxTilt) {
 		setRZ(getRZ() + fElapsedTime * 3);
 	}
-}
-
-void Boid::turnRight(float fElapsedTime) {
-	setRX(getRX() + fElapsedTime * 3);
 }
 
 void Boid::tiltRight(float fElapsedTime) {
@@ -209,18 +257,6 @@ float Boid::getWingPosition() {
 
 void Boid::setWingPosition(float newWingPosition) {
 	wingPosition = newWingPosition;
-}
-
-void Boid::forward(float fElapsedTime) {
-	if (speed > -maxForward) {
-		speed -= fElapsedTime * 3;
-	}
-}
-
-void Boid::reverse(float fElapsedTime) {
-	if (speed < maxReverse) {
-		speed += fElapsedTime * 3;
-	}
 }
 
 void Boid::slowDown(float fElapsedTime, float airDensity) {

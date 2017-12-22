@@ -33,12 +33,19 @@ public:
 	void separation(std::vector<Boid*> flock);
 	void alignment(std::vector<Boid*> flock);
 	void cohesion(std::vector<Boid*> flock, float fElapsedTime);
-	void Boid::turnRandomly(float fElapsedTime);
+	void moveRandomly(float fElapsedTime);
+	void turnRandomly(float fElapsedTime);
+	void adjustSpeed(float fElapsedTime);
 	void turnLeft(float fElapsedTime);
-	void tiltLeft(float fElapsedTime);
 	void turnRight(float fElapsedTime);
+	void forward(float fElapsedTime);
+	void reverse(float fElapsedTime);
+
+
+	void tiltLeft(float fElapsedTime);
 	void tiltRight(float fElapsedTime);
 	void straightenUp(float fElapsedTime, float horizontalRZ);
+
 
 
 	float getSpeed();
@@ -55,8 +62,6 @@ public:
 	void setWingPosition(float newWingPosition);
 	void tiltUp(float fElapsedTime);
 	void tiltDown(float fElapsedTime);
-	void forward(float fElapsedTime);
-	void reverse(float fElapsedTime);
 	void slowDown(float fElapsedTime, float airDensity);
 	void slowGround();
 	void fall(float fElapsedTime);

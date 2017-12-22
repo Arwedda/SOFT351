@@ -451,12 +451,11 @@ void flockInteraction(float fElapsedTime) {
 		}
 		//If no nearby boids, explore
 		if (localFlock.empty()) {
-			flock[i]->turnRandomly(fElapsedTime);
+			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, follow the flock
 			flock[i]->separation(localFlock);
 			flock[i]->alignment(localFlock);
 			flock[i]->cohesion(localFlock, fElapsedTime);
-			//flock[i]->straightenUp(fElapsedTime, horizontalRZ);
 		}
 			flock[i]->move(fElapsedTime);
 	}

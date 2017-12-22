@@ -38,19 +38,19 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.i
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-Boid.cpp(20): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-Boid.cpp(35): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-Boid.cpp(43): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(21): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+Boid.cpp(36): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 Boid.cpp(44): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
 Boid.cpp(45): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
-Boid.cpp(51): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(46): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
 Boid.cpp(52): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
 Boid.cpp(53): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
-Boid.cpp(227): warning C4458: declaration of 'speed' hides class member
+Boid.cpp(54): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
+Boid.cpp(263): warning C4458: declaration of 'speed' hides class member
   c:\users\jkell\desktop\coursework\coursework 2\boids\Boid.h(17): note: see declaration of 'Boid::speed'
-Boid.cpp(233): warning C4458: declaration of 'speed' hides class member
+Boid.cpp(269): warning C4458: declaration of 'speed' hides class member
   c:\users\jkell\desktop\coursework\coursework 2\boids\Boid.h(17): note: see declaration of 'Boid::speed'
-Boid.cpp(234): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(251): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(270): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(287): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.exe
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.pdb (Full PDB)

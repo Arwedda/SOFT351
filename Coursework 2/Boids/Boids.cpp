@@ -453,10 +453,13 @@ void flockInteraction(float fElapsedTime) {
 		//If no nearby boids, explore
 		if (localFlock.empty()) {
 			flock[i]->moveRandomly(fElapsedTime);
-		} else { //Otherwise, follow the flock
-			flock[i]->separation(localFlock, minProximity);
-			flock[i]->alignment(localFlock, fElapsedTime);
-			flock[i]->cohesion(localFlock, fElapsedTime);
+		} else { //Otherwise, be a boid
+			//Separate if too close
+			bool tooClose = flock[i]->separation(localFlock, minProximity, fElapsedTime);
+			if (!tooClose) { //Follow the flock if not
+				flock[i]->alignment(localFlock, fElapsedTime);
+				flock[i]->cohesion(localFlock, fElapsedTime);
+			}
 		}
 			flock[i]->move(fElapsedTime);
 	}

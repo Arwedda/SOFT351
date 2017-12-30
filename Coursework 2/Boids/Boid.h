@@ -27,10 +27,11 @@ public:
 	~Boid();
 	bool isNear(Boid* flockMember, float range);
 	bool isNear(float bearX, float bearY, float bearZ, float range);
+	XMVECTOR distance(Boid* flockMember);
 	void follow(float fElapsedTime, bool tooClose);
 	void move(float fElapsedTime);
 	void faceBear(XMVECTOR bearDir, float fElapsedTime);
-	void separation(std::vector<Boid*> flock, float minProximity);
+	bool separation(std::vector<Boid*> flock, float minProximity, float fElapsedTime);
 	void alignment(std::vector<Boid*> flock, float fElapsedTime);
 	void cohesion(std::vector<Boid*> flock, float fElapsedTime);
 	void moveRandomly(float fElapsedTime);

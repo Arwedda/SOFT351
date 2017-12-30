@@ -146,10 +146,10 @@ bool Boid::separation(std::vector<Boid*> flock, float minProximity, float fElaps
 void Boid::alignment(std::vector<Boid*> flock, float fElapsedTime) {
 	XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
 	XMVECTOR targetDirection;
-	int flockSize = flock.size() + 1; // + 1 (because flock includes this boid)
-	float tempRX = getRX();
-	float tempRY = getRY();
-	float tempRZ = getRZ();
+	int flockSize = flock.size();
+	float tempRX = 0.0;
+	float tempRY = 0.0;
+	float tempRZ = 0.0;
 
 	while (!flock.empty()) {
 		//Make total RX, RY
@@ -179,10 +179,10 @@ void Boid::alignment(std::vector<Boid*> flock, float fElapsedTime) {
 void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
 	XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
 	XMVECTOR targetPosition;
-	int flockSize = flock.size() + 1; // + 1 (because flock includes this boid)
-	float tempX = getX();
-	float tempY = getY();
-	float tempZ = getZ();
+	int flockSize = flock.size();
+	float tempX = 0.0;
+	float tempY = 0.0;
+	float tempZ = 0.0;
 
 	while (!flock.empty()) {
 		tempX += flock.back()->getX();

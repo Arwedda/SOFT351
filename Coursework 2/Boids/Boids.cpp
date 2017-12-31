@@ -113,7 +113,7 @@ float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
-float		neighbourRange		= 2.0;
+float		neighbourRange		= 4.9;
 float		minProximity		= 0.1;
 
 //**************************************************************************//
@@ -454,8 +454,8 @@ void flockInteraction(float fElapsedTime) {
 		if (localFlock.empty()) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
-			//flock[i]->cohesion(localFlock);
-			//flock[i]->separation(localFlock, minProximity);
+			flock[i]->cohesion(localFlock);
+			flock[i]->separation(localFlock, minProximity);
 			flock[i]->alignment(localFlock);
 		}
 			flock[i]->move(fElapsedTime);

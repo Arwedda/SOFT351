@@ -123,30 +123,35 @@ void Boid::separation(std::vector<Boid*> flock, float minProximity) {
 	//Calculate angle between my Curr direction and nearest flockmate
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, avoidance);
 	//Turn away from close flockmates
-	setRX(getRX() + (XMVectorGetX(angleBetween)));
+	setRX(getRX() + (XMVectorGetX(angleBetween) / 1000.0));
 }
 
-//Alignment: steer towards the average heading of local flockmates 
+//Alignment: steer towards the average heading of local flockmates and match speeds
 void Boid::alignment(std::vector<Boid*> flock) {
 	int flockSize = flock.size();
 	//Prevent divide by 0
 	if (0 < flockSize) {
 		float targetRX = 0.0;
 		//float targetRY = 0.0;
+		float targetSpeed = 0.0;
 
 		while (!flock.empty()) {
 			//Make total RX, RY
 			targetRX += flock.back()->getRX();
 			//targetRY += flock.back()->getRY();
+			targetSpeed -= (getSpeed() - flock.back()->getSpeed());
 
 			flock.pop_back();
 		}
 		//Divide each by flock size
 		targetRX = targetRX / flockSize;
 		//targetRY /= flockSize;
+		targetSpeed = targetSpeed / flockSize;
 
 		//Turn 0.1% towards this position
 		setRX(getRX() + (targetRX / 1000.0));
+		//setRY(getRY() + (targetRY / 1000.0));
+		setSpeed(getSpeed() + (targetSpeed / 1000.0));
 	}
 }
 
@@ -155,31 +160,31 @@ void Boid::cohesion(std::vector<Boid*> flock) {
 	XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
 	XMVECTOR targetPosition;
 	int flockSize = flock.size();
-	float tempX = 0.0;
-	float tempY = 0.0;
-	float tempZ = 0.0;
+	float avgX = 0.0;
+	float avgY = 0.0;
+	float avgZ = 0.0;
 
 	while (!flock.empty()) {
-		tempX += flock.back()->getX();
-		tempY += flock.back()->getY();
-		tempZ += flock.back()->getZ();
+		avgX += flock.back()->getX();
+		avgY += flock.back()->getY();
+		avgZ += flock.back()->getZ();
 
 		flock.pop_back();
 	}
 	//Divide by size to create average position
-	tempX = tempX / flockSize;
-	tempY = tempY / flockSize;
-	tempZ = tempZ / flockSize;
+	avgX = avgX / flockSize;
+	avgY = avgY / flockSize;
+	avgZ = avgZ / flockSize;
 
-	targetPosition = XMVectorSet(tempX, tempY, tempZ, 0.0);
+	targetPosition = XMVectorSet(avgX, avgY, avgZ, 0.0);
 
 	targetPosition = XMVector3Normalize(targetPosition);
 	forward = XMVector3Normalize(forward);
 
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, targetPosition);
 	
-	//Turn 1% towards this position
-	setRX(getRX() + (XMVectorGetX(angleBetween) / 100));
+	//Turn 0.01% towards this position
+	setRX(getRX() + (XMVectorGetX(angleBetween) / 100000.0));
 }
 
 void Boid::moveRandomly(float fElapsedTime) {

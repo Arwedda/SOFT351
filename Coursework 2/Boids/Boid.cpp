@@ -128,36 +128,26 @@ void Boid::separation(std::vector<Boid*> flock, float minProximity) {
 
 //Alignment: steer towards the average heading of local flockmates 
 void Boid::alignment(std::vector<Boid*> flock) {
-	XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
-	XMVECTOR targetDirection;
 	int flockSize = flock.size();
-	float tempRX = 0.0;
-	float tempRY = 0.0;
-	float tempRZ = 0.0;
+	//Prevent divide by 0
+	if (0 < flockSize) {
+		float targetRX = 0.0;
+		//float targetRY = 0.0;
 
-	while (!flock.empty()) {
-		//Make total RX, RY
-		tempRX += flock.back()->getRX();
-		tempRY += flock.back()->getRY();
-		tempRZ += flock.back()->getRZ();
+		while (!flock.empty()) {
+			//Make total RX, RY
+			targetRX += flock.back()->getRX();
+			//targetRY += flock.back()->getRY();
 
-		flock.pop_back();
+			flock.pop_back();
+		}
+		//Divide each by flock size
+		targetRX = targetRX / flockSize;
+		//targetRY /= flockSize;
+
+		//Turn 0.1% towards this position
+		setRX(getRX() + (targetRX / 1000.0));
 	}
-
-	//Divide each by flock size
-	tempRX = tempRX / flockSize;
-	tempRY = tempRY / flockSize;
-	tempRZ = tempRZ / flockSize;
-
-	targetDirection = XMVectorSet(tempRX, tempRY, tempRZ, 0.0);
-
-	targetDirection = XMVector3Normalize(targetDirection);
-	forward = XMVector3Normalize(forward);
-
-	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, targetDirection);
-
-	//Turn 10% towards this position
-	setRX(getRX() + (XMVectorGetX(angleBetween) / 10));
 }
 
 //Cohesion: steer to move toward the average position of local flockmates

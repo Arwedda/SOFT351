@@ -113,7 +113,7 @@ float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
-float		neighbourRange		= 5.0;
+float		neighbourRange		= 2.0;
 float		minProximity		= 0.1;
 
 //**************************************************************************//
@@ -459,6 +459,10 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->alignment(localFlock);
 		}
 			flock[i]->move(fElapsedTime);
+			//Modulus division required to ensure angles don't go beyond float capacities
+			if (flock[i]->getRX() < -6.28319 || 6.28319 < flock[i]->getRX()) {
+				flock[i]->setRX(fmod(flock[i]->getRX(), 6.28319));
+			}
 	}
 }
 
@@ -999,7 +1003,6 @@ void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matV
 	int columns = flockSize / rows;
 	int arrayIndex = 0;
 	XMMATRIX matBoidTranslate;
-	XMMATRIX matBoidRotate; 
 	XMMATRIX matBoidScale;
 	XMMATRIX matBoidWorld;
 	XMMATRIX matBoidWorldViewProjection;
@@ -1010,14 +1013,8 @@ void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matV
 		for (int j = 0; j < columns; j++) {
 			boid = flock[arrayIndex];
 			matBoidTranslate = XMMatrixTranslation(boid->getX(), boid->getY(), boid->getZ());
-
-			matBoidRotate = XMMatrixRotationRollPitchYaw(boid->getRY(), boid->getRX(), boid->getRZ());
-
 			matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
-			
-			//matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
-			matBoidWorld = matBoidRotate * matBoidTranslate * matBoidScale;
-
+			matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
 			matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
 			prepareRender(pd3dImmediateContext, &meshBear, matBoidWorld, matBoidWorldViewProjection, false);
 			arrayIndex += 1;

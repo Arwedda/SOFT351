@@ -114,7 +114,7 @@ Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
 float		neighbourRange		= 5.0;
-float		minProximity		= 2.0;
+float		minProximity		= 0.1;
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -454,12 +454,9 @@ void flockInteraction(float fElapsedTime) {
 		if (localFlock.empty()) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
-			//Separate if too close
-			bool tooClose = flock[i]->separation(localFlock, minProximity, fElapsedTime);
-			if (!tooClose) { //Follow the flock if not
-				flock[i]->alignment(localFlock, fElapsedTime);
-				flock[i]->cohesion(localFlock, fElapsedTime);
-			}
+			//flock[i]->cohesion(localFlock);
+			//flock[i]->separation(localFlock, minProximity);
+			flock[i]->alignment(localFlock);
 		}
 			flock[i]->move(fElapsedTime);
 	}

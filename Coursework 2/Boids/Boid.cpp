@@ -21,8 +21,8 @@ Boid::Boid()
 	rng.seed(std::time(0));
 }
 
-Boid::Boid(float setX, float setY, float setZ)
-	:Thing3D(setX, setY, setZ) {
+Boid::Boid(float startX, float startY, float startZ)
+	:Thing3D() {
 	speed = 0.0;
 	maxForward = 10.0;
 	maxReverse = 0.0;
@@ -34,6 +34,9 @@ Boid::Boid(float setX, float setY, float setZ)
 	wingRest = -0.44;
 	wingPosition = -0.44;
 	rng.seed(std::time(0));
+	setX(startX);
+	setY(startY);
+	setZ(startZ);
 }
 
 Boid::~Boid() {
@@ -45,12 +48,20 @@ bool Boid::isNear(Boid* flockMember, float range) {
 	return (XMVectorGetX(dist) + XMVectorGetY(dist) + XMVectorGetZ(dist) <= range);
 }
 
-bool Boid::isNear(float bearX, float bearY, float bearZ, float range) {
-	float deltaX = abs(long (getX() - bearX));
-	float deltaY = abs(long (getY() - bearY));
-	float deltaZ = abs(long (getZ() - bearZ));
+bool Boid::isNear(XMVECTOR xyzPos, float range) {
+	XMVECTOR dist = distance(xyzPos);
 
-	return (deltaX + deltaY + deltaZ <= range);
+	return (XMVectorGetX(dist) + XMVectorGetY(dist) + XMVectorGetZ(dist) <= range);
+}
+
+XMVECTOR Boid::distance(XMVECTOR xyzPos) {
+	float deltaX = abs(long(getX() - XMVectorGetX(xyzPos)));
+	float deltaY = abs(long(getY() - XMVectorGetY(xyzPos)));
+	float deltaZ = abs(long(getZ() - XMVectorGetZ(xyzPos)));
+
+	XMVECTOR dist = XMVectorSet(deltaX, deltaY, deltaZ, 0.0);
+
+	return dist;
 }
 
 XMVECTOR Boid::distance(Boid* flockMember) {
@@ -61,15 +72,6 @@ XMVECTOR Boid::distance(Boid* flockMember) {
 	XMVECTOR dist = XMVectorSet(deltaX, deltaY, deltaZ, 0.0);
 
 	return dist;
-}
-
-void Boid::follow(float fElapsedTime, bool tooClose) {
-	if (-maxForward < speed && !tooClose) {
-		speed -= fElapsedTime * 3;
-	} else {
-		speed += fElapsedTime * 3;
-	}
-	move(fElapsedTime);
 }
 
 void Boid::move(float fElapsedTime) {
@@ -183,7 +185,7 @@ void Boid::cohesion(std::vector<Boid*> flock) {
 
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, targetPosition);
 	
-	//Turn 0.01% towards this position
+	//Turn 0.001% towards this position
 	setRX(getRX() + (XMVectorGetX(angleBetween) / 100000.0));
 }
 
@@ -250,6 +252,19 @@ void Boid::forward(float fElapsedTime) {
 void Boid::reverse(float fElapsedTime) {
 	if (speed < maxReverse) {
 		speed += fElapsedTime * 3;
+	}
+}
+
+void Boid::leash(XMVECTOR leashPosition, float leashLength) {
+	if (!isNear(leashPosition, leashLength)) {
+		XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
+		leashPosition = XMVector3Normalize(leashPosition);
+		forward = XMVector3Normalize(forward);
+
+		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, leashPosition);
+
+		//Turn 1% towards this position
+		setRX(getRX() + (XMVectorGetX(angleBetween) / 100.0));
 	}
 }
 

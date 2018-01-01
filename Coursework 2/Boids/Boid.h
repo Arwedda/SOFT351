@@ -4,13 +4,6 @@
 #include <random>
 #ifndef BoidH   //Guards, as usual.
 #define BoidH
-
-//**************************************************************************//
-// Many of these member variables are public and have to be set by writing  //
-// to the variable.   OO programmers would have us write many more          //
-// setThisandThat(...) methods.                                             //
-//**************************************************************************//
-
 class Boid : public Thing3D
 {
 private:
@@ -26,9 +19,9 @@ public:
 	Boid(float setX, float setY, float setZ);
 	~Boid();
 	bool isNear(Boid* flockMember, float range);
-	bool isNear(float bearX, float bearY, float bearZ, float range);
+	bool isNear(XMVECTOR xyzPos, float range);
 	XMVECTOR distance(Boid* flockMember);
-	void follow(float fElapsedTime, bool tooClose);
+	XMVECTOR distance(XMVECTOR xyzPos);
 	void move(float fElapsedTime);
 	void faceBear(XMVECTOR bearDir, float fElapsedTime);
 	void separation(std::vector<Boid*> flock, float minProximity);
@@ -41,6 +34,7 @@ public:
 	void turnRight(float fElapsedTime);
 	void forward(float fElapsedTime);
 	void reverse(float fElapsedTime);
+	void leash(XMVECTOR leashPosition, float leashLength);
 
 
 	void tiltLeft(float fElapsedTime);

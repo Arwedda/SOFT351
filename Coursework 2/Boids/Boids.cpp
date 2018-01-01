@@ -55,6 +55,8 @@
 #include "Bear.h"
 #include "Boid.h"
 #include <vector>
+#include <ctime>
+#include <random>
 
 //**************************************************************************//
 // Global Variables.  There are many global variables here (we aren't OO	//
@@ -113,8 +115,12 @@ float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
-float		neighbourRange		= 4.9;
+float		neighbourRange		= 10.0;
 float		minProximity		= 0.1;
+float		leashLength			= 75.0;
+std::mt19937 spawnGen;
+std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
+
 
 //**************************************************************************//
 // This is M$ code, but is usuig old D3DX from DirectX9.  I'm glad to see   //
@@ -298,6 +304,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	DXUTCreateDevice(D3D_FEATURE_LEVEL_9_2, true, 800, 600);
 	//DXUTCreateDevice(true, 640, 480);
 	
+	spawnGen.seed(std::time(0));
 	spawnFlock();
 
 	DXUTMainLoop(); // Enter into the DXUT render loop
@@ -454,15 +461,18 @@ void flockInteraction(float fElapsedTime) {
 		if (localFlock.empty()) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
-			flock[i]->cohesion(localFlock);
-			flock[i]->separation(localFlock, minProximity);
+			flock[i]->adjustSpeed(fElapsedTime);
+			//flock[i]->cohesion(localFlock);
+			//flock[i]->separation(localFlock, minProximity);
 			flock[i]->alignment(localFlock);
 		}
-			flock[i]->move(fElapsedTime);
-			//Modulus division required to ensure angles don't go beyond float capacities
-			if (flock[i]->getRX() < -6.28319 || 6.28319 < flock[i]->getRX()) {
-				flock[i]->setRX(fmod(flock[i]->getRX(), 6.28319));
-			}
+		//Force the boids to stay near the base 3rd-person camera position
+		flock[i]->leash(XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f), leashLength);
+		flock[i]->move(fElapsedTime);
+		//Modulus division required to ensure angles don't go beyond float capacities
+		if (flock[i]->getRX() < -6.28319 || 6.28319 < flock[i]->getRX()) {
+			flock[i]->setRX(fmod(flock[i]->getRX(), 6.28319));
+		}
 	}
 }
 
@@ -991,7 +1001,10 @@ void spawnFlock() {
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
-			boid = new Boid(i * 10 - 50, 0, j * 10 - 50);
+			float xStart = spawnX(spawnGen);
+			std::uniform_real_distribution<float> spawnZ(-leashLength + fabs(xStart), leashLength - fabs(xStart));
+			float zStart = spawnZ(spawnGen);
+			boid = new Boid(xStart, 0.0, zStart);
 			flock[arrayIndex] = boid;
 			arrayIndex += 1;
 		}
@@ -1007,7 +1020,6 @@ void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matV
 	XMMATRIX matBoidWorld;
 	XMMATRIX matBoidWorldViewProjection;
 	Boid* boid;
-
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {

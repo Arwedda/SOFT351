@@ -467,7 +467,7 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->alignment(localFlock);
 		}
 		//Force the boids to stay near the base 3rd-person camera position
-		flock[i]->leash(XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f), leashLength);
+		flock[i]->leash(XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f), leashLength, fElapsedTime);
 		flock[i]->move(fElapsedTime);
 		//Modulus division required to ensure angles don't go beyond float capacities
 		if (flock[i]->getRX() < -6.28319 || 6.28319 < flock[i]->getRX()) {

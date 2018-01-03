@@ -34,7 +34,8 @@ public:
 	void turnRight(float fElapsedTime);
 	void forward(float fElapsedTime);
 	void reverse(float fElapsedTime);
-	void leash(XMVECTOR leashPosition, float leashLength);
+	void leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime);
+	XMVECTOR createMovementVector(float fElapsedTime);
 
 
 	void tiltLeft(float fElapsedTime);

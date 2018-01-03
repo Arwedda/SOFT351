@@ -87,13 +87,7 @@ void Boid::move(float fElapsedTime) {
 	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(yRotation, zRotation), xRotation);
 	matRotations = XMMatrixRotationQuaternion(combinedRotation); */
 
-	//Calculate current direction
-	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
-	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
-	currentDir = XMVector3Normalize(currentDir);
-
-	//Move bear in that direction by the speed
-	currentDir *= getSpeed() * fElapsedTime;
+	XMVECTOR movementVector = createMovementVector(fElapsedTime);
 
 	setX(getX() + XMVectorGetX(currentDir));
 	setY(getY() + XMVectorGetY(currentDir));
@@ -255,20 +249,40 @@ void Boid::reverse(float fElapsedTime) {
 	}
 }
 
-void Boid::leash(XMVECTOR leashPosition, float leashLength) {
+//If boids get too far from the centre of a circle (around the static camera) then they are forced to turn back
+//towards it
+void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) {
 	if (!isNear(leashPosition, leashLength)) {
 		XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
-		leashPosition = XMVector3Normalize(leashPosition);
-		forward = XMVector3Normalize(forward);
+		XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 
-		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, leashPosition);
+		//Angle between these = turn required to face leash
+		XMVECTOR movementVector = createMovementVector(fElapsedTime);
+		XMVECTOR boidToLeash = leashPosition - position;
 
-		//Turn 1% towards this position
-		setRX(getRX() + (XMVectorGetX(angleBetween) / 100.0));
+		movementVector = XMVector3Normalize(movementVector);
+		boidToLeash = XMVector3Normalize(boidToLeash);
+
+		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToLeash);
+
+		//Turn 5% towards this position
+		setRX(getRX() + (XMVectorGetX(angleBetween) / 20.0));
 	}
 }
 
+//Creates the movement vector before cohesion, separation and leashing so that a turning angle can be calculated
+XMVECTOR Boid::createMovementVector(float fElapsedTime) {
+	//Calculate current direction
+	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
+	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
+	currentDir = XMVector3Normalize(currentDir);
 
+	//Apply speed to turn it into a vector
+	currentDir *= getSpeed() * fElapsedTime;
+
+	//Return the vector (used for leashing and avoidance)
+	return (XMVectorSet(XMVectorGetX(currentDir), XMVectorGetY(currentDir), XMVectorGetZ(currentDir), 0.0));
+}
 
 
 

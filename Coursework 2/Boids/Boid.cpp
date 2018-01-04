@@ -84,7 +84,7 @@ void Boid::move(float fElapsedTime) {
 	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(yRotation, zRotation), xRotation);
 	matRotations = XMMatrixRotationQuaternion(combinedRotation); */
 
-	XMVECTOR movementVector = createMovementVector(fElapsedTime);
+	XMVECTOR movementVector = createMovementVector(getRX(), getRY(), getRZ(), fElapsedTime);
 
 	setX(getX() + XMVectorGetX(currentDir));
 	setY(getY() + XMVectorGetY(currentDir));
@@ -99,7 +99,7 @@ void Boid::faceBear(XMVECTOR bearDir, float fElapsedTime) {
 //Separation: steer to avoid crowding local flockmates 
 void Boid::separation(std::vector<Boid*> flock, float minProximity, float fElapsedTime) {
 	XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
-	XMVECTOR movementVector = createMovementVector(fElapsedTime);
+	XMVECTOR movementVector = createMovementVector(getRX(), getRY(), getRZ(), fElapsedTime);
 	XMVECTOR boidToTarget;
 	XMVECTOR avoidancePosition;
 	XMVECTOR angleBetween;
@@ -172,7 +172,7 @@ void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
 	targetPosition = XMVectorSet(avgX, avgY, avgZ, 0.0);
 
 	//Angle between these = turn required to face leash
-	XMVECTOR movementVector = createMovementVector(fElapsedTime);
+	XMVECTOR movementVector = createMovementVector(getRX(), getRY(), getRZ(), fElapsedTime);
 	XMVECTOR boidToTarget = targetPosition - position;
 
 	movementVector = XMVector3Normalize(movementVector);
@@ -257,7 +257,7 @@ void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) 
 		XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 
 		//Angle between these = turn required to face leash
-		XMVECTOR movementVector = createMovementVector(fElapsedTime);
+		XMVECTOR movementVector = createMovementVector(getRY(), getRX(), getRZ(), fElapsedTime);
 		XMVECTOR boidToLeash = leashPosition - position;
 
 		movementVector = XMVector3Normalize(movementVector);
@@ -265,21 +265,21 @@ void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) 
 
 		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(boidToLeash, movementVector);
 
-		float proposedNewDirection = getRX() + XMVectorGetX(angleBetween) / 50.0;
-		
-		//Turn 2% towards this position
-		if (correctTurnDirection(proposedNewDirection, position, boidToLeash, angleBetween, fElapsedTime)) {
-			setRX(getRX() + (XMVectorGetX(angleBetween) / 50.0));
+		float proposedNewDirection = getRX() + XMVectorGetX(angleBetween);
+
+		//Turn 2.5% towards this position
+		if (correctTurnDirection(proposedNewDirection, position, leashPosition, fElapsedTime)) {
+			setRX(getRX() + (XMVectorGetX(angleBetween) / 40.0));
 		} else {
-			setRX(getRX() - (XMVectorGetX(angleBetween) / 50.0));
+			setRX(getRX() - (XMVectorGetX(angleBetween) / 40.0));
 		}
 	}
 }
 
 //Creates the movement vector before cohesion, separation and leashing so that a turning angle can be calculated
-XMVECTOR Boid::createMovementVector(float fElapsedTime) {
+XMVECTOR Boid::createMovementVector(float xRot, float yRot, float zRot, float fElapsedTime) {
 	//Calculate current direction
-	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
+	matRotations = XMMatrixRotationRollPitchYaw(yRot, xRot, zRot);
 	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
 	currentDir = XMVector3Normalize(currentDir);
 
@@ -291,21 +291,22 @@ XMVECTOR Boid::createMovementVector(float fElapsedTime) {
 }
 
 //Calculates whether the XMVector3AngleBetweenNormals has picked the correct turn direction
-bool Boid::correctTurnDirection(float proposedRX, XMVECTOR position, XMVECTOR target, XMVECTOR currentAngleBetween, float fElapsedTime) {
-	//Calculate proposed direction
-	XMMATRIX proposedRotation = XMMatrixRotationRollPitchYaw(getRY(), proposedRX, getRZ());
-	XMVECTOR proposedDir = XMVector3TransformCoord(getInitialDirection(), proposedRotation);
-	proposedDir = XMVector3Normalize(proposedDir);
-	
-	//Apply speed to turn it into a vector
-	proposedDir *= getSpeed() * fElapsedTime;
+bool Boid::correctTurnDirection(float proposedRX, XMVECTOR position, XMVECTOR target, float fElapsedTime) {
+	//Create a movement vector based on the proposed turn
+	XMVECTOR proposedStep = createMovementVector(proposedRX, getRY(), getRZ(), fElapsedTime);
+	//Generate a new position based on this turn and step
+	XMVECTOR proposedNewPosition = XMVectorSet(getX() + XMVectorGetX(proposedStep), getY() + XMVectorGetY(proposedStep), getZ() + XMVectorGetZ(proposedStep), 0.0f);
 
-	//Proposed movement
-	XMVECTOR proposedMovement = XMVectorSet(XMVectorGetX(proposedDir), XMVectorGetY(proposedDir), XMVectorGetZ(proposedDir), 0.0);
-	
-	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(target, proposedMovement);
+	//Step to check we are facing the target
+	XMVECTOR proposedMovementVector = createMovementVector(proposedRX, getRY(), getRZ(), fElapsedTime);
+	XMVECTOR newPositionToTarget = target - proposedNewPosition;
 
-	return XMVectorGetX(angleBetween) < XMVectorGetX(currentAngleBetween);
+	proposedMovementVector = XMVector3Normalize(proposedMovementVector);
+	newPositionToTarget = XMVector3Normalize(newPositionToTarget);
+
+	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(newPositionToTarget, proposedMovementVector);
+
+	return (XMVectorGetX(angleBetween) <= 0.2);
 }
 
 

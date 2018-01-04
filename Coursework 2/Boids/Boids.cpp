@@ -471,8 +471,10 @@ void flockInteraction(float fElapsedTime) {
 		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashLength, fElapsedTime);
 		flock[i]->move(fElapsedTime);
 		//Modulus division required to ensure angles don't go beyond float capacities
-		if (flock[i]->getRX() < -6.28319 || 6.28319 < flock[i]->getRX()) {
+		if (6.28319 < flock[i]->getRX()) {
 			flock[i]->setRX(fmod(flock[i]->getRX(), 6.28319));
+		} else if(flock[i]->getRX() < -6.28319) {
+			flock[i]->setRX(fmod(flock[i]->getRX(), -6.28319));
 		}
 	}
 }

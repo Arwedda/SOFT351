@@ -16,7 +16,7 @@ private:
 
 public:
 	Boid();
-	Boid(float setX, float setY, float setZ);
+	Boid(float setX, float setY, float setZ, float startRX, float startRY, float startRZ);
 	~Boid();
 	bool isNear(Boid* flockMember, float range);
 	bool isNear(XMVECTOR xyzPos, float range);
@@ -36,7 +36,7 @@ public:
 	void reverse(float fElapsedTime);
 	void leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime);
 	XMVECTOR createMovementVector(float fElapsedTime);
-
+	bool correctTurnDirection(float proposedRX, XMVECTOR position, XMVECTOR target, XMVECTOR currentAngleBetween, float fElapsedTime);
 
 	void tiltLeft(float fElapsedTime);
 	void tiltRight(float fElapsedTime);

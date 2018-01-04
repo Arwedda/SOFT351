@@ -115,11 +115,12 @@ float		cameraStabiliser	= 0.0;
 Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
-float		neighbourRange		= 10.0;
-float		minProximity		= 0.1;
-float		leashLength			= 75.0;
+float		neighbourRange		= 5.0;
+float		minProximity		= 1.0;
+float		leashLength			= 5.0;
 std::mt19937 spawnGen;
 std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
+std::uniform_real_distribution<float> spawnRX(0, 6.28319);
 
 
 //**************************************************************************//
@@ -997,14 +998,17 @@ void spawnFlock() {
 	int columns = flockSize / rows;
 	int arrayIndex = 0;
 	Boid* boid;
-
+	float xStart;
+	float zStart;
+	float rxStart;
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
-			float xStart = spawnX(spawnGen);
+			xStart = spawnX(spawnGen);
 			std::uniform_real_distribution<float> spawnZ(-leashLength + fabs(xStart), leashLength - fabs(xStart));
-			float zStart = spawnZ(spawnGen);
-			boid = new Boid(xStart, 0.0, zStart);
+			zStart = spawnZ(spawnGen);
+			rxStart = spawnRX(spawnGen);
+			boid = new Boid(xStart, 0.0, zStart, rxStart, 0.0, 0.0);
 			flock[arrayIndex] = boid;
 			arrayIndex += 1;
 		}

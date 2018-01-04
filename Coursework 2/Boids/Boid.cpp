@@ -21,8 +21,8 @@ Boid::Boid()
 	rng.seed(std::time(0));
 }
 
-Boid::Boid(float startX, float startY, float startZ)
-	:Thing3D() {
+Boid::Boid(float startX, float startY, float startZ, float startRX, float startRY, float startRZ)
+	:Thing3D(startX, startY, startZ, startRX, startRY, startRZ) {
 	speed = 0.0;
 	maxForward = 10.0;
 	maxReverse = 0.0;
@@ -34,9 +34,6 @@ Boid::Boid(float startX, float startY, float startZ)
 	wingRest = -0.44;
 	wingPosition = -0.44;
 	rng.seed(std::time(0));
-	setX(startX);
-	setY(startY);
-	setZ(startZ);
 }
 
 Boid::~Boid() {
@@ -101,28 +98,30 @@ void Boid::faceBear(XMVECTOR bearDir, float fElapsedTime) {
 
 //Separation: steer to avoid crowding local flockmates 
 void Boid::separation(std::vector<Boid*> flock, float minProximity, float fElapsedTime) {
-	XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
-	XMVECTOR avoidance = XMVectorSet(0.0, 0.0, 0.0, 0.0);
+	XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
+	XMVECTOR movementVector = createMovementVector(fElapsedTime);
+	XMVECTOR boidToTarget;
+	XMVECTOR avoidancePosition;
+	XMVECTOR angleBetween;
 	Boid nearest;
+	movementVector = XMVector3Normalize(movementVector);
 
 	while (!flock.empty()) {
 		if (isNear(flock.back(), minProximity)) {
 			nearest = *flock.back();
-			avoidance -= (forward - XMVectorSet(nearest.getX(), nearest.getY(), nearest.getZ(), 0.0));
+			avoidancePosition = XMVectorSet(nearest.getX(), nearest.getY(), nearest.getZ(), 0.0);
+			//The movement vector AWAY FROM the position to avoid
+			boidToTarget = position - avoidancePosition;
+			boidToTarget = XMVector3Normalize(boidToTarget);
+			angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
+			//Turn 0.5% towards the position 180 degrees from the avoidance position
+			setRX(getRX() + (XMVectorGetX(angleBetween) / 200.0));
 		}
 		flock.pop_back();
 	}
-
-	avoidance = XMVector3Normalize(avoidance);
-	forward = XMVector3Normalize(forward);
-
-	//Calculate angle between my Curr direction and nearest flockmate
-	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, avoidance);
-	//Turn away from close flockmates
-	setRX(getRX() + (XMVectorGetX(angleBetween) / 1000.0));
 }
 
-//Alignment: steer towards the average heading of local flockmates and match speeds
+//Alignment: steer towards the average heading of local flockmates
 void Boid::alignment(std::vector<Boid*> flock) {
 	int flockSize = flock.size();
 	//Prevent divide by 0
@@ -135,7 +134,6 @@ void Boid::alignment(std::vector<Boid*> flock) {
 			//Make total RX, RY
 			targetRX += flock.back()->getRX();
 			//targetRY += flock.back()->getRY();
-			targetSpeed -= (getSpeed() - flock.back()->getSpeed());
 
 			flock.pop_back();
 		}
@@ -147,7 +145,6 @@ void Boid::alignment(std::vector<Boid*> flock) {
 		//Turn 0.1% towards this position
 		setRX(getRX() + (targetRX / 1000.0));
 		//setRY(getRY() + (targetRY / 1000.0));
-		setSpeed(getSpeed() + (targetSpeed / 1000.0));
 	}
 }
 
@@ -183,8 +180,8 @@ void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
 
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
 
-	//Turn 1% towards this position
-	setRX(getRX() + (XMVectorGetX(angleBetween) / 100.0));
+	//Turn 0.01% towards this position
+	setRX(getRX() + (XMVectorGetX(angleBetween) / 10000.0));
 }
 
 void Boid::moveRandomly(float fElapsedTime) {
@@ -266,10 +263,16 @@ void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) 
 		movementVector = XMVector3Normalize(movementVector);
 		boidToLeash = XMVector3Normalize(boidToLeash);
 
-		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToLeash);
+		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(boidToLeash, movementVector);
 
-		//Turn 5% towards this position
-		setRX(getRX() + (XMVectorGetX(angleBetween) / 20.0));
+		float proposedNewDirection = getRX() + XMVectorGetX(angleBetween) / 50.0;
+		
+		//Turn 2% towards this position
+		if (correctTurnDirection(proposedNewDirection, position, boidToLeash, angleBetween, fElapsedTime)) {
+			setRX(getRX() + (XMVectorGetX(angleBetween) / 50.0));
+		} else {
+			setRX(getRX() - (XMVectorGetX(angleBetween) / 50.0));
+		}
 	}
 }
 
@@ -285,6 +288,24 @@ XMVECTOR Boid::createMovementVector(float fElapsedTime) {
 
 	//Return the vector (used for leashing and avoidance)
 	return (XMVectorSet(XMVectorGetX(currentDir), XMVectorGetY(currentDir), XMVectorGetZ(currentDir), 0.0));
+}
+
+//Calculates whether the XMVector3AngleBetweenNormals has picked the correct turn direction
+bool Boid::correctTurnDirection(float proposedRX, XMVECTOR position, XMVECTOR target, XMVECTOR currentAngleBetween, float fElapsedTime) {
+	//Calculate proposed direction
+	XMMATRIX proposedRotation = XMMatrixRotationRollPitchYaw(getRY(), proposedRX, getRZ());
+	XMVECTOR proposedDir = XMVector3TransformCoord(getInitialDirection(), proposedRotation);
+	proposedDir = XMVector3Normalize(proposedDir);
+	
+	//Apply speed to turn it into a vector
+	proposedDir *= getSpeed() * fElapsedTime;
+
+	//Proposed movement
+	XMVECTOR proposedMovement = XMVectorSet(XMVectorGetX(proposedDir), XMVectorGetY(proposedDir), XMVectorGetZ(proposedDir), 0.0);
+	
+	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(target, proposedMovement);
+
+	return XMVectorGetX(angleBetween) < XMVectorGetX(currentAngleBetween);
 }
 
 

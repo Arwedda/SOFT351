@@ -1,6 +1,7 @@
 Get OOP drawing itself
 boids mechanics:
-	Separation: steer to avoid crowding local flockmates
-	Alignment: steer towards the average heading of local flockmates
-	Cohesion: steer to move toward the average position of local flockmates
-http://www.red3d.com/cwr/boids/
+	Leash/Cohesion/Separation boids always seem to turn 
+	the same way
+	+ the difference = clockwise
+	- the difference = anticlockwise
+Make boids flee bear

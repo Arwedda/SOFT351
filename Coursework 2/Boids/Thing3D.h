@@ -47,7 +47,7 @@ public:
 	UINT      textureNumber;
 public:
 	Thing3D();
-	Thing3D(float setX, float setY, float setZ);
+	Thing3D(float startX, float startY, float startZ, float startRX, float startRY, float startRZ);
 	~Thing3D();
 	void initialise(ID3D11Buffer *g_pcbVSPerObject, ID3D11PixelShader *g_pPixelShader, CDXUTSDKMesh *g_mesh, ID3D11InputLayout *g_pVertexLayout11, ID3D11VertexShader *g_pVertexShader);
 	float getX();

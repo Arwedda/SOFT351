@@ -462,12 +462,12 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
 			flock[i]->adjustSpeed(fElapsedTime);
-			//flock[i]->cohesion(localFlock);
-			//flock[i]->separation(localFlock, minProximity);
-			flock[i]->alignment(localFlock);
+			//flock[i]->cohesion(localFlock, fElapsedTime);
+			//flock[i]->separation(localFlock, minProximity, fElapsedTime);
+			//flock[i]->alignment(localFlock);
 		}
 		//Force the boids to stay near the base 3rd-person camera position
-		flock[i]->leash(XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f), leashLength, fElapsedTime);
+		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashLength, fElapsedTime);
 		flock[i]->move(fElapsedTime);
 		//Modulus division required to ensure angles don't go beyond float capacities
 		if (flock[i]->getRX() < -6.28319 || 6.28319 < flock[i]->getRX()) {
@@ -856,8 +856,8 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	if (!isBearView) { //Base / 3rd "person" view
-		Eye = XMVectorSet(0.0f, 1.0f, -10.0f, 0.0f);
-		At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		Eye = XMVectorSet(0.0f, 100.0f, 0.0f, 0.0f);
+		At = XMVectorSet(0.0f, 1.0f, -0.1f, 0.0f);
 	}
 	else { //Follow the bear
 		Eye = XMVectorSet(bear->getX() - XMVectorGetX(bear->vecRear),

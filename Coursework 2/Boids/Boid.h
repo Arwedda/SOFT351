@@ -24,9 +24,9 @@ public:
 	XMVECTOR distance(XMVECTOR xyzPos);
 	void move(float fElapsedTime);
 	void faceBear(XMVECTOR bearDir, float fElapsedTime);
-	void separation(std::vector<Boid*> flock, float minProximity);
+	void separation(std::vector<Boid*> flock, float minProximity, float fElapsedTime);
 	void alignment(std::vector<Boid*> flock);
-	void cohesion(std::vector<Boid*> flock);
+	void cohesion(std::vector<Boid*> flock, float fElapsedTime);
 	void moveRandomly(float fElapsedTime);
 	void turnRandomly(float fElapsedTime);
 	void adjustSpeed(float fElapsedTime);

@@ -100,7 +100,7 @@ void Boid::faceBear(XMVECTOR bearDir, float fElapsedTime) {
 }
 
 //Separation: steer to avoid crowding local flockmates 
-void Boid::separation(std::vector<Boid*> flock, float minProximity) {
+void Boid::separation(std::vector<Boid*> flock, float minProximity, float fElapsedTime) {
 	XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
 	XMVECTOR avoidance = XMVectorSet(0.0, 0.0, 0.0, 0.0);
 	Boid nearest;
@@ -152,8 +152,8 @@ void Boid::alignment(std::vector<Boid*> flock) {
 }
 
 //Cohesion: steer to move toward the average position of local flockmates
-void Boid::cohesion(std::vector<Boid*> flock) {
-	XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
+void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
+	XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 	XMVECTOR targetPosition;
 	int flockSize = flock.size();
 	float avgX = 0.0;
@@ -174,13 +174,17 @@ void Boid::cohesion(std::vector<Boid*> flock) {
 
 	targetPosition = XMVectorSet(avgX, avgY, avgZ, 0.0);
 
-	targetPosition = XMVector3Normalize(targetPosition);
-	forward = XMVector3Normalize(forward);
+	//Angle between these = turn required to face leash
+	XMVECTOR movementVector = createMovementVector(fElapsedTime);
+	XMVECTOR boidToTarget = targetPosition - position;
 
-	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(forward, targetPosition);
-	
-	//Turn 0.001% towards this position
-	setRX(getRX() + (XMVectorGetX(angleBetween) / 100000.0));
+	movementVector = XMVector3Normalize(movementVector);
+	boidToTarget = XMVector3Normalize(boidToTarget);
+
+	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
+
+	//Turn 1% towards this position
+	setRX(getRX() + (XMVectorGetX(angleBetween) / 100.0));
 }
 
 void Boid::moveRandomly(float fElapsedTime) {
@@ -253,7 +257,6 @@ void Boid::reverse(float fElapsedTime) {
 //towards it
 void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) {
 	if (!isNear(leashPosition, leashLength)) {
-		XMVECTOR forward = XMVectorSet(getRX(), getRY(), getRZ(), 0.0);
 		XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 
 		//Angle between these = turn required to face leash

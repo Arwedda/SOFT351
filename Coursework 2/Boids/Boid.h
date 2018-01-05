@@ -36,7 +36,7 @@ public:
 	void reverse(float fElapsedTime);
 	void leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime);
 	XMVECTOR createMovementVector(float xRot, float yRot, float zRot, float fElapsedTime);
-	bool correctTurnDirection(float proposedRX, XMVECTOR position, XMVECTOR target, float fElapsedTime);
+	bool turnedTowardsTarget(float proposedRX, XMVECTOR positionToTarget, float fElapsedTime);
 
 	void tiltLeft(float fElapsedTime);
 	void tiltRight(float fElapsedTime);

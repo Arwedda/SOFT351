@@ -84,7 +84,12 @@ void Boid::move(float fElapsedTime) {
 	XMVECTOR combinedRotation = XMQuaternionMultiply(XMQuaternionMultiply(yRotation, zRotation), xRotation);
 	matRotations = XMMatrixRotationQuaternion(combinedRotation); */
 
-	XMVECTOR movementVector = createMovementVector(getRX(), getRY(), getRZ(), fElapsedTime);
+	matRotations = XMMatrixRotationRollPitchYaw(getRY(), getRX(), getRZ());
+	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
+	currentDir = XMVector3Normalize(currentDir);
+
+	//Apply speed to turn it into a vector
+	currentDir *= getSpeed() * fElapsedTime;
 
 	setX(getX() + XMVectorGetX(currentDir));
 	setY(getY() + XMVectorGetY(currentDir));
@@ -265,48 +270,44 @@ void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) 
 
 		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(boidToLeash, movementVector);
 
-		float proposedNewDirection = getRX() + XMVectorGetX(angleBetween);
+		setRX(getRX() + (XMVectorGetX(angleBetween) / 40.0));
+		
+		//Mechanism designed to calculate which way to turn since XMVector3AngleBetweenNormals returns to correct value, but doesn't know whether it is a right or left turn.
+		/*float proposedNewDirection = getRX() + XMVectorGetX(angleBetween);
 
 		//Turn 2.5% towards this position
-		if (correctTurnDirection(proposedNewDirection, position, leashPosition, fElapsedTime)) {
+		if (turnedTowardsTarget(proposedNewDirection, boidToLeash, fElapsedTime)) {
 			setRX(getRX() + (XMVectorGetX(angleBetween) / 40.0));
 		} else {
 			setRX(getRX() - (XMVectorGetX(angleBetween) / 40.0));
-		}
+		}*/
 	}
 }
 
 //Creates the movement vector before cohesion, separation and leashing so that a turning angle can be calculated
 XMVECTOR Boid::createMovementVector(float xRot, float yRot, float zRot, float fElapsedTime) {
 	//Calculate current direction
-	matRotations = XMMatrixRotationRollPitchYaw(yRot, xRot, zRot);
-	currentDir = XMVector3TransformCoord(getInitialDirection(), matRotations);
-	currentDir = XMVector3Normalize(currentDir);
+	XMMATRIX locRotations = XMMatrixRotationRollPitchYaw(yRot, xRot, zRot);
+	XMVECTOR locDir = XMVector3TransformCoord(getInitialDirection(), locRotations);
+	locDir = XMVector3Normalize(locDir);
 
 	//Apply speed to turn it into a vector
-	currentDir *= getSpeed() * fElapsedTime;
+	locDir *= getSpeed() * fElapsedTime;
 
-	//Return the vector (used for leashing and avoidance)
-	return (XMVectorSet(XMVectorGetX(currentDir), XMVectorGetY(currentDir), XMVectorGetZ(currentDir), 0.0));
+	//Return the movement vector
+	return locDir;
 }
 
-//Calculates whether the XMVector3AngleBetweenNormals has picked the correct turn direction
-bool Boid::correctTurnDirection(float proposedRX, XMVECTOR position, XMVECTOR target, float fElapsedTime) {
+//Calculates whether we have picked the correct turn direction
+bool Boid::turnedTowardsTarget(float proposedRX, XMVECTOR positionToTarget, float fElapsedTime) {
 	//Create a movement vector based on the proposed turn
-	XMVECTOR proposedStep = createMovementVector(proposedRX, getRY(), getRZ(), fElapsedTime);
-	//Generate a new position based on this turn and step
-	XMVECTOR proposedNewPosition = XMVectorSet(getX() + XMVectorGetX(proposedStep), getY() + XMVectorGetY(proposedStep), getZ() + XMVectorGetZ(proposedStep), 0.0f);
-
-	//Step to check we are facing the target
 	XMVECTOR proposedMovementVector = createMovementVector(proposedRX, getRY(), getRZ(), fElapsedTime);
-	XMVECTOR newPositionToTarget = target - proposedNewPosition;
-
 	proposedMovementVector = XMVector3Normalize(proposedMovementVector);
-	newPositionToTarget = XMVector3Normalize(newPositionToTarget);
 
-	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(newPositionToTarget, proposedMovementVector);
+	//Calculates the angle between the target, the boid's position and a step towards proposedRX + RX (if close to 0, the target itself)
+	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(positionToTarget, proposedMovementVector);
 
-	return (XMVectorGetX(angleBetween) <= 0.2);
+	return (XMVectorGetX(angleBetween) <= 0.1);
 }
 
 

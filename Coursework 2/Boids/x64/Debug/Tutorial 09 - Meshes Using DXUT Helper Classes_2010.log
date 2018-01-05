@@ -46,18 +46,69 @@ Boid.cpp(57): warning C4244: 'initializing': conversion from 'long' to 'float', 
 Boid.cpp(65): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
 Boid.cpp(66): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
 Boid.cpp(67): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
-Boid.cpp(118): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(126): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-Boid.cpp(146): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(155): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-Boid.cpp(184): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(272): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(274): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(398): warning C4458: declaration of 'speed' hides class member
+Boid.cpp(123): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(131): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+Boid.cpp(151): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(160): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+Boid.cpp(189): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(273): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(388): warning C4458: declaration of 'speed' hides class member
   c:\users\jkell\desktop\coursework\coursework 2\boids\Boid.h(10): note: see declaration of 'Boid::speed'
-Boid.cpp(404): warning C4458: declaration of 'speed' hides class member
+Boid.cpp(394): warning C4458: declaration of 'speed' hides class member
   c:\users\jkell\desktop\coursework\coursework 2\boids\Boid.h(10): note: see declaration of 'Boid::speed'
-Boid.cpp(405): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(422): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(395): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(412): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Boids.cpp
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2662): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2663): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2664): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2665): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2666): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2667): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2668): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2689): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2690): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2691): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2694): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2695): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2698): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2702): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2712): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2713): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2715): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2716): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2717): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2727): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2728): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2729): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2730): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2731): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2732): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2742): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2743): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2754): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.inl(2254): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.inl(4523): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.inl(4577): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.inl(4639): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.inl(4707): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.inl(4770): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.inl(4832): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.inl(1269): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
+c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
+c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
+Boids.cpp(175): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
+Boids.cpp(308): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+Boids.cpp(475): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boids.cpp(477): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boids.cpp(917): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+Boids.cpp(962): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
+Boids.cpp(832): warning C4101: 'hr': unreferenced local variable
+Boids.cpp(999): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(1021): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(1148): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.exe
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.pdb (Full PDB)

@@ -1,7 +1,6 @@
 Get OOP drawing itself
 boids mechanics:
-	Leash/Cohesion/Separation boids always seem to turn 
-	the same way
-	+ the difference = clockwise
-	- the difference = anticlockwise
-Make boids flee bear
+	Leash/Cohesion/Separation/flee bear always turns the same way
+	XMVector3AngleBetweenNormals/Vectors doesn't understand direction
+		+ the difference = clockwise
+		- the difference = anticlockwise

@@ -118,9 +118,10 @@ int			flockSize			= sizeof(flock) / sizeof(*flock);
 float		neighbourRange		= 5.0;
 float		minProximity		= 1.0;
 float		leashLength			= 5.0;
+float		bearDistance		= 2.5;
 std::mt19937 spawnGen;
 std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
-std::uniform_real_distribution<float> spawnRX(0, 6.28319);
+std::uniform_real_distribution<float> spawnRX(0, 2 * XM_PI);
 
 
 //**************************************************************************//
@@ -444,10 +445,7 @@ void keyboardInput(float fElapsedTime) {
 }
 
 void flockInteraction(float fElapsedTime) {
-	float bearX = bear->getX();
-	float bearY = bear->getY();
-	float bearZ = bear->getZ();
-	XMVECTOR bearDir = XMVectorSet(bearX, bearY, bearZ, 0.0f);
+	XMVECTOR bearPos = XMVectorSet(bear->getX(), bear->getY(), bear->getZ(), 0.0f);
 
 	//For each boid
 	for (int i = 0; i < flockSize; i++) {
@@ -467,14 +465,17 @@ void flockInteraction(float fElapsedTime) {
 			//flock[i]->separation(localFlock, minProximity, fElapsedTime);
 			//flock[i]->alignment(localFlock);
 		}
+		//Run from the bear if it is nearby
+		if (flock[i]->isNear(bearPos, bearDistance)) {
+			flock[i]->fleeBear(bearPos, fElapsedTime);
+			flock[i]->move(fElapsedTime);
+		}
 		//Force the boids to stay near the base 3rd-person camera position
 		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashLength, fElapsedTime);
 		flock[i]->move(fElapsedTime);
 		//Modulus division required to ensure angles don't go beyond float capacities
-		if (6.28319 < flock[i]->getRX()) {
-			flock[i]->setRX(fmod(flock[i]->getRX(), 6.28319));
-		} else if(flock[i]->getRX() < -6.28319) {
-			flock[i]->setRX(fmod(flock[i]->getRX(), -6.28319));
+		if (2*XM_PI < flock[i]->getRX()) {
+			flock[i]->setRX(fmod(flock[i]->getRX(), 2*XM_PI));
 		}
 	}
 }

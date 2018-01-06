@@ -83,6 +83,7 @@ CDXUTSDKMesh                meshBear;			// Wot, not a pointer type?
 CDXUTSDKMesh				meshWing;
 CDXUTSDKMesh				meshFloor;
 CDXUTSDKMesh				meshSky;
+CDXUTSDKMesh				meshBoid;
 
 XMMATRIX					matProjection;
 
@@ -117,7 +118,7 @@ Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
 float		neighbourRange		= 5.0;
 float		minProximity		= 1.0;
-float		leashLength			= 5.0;
+float		leashLength			= 75.0;
 float		bearDistance		= 2.5;
 std::mt19937 spawnGen;
 std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
@@ -756,6 +757,7 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 	V_RETURN(meshWing.Create(pd3dDevice, L"Media\\Bear\\bearwing.sdkmesh", true));
 	V_RETURN(meshFloor.Create(pd3dDevice, L"Media\\Floor\\seafloor.sdkmesh", true));
 	V_RETURN(meshSky.Create(pd3dDevice, L"Media\\Cloudbox\\skysphere.sdkmesh", true));
+	V_RETURN(meshBoid.Create(pd3dDevice, L"Media\\Parasaur\\parasaur.sdkmesh", true));
 
 	// Create a sampler state
 	D3D11_SAMPLER_DESC SamDesc;
@@ -1035,7 +1037,7 @@ void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matV
 			matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
 			matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
 			matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
-			prepareRender(pd3dImmediateContext, &meshBear, matBoidWorld, matBoidWorldViewProjection, false);
+			prepareRender(pd3dImmediateContext, &meshBoid, matBoidWorld, matBoidWorldViewProjection, false);
 			arrayIndex += 1;
 		}
 	}
@@ -1126,6 +1128,7 @@ void CALLBACK OnD3D11DestroyDevice(void* pUserContext)
 	meshWing.Destroy();
 	meshFloor.Destroy();
 	meshSky.Destroy();
+	meshBoid.Destroy();
 
 	SAFE_RELEASE(g_pVertexLayout11);
 	SAFE_RELEASE(g_pVertexBuffer);

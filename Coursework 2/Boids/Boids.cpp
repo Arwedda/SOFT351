@@ -119,7 +119,7 @@ int			flockSize			= sizeof(flock) / sizeof(*flock);
 float		neighbourRange		= 5.0;
 float		minProximity		= 1.0;
 float		leashLength			= 75.0;
-float		bearDistance		= 2.5;
+float		bearDistance		= 5.0;
 std::mt19937 spawnGen;
 std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
 std::uniform_real_distribution<float> spawnRX(0, 2 * XM_PI);
@@ -462,9 +462,9 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
 			flock[i]->adjustSpeed(fElapsedTime);
-			//flock[i]->cohesion(localFlock, fElapsedTime);
-			//flock[i]->separation(localFlock, minProximity, fElapsedTime);
-			//flock[i]->alignment(localFlock);
+			flock[i]->cohesion(localFlock, fElapsedTime);
+			flock[i]->separation(localFlock, minProximity, fElapsedTime);
+			flock[i]->alignment(localFlock);
 		}
 		//Run from the bear if it is nearby
 		if (flock[i]->isNear(bearPos, bearDistance)) {

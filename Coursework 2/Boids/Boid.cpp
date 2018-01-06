@@ -40,7 +40,7 @@ Boid::~Boid() {
 }
 
 bool Boid::isNear(Boid* flockMember, float range) {
-	XMVECTOR dist = distance(flockMember);
+	XMVECTOR dist = distance(XMVectorSet(flockMember->getX(), flockMember->getY(), flockMember->getZ(), 0.0));
 
 	return (XMVectorGetX(dist) + XMVectorGetY(dist) + XMVectorGetZ(dist) <= range);
 }
@@ -55,16 +55,6 @@ XMVECTOR Boid::distance(XMVECTOR xyzPos) {
 	float deltaX = abs(long(getX() - XMVectorGetX(xyzPos)));
 	float deltaY = abs(long(getY() - XMVectorGetY(xyzPos)));
 	float deltaZ = abs(long(getZ() - XMVectorGetZ(xyzPos)));
-
-	XMVECTOR dist = XMVectorSet(deltaX, deltaY, deltaZ, 0.0);
-
-	return dist;
-}
-
-XMVECTOR Boid::distance(Boid* flockMember) {
-	float deltaX = abs(long(getX() - flockMember->getX()));
-	float deltaY = abs(long(getY() - flockMember->getY()));
-	float deltaZ = abs(long(getZ() - flockMember->getZ()));
 
 	XMVECTOR dist = XMVectorSet(deltaX, deltaY, deltaZ, 0.0);
 
@@ -284,9 +274,9 @@ void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) 
 		/*
 		Sometimes turns the wrong way since XMVector3AngleBetweenNormals returns an undirected angle.
 		The following system has been designed to stop this, but isn't working at present.
-
-		float proposedNewDirection = getRX() + (XMVectorGetX(angleBetween) / 40);
-
+		*/
+		/*float proposedNewDirection = getRX() + (XMVectorGetX(angleBetween) / 40);
+		
 		//If we are closer to our target continue
 		if (turnedTowardsTarget(proposedNewDirection, angleBetween, boidToLeash, fElapsedTime)) {
 			setRX(proposedNewDirection);
@@ -320,6 +310,12 @@ bool Boid::turnedTowardsTarget(float proposedRX, XMVECTOR oldAngleBetween, XMVEC
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(positionToTarget, proposedMovementVector);
 
 	return (XMVectorGetX(angleBetween) < XMVectorGetX(oldAngleBetween));
+}
+
+void Boid::setScale(float scale) {
+	setSX(scale);
+	setSY(scale);
+	setSZ(scale);
 }
 
 

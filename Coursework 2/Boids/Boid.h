@@ -20,7 +20,6 @@ public:
 	~Boid();
 	bool isNear(Boid* flockMember, float range);
 	bool isNear(XMVECTOR xyzPos, float range);
-	XMVECTOR distance(Boid* flockMember);
 	XMVECTOR distance(XMVECTOR xyzPos);
 	void move(float fElapsedTime);
 	void fleeBear(XMVECTOR bearPos, float fElapsedTime);
@@ -37,6 +36,7 @@ public:
 	void leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime);
 	XMVECTOR createMovementVector(float xRot, float yRot, float zRot, float fElapsedTime);
 	bool turnedTowardsTarget(float proposedRX, XMVECTOR oldAngleBetween, XMVECTOR positionToTarget, float fElapsedTime);
+	void setScale(float scale);
 
 	void tiltLeft(float fElapsedTime);
 	void tiltRight(float fElapsedTime);

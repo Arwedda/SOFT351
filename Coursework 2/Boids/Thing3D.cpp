@@ -113,12 +113,24 @@ float Thing3D::getSX() {
 	return sx;
 }
 
+void Thing3D::setSX(float newSX) {
+	sx = newSX;
+}
+
 float Thing3D::getSY() {
 	return sy;
 }
 
+void Thing3D::setSY(float newSY) {
+	sy = newSY;
+}
+
 float Thing3D::getSZ() {
 	return sz;
+}
+
+void Thing3D::setSZ(float newSZ) {
+	sz = newSZ;
 }
 
 XMVECTOR Thing3D::getInitialDirection() {

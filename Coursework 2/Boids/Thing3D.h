@@ -63,8 +63,11 @@ public:
 	float getRZ();
 	void setRZ(float newX);
 	float getSX();
+	void setSX(float newSX);
 	float getSY();
+	void setSY(float newSX);
 	float getSZ();
+	void setSZ(float newSX);
 	XMVECTOR getInitialDirection();
 	void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matView, const XMMATRIX &matProjection);
 	void renderMesh(ID3D11DeviceContext *pContext);

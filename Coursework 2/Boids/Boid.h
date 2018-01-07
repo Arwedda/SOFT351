@@ -36,34 +36,7 @@ public:
 	void leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime);
 	XMVECTOR createMovementVector(float xRot, float yRot, float zRot, float fElapsedTime);
 	bool turnedTowardsTarget(float proposedRX, XMVECTOR oldAngleBetween, XMVECTOR positionToTarget, float fElapsedTime);
-	void setScale(float scale);
-
-	void tiltLeft(float fElapsedTime);
-	void tiltRight(float fElapsedTime);
-	void straightenUp(float fElapsedTime, float horizontalRZ);
-
-
-
 	float getSpeed();
-	void setSpeed(float newSpeed);
-	float getFallSpeed();
-	void setFallSpeed(float newFallSpeed);
 	float getMaxForward();
-	float getMaxReverse();
-	float getMaxTilt();
-	float getMaxClimb();
-	float getMaxDescent();
-	float getWingRest();
-	float getWingPosition();
-	void setWingPosition(float newWingPosition);
-	void tiltUp(float fElapsedTime);
-	void tiltDown(float fElapsedTime);
-	void slowDown(float fElapsedTime, float airDensity);
-	void slowGround();
-	void fall(float fElapsedTime);
-	void wingFlap();
-	void restWings();
-	void levelOut(float fElapsedTime, float horizontalRY);
-	bool inAir(float ground);
 };
 #endif

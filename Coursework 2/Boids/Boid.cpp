@@ -5,7 +5,6 @@ std::mt19937 rng;
 std::uniform_int_distribution<uint32_t> turn(1, 3);
 std::uniform_int_distribution<uint32_t> acceleration(1, 3);
 
-
 Boid::Boid()
 	:Thing3D() {
 	speed = 0.0;
@@ -312,139 +311,10 @@ bool Boid::turnedTowardsTarget(float proposedRX, XMVECTOR oldAngleBetween, XMVEC
 	return (XMVectorGetX(angleBetween) < XMVectorGetX(oldAngleBetween));
 }
 
-void Boid::setScale(float scale) {
-	setSX(scale);
-	setSY(scale);
-	setSZ(scale);
-}
-
-
-
-void Boid::tiltLeft(float fElapsedTime) {
-	if (getRZ() < maxTilt) {
-		setRZ(getRZ() + fElapsedTime * 3);
-	}
-}
-
-void Boid::tiltRight(float fElapsedTime) {
-	if (getRZ() > -maxTilt) {
-		setRZ(getRZ() - fElapsedTime * 3);
-	}
-}
-
-void Boid::straightenUp(float fElapsedTime, float horizontalRZ) {
-	if (getRZ() < horizontalRZ) {
-		setRZ(getRZ() + fElapsedTime * 3);
-	}
-	else if (getRZ() > horizontalRZ) {
-		setRZ(getRZ() - fElapsedTime * 3);
-	}
-}
-
-
-
-
-
 float Boid::getSpeed() {
 	return speed;
 }
 
-void Boid::setSpeed(float newSpeed) {
-	speed = newSpeed;
-}
-
-float Boid::getFallSpeed() {
-	return fallSpeed;
-}
-void Boid::setFallSpeed(float newFallSpeed) {
-	fallSpeed = newFallSpeed;
-}
-
 float Boid::getMaxForward() {
 	return maxForward;
-}
-
-float Boid::getMaxReverse() {
-	return maxReverse;
-}
-
-float Boid::getMaxTilt() {
-	return maxTilt;
-}
-
-float Boid::getMaxClimb() {
-	return maxClimb;
-}
-
-float Boid::getMaxDescent() {
-	return maxDescent;
-}
-
-float Boid::getWingRest() {
-	return wingRest;
-}
-
-float Boid::getWingPosition() {
-	return wingPosition;
-}
-
-void Boid::setWingPosition(float newWingPosition) {
-	wingPosition = newWingPosition;
-}
-
-void Boid::slowDown(float fElapsedTime, float airDensity) {
-	float speed = getSpeed();
-	float drag = -0.5f * airDensity * speed * abs((long)speed) * dragCoefficient;
-	setSpeed(speed + drag / mass * fElapsedTime);
-}
-
-void Boid::slowGround() {
-	float speed = getSpeed();
-	setSpeed(speed * 0.99);
-}
-
-void Boid::fall(float gravityFallSpeed) {
-	setFallSpeed(getFallSpeed() + gravityFallSpeed);
-	float newHeight = getY() - getFallSpeed();
-	if (newHeight >= 0.0) {
-		setY(newHeight);
-	}
-	else {
-		setSpeed(0.0);
-		setFallSpeed(0.0);
-		setY(0.0);
-	}
-}
-
-void Boid::wingFlap() {
-	wingPosition = sin(timeGetTime() / 200.0);
-}
-
-void Boid::restWings() {
-	if (wingPosition > wingRest + 0.01 || wingPosition < wingRest - 0.01) {
-		wingFlap();
-	}
-}
-
-void Boid::tiltUp(float fElapsedTime) {
-	if (getRY() > -getMaxClimb()) {
-		setRY(getRY() - fElapsedTime * 3);
-	}
-}
-
-void Boid::tiltDown(float fElapsedTime) {
-	if (getRY() < getMaxDescent()) {
-		setRY(getRY() + fElapsedTime * 3);
-	}
-}
-
-void Boid::levelOut(float fElapsedTime, float horizontalRY) {
-	if (getRY() > horizontalRY) {
-		tiltUp(fElapsedTime);
-		setSpeed(0);
-	}
-}
-
-bool Boid::inAir(float ground) {
-	return (getY() > ground);
 }

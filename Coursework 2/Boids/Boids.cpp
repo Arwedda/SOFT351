@@ -118,7 +118,7 @@ Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
 float		neighbourRange		= 5.0;
 float		minProximity		= 1.0;
-float		leashLength			= 75.0;
+float		leashLength			= 5.0;
 float		bearDistance		= 5.0;
 std::mt19937 spawnGen;
 std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
@@ -462,14 +462,14 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
 			flock[i]->adjustSpeed(fElapsedTime);
-			flock[i]->cohesion(localFlock, fElapsedTime);
-			flock[i]->separation(localFlock, minProximity, fElapsedTime);
-			flock[i]->alignment(localFlock);
+			//flock[i]->cohesion(localFlock, fElapsedTime);
+			//flock[i]->separation(localFlock, minProximity, fElapsedTime);
+			//flock[i]->alignment(localFlock);
 		}
 		//Run from the bear if it is nearby
 		if (flock[i]->isNear(bearPos, bearDistance)) {
-			flock[i]->fleeBear(bearPos, fElapsedTime);
-			flock[i]->move(fElapsedTime);
+			//flock[i]->fleeBear(bearPos, fElapsedTime);
+			//flock[i]->move(fElapsedTime);
 		}
 		//Force the boids to stay near the base 3rd-person camera position
 		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashLength, fElapsedTime);

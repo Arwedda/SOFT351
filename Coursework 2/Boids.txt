@@ -4,3 +4,6 @@ boids mechanics:
 	XMVector3AngleBetweenNormals/Vectors doesn't understand direction
 		+ the difference = clockwise
 		- the difference = anticlockwise
+https://www.google.co.uk/search?client=firefox-b&dcr=0&ei=fuRQWoKaJqPFgAaDi6N4&q=calculate+angle+to+turn+to+target&oq=calculate+angle+to+turn+to+target&gs_l=psy-ab.3..33i22i29i30k1.13071.15287.0.15407.17.17.0.0.0.0.136.1496.9j6.15.0....0...1.1.64.psy-ab..2.15.1494...0j0i22i30k1.0.HXJ7mD9EOBM
+https://math.stackexchange.com/questions/14177/help-with-calculating-the-angle-to-turn-towards-a-target-in-a-coordinatesystem
+https://www.google.co.uk/search?client=firefox-b&dcr=0&ei=juRQWsf6K4KPgAaj16qQDA&q=calculate+angle+to+turn+to+target+C%2B%2B&oq=calculate+angle+to+turn+to+target+C%2B%2B&gs_l=psy-ab.3...11003.11421.0.11602.4.4.0.0.0.0.96.325.4.4.0....0...1.1.64.psy-ab..0.2.161...33i22i29i30k1j33i160k1.0.HO0QQL_qOAg

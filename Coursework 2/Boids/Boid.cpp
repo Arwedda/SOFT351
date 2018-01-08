@@ -266,7 +266,7 @@ void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) 
 		boidToLeash = XMVector3Normalize(boidToLeash);
 
 		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(boidToLeash, movementVector);
-		
+
 		//Turn 2.5% clockwise towards the point
 		setRX(getRX() + (XMVectorGetX(angleBetween) / 40.0));
 		

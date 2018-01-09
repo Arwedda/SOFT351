@@ -120,6 +120,10 @@ float		neighbourRange		= 5.0;
 float		minProximity		= 1.0;
 float		leashLength			= 5.0;
 float		bearDistance		= 5.0;
+float		leashStrength		= 1.0;
+float		cohesianStrength	= 1.0;
+float		alignmentStrength	= 1.0;
+float		separationStrength	= 1.0;
 std::mt19937 spawnGen;
 std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
 std::uniform_real_distribution<float> spawnRX(0, 2 * XM_PI);
@@ -252,6 +256,8 @@ void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, CDXUTSDKMesh *toRe
 void RenderMesh(ID3D11DeviceContext* pd3dImmediateContext, CDXUTSDKMesh *toRender, bool isShadow);
 bool isNotTurning();
 void keyboardInput(float fElapsedTime);
+float increaseStrength(float toIncrease);
+float decreaseStrength(float toDecrease);
 void flockInteraction(float fElapsedTime);
 void spawnFlock();
 void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matView);
@@ -445,6 +451,20 @@ void keyboardInput(float fElapsedTime) {
 	}
 }
 
+float increaseStrength(float toIncrease) {
+	if (toIncrease < 2.0) {
+		toIncrease += 0.1;
+	}
+	return toIncrease;
+}
+
+float decreaseStrength(float toDecrease) {
+	if (0.1 < toDecrease) {
+		toDecrease -= 0.1;
+	}
+	return toDecrease;
+}
+
 void flockInteraction(float fElapsedTime) {
 	XMVECTOR bearPos = XMVectorSet(bear->getX(), bear->getY(), bear->getZ(), 0.0f);
 
@@ -578,29 +598,66 @@ void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserCo
 		switch (nChar)
 		{
 		case VK_F1:
-			g_bShowHelp = !g_bShowHelp; break;
+			g_bShowHelp = !g_bShowHelp;
+			break;
 		case VK_F4:
 			isBearView = !isBearView;
 			break;
+		case 85://u
+			leashStrength = increaseStrength(leashStrength);
+			break;
+		case 72://h
+			leashStrength = decreaseStrength(leashStrength);
+			break;
+		case 73://i
+			cohesianStrength = increaseStrength(cohesianStrength);
+			break;
+		case 74://j
+			cohesianStrength = decreaseStrength(cohesianStrength);
+			break;
+		case 79://o
+			alignmentStrength = increaseStrength(alignmentStrength);
+			break;
+		case 75://k
+			alignmentStrength = decreaseStrength(alignmentStrength);
+			break;
+		case 80://p
+			separationStrength = increaseStrength(separationStrength);
+			break;
+		case 76://l
+			separationStrength = decreaseStrength(separationStrength);
+			break;
 		}
 	}
-
 
 	//**************************************************************//
 	// Nigel code to rotate the bear.								//
 	//**************************************************************//
 	switch (nChar)
 	{
-	case VK_LEFT:  isLeftArrowDown = bKeyDown; break;
-	case VK_RIGHT: isRightArrowDown = bKeyDown; break;
-	case VK_UP:    isUpArrowDown = bKeyDown; break;
-	case VK_DOWN:  isDownArrowDown = bKeyDown; break;
-	case 87:		isWKeyDown = bKeyDown; break;
-	case 83:		isSKeyDown = bKeyDown; break;
-	case 32:		isSpaceDown = bKeyDown; break;
+	case VK_LEFT:
+		isLeftArrowDown = bKeyDown;
+		break;
+	case VK_RIGHT:
+		isRightArrowDown = bKeyDown;
+		break;
+	case VK_UP:
+		isUpArrowDown = bKeyDown;
+		break;
+	case VK_DOWN:
+		isDownArrowDown = bKeyDown;
+		break;
+	case 87:
+		isWKeyDown = bKeyDown;
+		break;
+	case 83:
+		isSKeyDown = bKeyDown;
+		break;
+	case 32:
+		isSpaceDown = bKeyDown;
+		break;
 	}
 }
-
 
 //--------------------------------------------------------------------------------------
 // Handles the GUI events

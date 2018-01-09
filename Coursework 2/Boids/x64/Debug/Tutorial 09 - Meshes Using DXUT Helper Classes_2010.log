@@ -102,12 +102,12 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.inl(1269): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
+c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
+c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
 Bear.cpp(102): warning C4458: declaration of 'speed' hides class member
-  c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Bear.h(14): note: see declaration of 'Bear::speed'
+  c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(14): note: see declaration of 'Bear::speed'
 Bear.cpp(108): warning C4458: declaration of 'speed' hides class member
-  c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Bear.h(14): note: see declaration of 'Bear::speed'
+  c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(14): note: see declaration of 'Bear::speed'
 Bear.cpp(109): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 Bear.cpp(126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Boid.cpp
@@ -149,7 +149,7 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.inl(1269): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
+c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
 Boid.cpp(20): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 Boid.cpp(35): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 Boid.cpp(54): warning C4244: 'initializing': conversion from 'long' to 'float', possible loss of data
@@ -161,7 +161,7 @@ Boid.cpp(128): warning C4267: 'initializing': conversion from 'size_t' to 'int',
 Boid.cpp(148): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 Boid.cpp(157): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 Boid.cpp(186): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(283): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(271): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   DXUTDevice11.cpp
   DXUTDevice9.cpp
   DXUTmisc.cpp
@@ -170,11 +170,11 @@ DXUT\Core\DXUTmisc.cpp(1117): warning C4996: 'GetVersionExA': was declared depre
   DXUTcamera.cpp
   DXUTgui.cpp
 DXUT\Optional\DXUTgui.cpp(7235): warning C4458: declaration of 'iTexture' hides class member
-  c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\dxut\optional\DXUTgui.h(111): note: see declaration of 'CDXUTElement::iTexture'
+  c:\users\jkell\desktop\coursework\coursework 2\boids\dxut\optional\DXUTgui.h(111): note: see declaration of 'CDXUTElement::iTexture'
 DXUT\Optional\DXUTgui.cpp(7249): warning C4458: declaration of 'iFont' hides class member
-  c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\dxut\optional\DXUTgui.h(112): note: see declaration of 'CDXUTElement::iFont'
+  c:\users\jkell\desktop\coursework\coursework 2\boids\dxut\optional\DXUTgui.h(112): note: see declaration of 'CDXUTElement::iFont'
 DXUT\Optional\DXUTgui.cpp(7249): warning C4458: declaration of 'dwTextFormat' hides class member
-  c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\dxut\optional\DXUTgui.h(113): note: see declaration of 'CDXUTElement::dwTextFormat'
+  c:\users\jkell\desktop\coursework\coursework 2\boids\dxut\optional\DXUTgui.h(113): note: see declaration of 'CDXUTElement::dwTextFormat'
   DXUTres.cpp
   DXUTsettingsdlg.cpp
   SDKmesh.cpp
@@ -227,7 +227,7 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.inl(1269): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
+c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
   Boids.cpp
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2662): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2663): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
@@ -267,37 +267,37 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathconvert.
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathvector.inl(1269): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(518): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
-Boids.cpp(177): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
-Boids.cpp(310): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-Boids.cpp(920): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
-Boids.cpp(965): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
-Boids.cpp(835): warning C4101: 'hr': unreferenced local variable
-Boids.cpp(1002): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Boids.cpp(1024): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Boids.cpp(1152): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
+c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
+Boids.cpp(181): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
+Boids.cpp(316): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+Boids.cpp(977): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+Boids.cpp(1022): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
+Boids.cpp(892): warning C4101: 'hr': unreferenced local variable
+Boids.cpp(1059): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(1081): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(1209): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   BasicHLSL9.cpp
   Generating Code...
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(152): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(153): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(156): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(161): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(164): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(166): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(167): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(169): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(171): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(178): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(179): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(190): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(191): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(194): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(196): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(202): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(209): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(210): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(211): warning C4702: unreachable code
-c:\users\jkellaway\desktop\coursework\soft351\coursework 2\boids\basichlsl9.cpp(213): warning C4702: unreachable code
-  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Desktop\Coursework\SOFT351\Coursework 2\Boids\x64\Debug\Boids.exe
-  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkellaway\Desktop\Coursework\SOFT351\Coursework 2\Boids\x64\Debug\Boids.pdb (Full PDB)
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(152): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(153): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(156): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(161): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(164): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(166): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(167): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(169): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(171): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(178): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(179): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(190): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(191): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(194): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(196): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(202): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(209): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(210): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(211): warning C4702: unreachable code
+c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(213): warning C4702: unreachable code
+  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.exe
+  Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.pdb (Full PDB)

@@ -100,7 +100,7 @@ void Boid::fleeBear(XMVECTOR bearPos, float fElapsedTime) {
 }
 
 //Separation: steer to avoid crowding local flockmates 
-void Boid::separation(std::vector<Boid*> flock, float minProximity, float fElapsedTime) {
+void Boid::separation(std::vector<Boid*> flock, float separationStrength, float minProximity, float fElapsedTime) {
 	XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 	XMVECTOR movementVector = createMovementVector(getRX(), getRY(), getRZ(), fElapsedTime);
 	XMVECTOR boidToTarget;
@@ -117,14 +117,14 @@ void Boid::separation(std::vector<Boid*> flock, float minProximity, float fElaps
 			//Angle between currenct vector and position 180 degrees/PI radians from avoidance position
 			angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
 			//Turn 0.5% towards the position 180 degrees/PI radians from the avoidance position
-			setRX(getRX() + (XMVectorGetX(angleBetween) / 200.0));
+			setRX(getRX() + (separationStrength * XMVectorGetX(angleBetween) / 200.0));
 		}
 		flock.pop_back();
 	}
 }
 
 //Alignment: steer towards the average heading of local flockmates
-void Boid::alignment(std::vector<Boid*> flock) {
+void Boid::alignment(std::vector<Boid*> flock, float alignmentStrength) {
 	int flockSize = flock.size();
 	//Prevent divide by 0
 	if (0 < flockSize) {
@@ -145,13 +145,13 @@ void Boid::alignment(std::vector<Boid*> flock) {
 		targetSpeed = targetSpeed / flockSize;
 
 		//Turn 0.1% towards this position
-		setRX(getRX() + (targetRX / 1000.0));
+		setRX(getRX() + (alignmentStrength * targetRX / 1000.0));
 		//setRY(getRY() + (targetRY / 1000.0));
 	}
 }
 
 //Cohesion: steer to move toward the average position of local flockmates
-void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
+void Boid::cohesian(std::vector<Boid*> flock, float cohesianStrength, float fElapsedTime) {
 	XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 	XMVECTOR targetPosition;
 	int flockSize = flock.size();
@@ -183,7 +183,7 @@ void Boid::cohesion(std::vector<Boid*> flock, float fElapsedTime) {
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
 
 	//Turn 0.01% towards this position
-	setRX(getRX() + (XMVectorGetX(angleBetween) / 10000.0));
+	setRX(getRX() + (cohesianStrength * XMVectorGetX(angleBetween) / 10000.0));
 }
 
 void Boid::moveRandomly(float fElapsedTime) {
@@ -254,7 +254,7 @@ void Boid::reverse(float fElapsedTime) {
 
 //If boids get too far from the centre of a circle (around the static camera) then they are forced to turn back
 //towards it
-void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) {
+void Boid::leash(XMVECTOR leashPosition, float leashStrength, float leashLength, float fElapsedTime) {
 	if (!isNear(leashPosition, leashLength)) {
 		XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 
@@ -268,7 +268,7 @@ void Boid::leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime) 
 		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(boidToLeash, movementVector);
 
 		//Turn 2.5% clockwise towards the point
-		setRX(getRX() + (XMVectorGetX(angleBetween) / 40.0));
+		setRX(getRX() + (leashStrength * XMVectorGetX(angleBetween) / 40.0));
 		
 		/*
 		Sometimes turns the wrong way since XMVector3AngleBetweenNormals returns an undirected angle.

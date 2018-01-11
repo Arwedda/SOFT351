@@ -118,7 +118,7 @@ Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
 float		neighbourRange		= 5.0;
 float		minProximity		= 1.0;
-float		leashLength			= 5.0;
+float		leashLength			= 50.0;
 float		bearDistance		= 5.0;
 float		leashStrength		= 1.0;
 float		cohesianStrength	= 1.0;
@@ -482,17 +482,17 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
 			flock[i]->adjustSpeed(fElapsedTime);
-			//flock[i]->cohesion(localFlock, fElapsedTime);
-			//flock[i]->separation(localFlock, minProximity, fElapsedTime);
-			//flock[i]->alignment(localFlock);
+			flock[i]->cohesian(localFlock, cohesianStrength, fElapsedTime);
+			flock[i]->separation(localFlock, separationStrength, minProximity, fElapsedTime);
+			flock[i]->alignment(localFlock, alignmentStrength);
 		}
 		//Run from the bear if it is nearby
 		if (flock[i]->isNear(bearPos, bearDistance)) {
-			//flock[i]->fleeBear(bearPos, fElapsedTime);
-			//flock[i]->move(fElapsedTime);
+			flock[i]->fleeBear(bearPos, fElapsedTime);
+			flock[i]->move(fElapsedTime);
 		}
 		//Force the boids to stay near the base 3rd-person camera position
-		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashLength, fElapsedTime);
+		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashStrength, leashLength, fElapsedTime);
 		flock[i]->move(fElapsedTime);
 		//Modulus division required to ensure angles don't go beyond float capacities
 		if (2*XM_PI < flock[i]->getRX()) {

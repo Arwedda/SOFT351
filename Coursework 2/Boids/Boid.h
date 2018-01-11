@@ -23,9 +23,9 @@ public:
 	XMVECTOR distance(XMVECTOR xyzPos);
 	void move(float fElapsedTime);
 	void fleeBear(XMVECTOR bearPos, float fElapsedTime);
-	void separation(std::vector<Boid*> flock, float minProximity, float fElapsedTime);
-	void alignment(std::vector<Boid*> flock);
-	void cohesion(std::vector<Boid*> flock, float fElapsedTime);
+	void separation(std::vector<Boid*> flock, float separationStrength, float minProximity, float fElapsedTime);
+	void alignment(std::vector<Boid*> flock, float alignmentStrength);
+	void cohesian(std::vector<Boid*> flock, float cohesianStrength, float fElapsedTime);
 	void moveRandomly(float fElapsedTime);
 	void turnRandomly(float fElapsedTime);
 	void adjustSpeed(float fElapsedTime);
@@ -33,7 +33,7 @@ public:
 	void turnRight(float fElapsedTime);
 	void forward(float fElapsedTime);
 	void reverse(float fElapsedTime);
-	void leash(XMVECTOR leashPosition, float leashLength, float fElapsedTime);
+	void leash(XMVECTOR leashPosition, float leashStrength, float leashLength, float fElapsedTime);
 	XMVECTOR createMovementVector(float xRot, float yRot, float zRot, float fElapsedTime);
 	bool turnedTowardsTarget(float proposedRX, XMVECTOR oldAngleBetween, XMVECTOR positionToTarget, float fElapsedTime);
 	float getSpeed();

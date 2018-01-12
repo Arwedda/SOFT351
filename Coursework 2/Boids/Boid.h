@@ -25,7 +25,7 @@ public:
 	void fleeBear(XMVECTOR bearPos, float fElapsedTime);
 	void separation(std::vector<Boid*> flock, float separationStrength, float minProximity, float fElapsedTime);
 	void alignment(std::vector<Boid*> flock, float alignmentStrength);
-	void cohesian(std::vector<Boid*> flock, float cohesianStrength, float fElapsedTime);
+	void cohesion(std::vector<Boid*> flock, float cohesionStrength, float fElapsedTime);
 	void moveRandomly(float fElapsedTime);
 	void turnRandomly(float fElapsedTime);
 	void adjustSpeed(float fElapsedTime);

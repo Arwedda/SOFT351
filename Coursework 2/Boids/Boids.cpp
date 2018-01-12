@@ -124,7 +124,7 @@ float		leashLength			= 50.0;
 float		bearDistance		= 5.0;
 float		leashStrength		= 1.0;
 float		leashMultiplier		= 1.0;
-float		cohesianStrength	= 1.0;
+float		cohesionStrength	= 1.0;
 float		alignmentStrength	= 1.0;
 float		separationStrength	= 1.0;
 std::mt19937 spawnGen;
@@ -485,7 +485,7 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
 			flock[i]->adjustSpeed(fElapsedTime);
-			flock[i]->cohesian(localFlock, cohesianStrength, fElapsedTime);
+			flock[i]->cohesion(localFlock, cohesionStrength, fElapsedTime);
 			flock[i]->separation(localFlock, separationStrength, (minProximity * proximityMultiplier), fElapsedTime);
 			flock[i]->alignment(localFlock, alignmentStrength);
 		}
@@ -536,7 +536,7 @@ void RenderText()
 		g_pTxtHelper->DrawTextLine(L"Neighbour range: y = longer / g = shorter.\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 10);
-		g_pTxtHelper->DrawTextLine(L"Cohesian strength: u = stronger / h = weaker\n");
+		g_pTxtHelper->DrawTextLine(L"cohesion strength: u = stronger / h = weaker\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 9);
 		g_pTxtHelper->DrawTextLine(L"Alignment strength: i = stronger / j = weaker\n");
@@ -640,10 +640,10 @@ void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserCo
 			neighbourMultiplier = decreaseStrength(neighbourMultiplier);
 			break;
 		case 85://u
-			cohesianStrength = increaseStrength(cohesianStrength);
+			cohesionStrength = increaseStrength(cohesionStrength);
 			break;
 		case 72://h
-			cohesianStrength = decreaseStrength(cohesianStrength);
+			cohesionStrength = decreaseStrength(cohesionStrength);
 			break;
 		case 73://i
 			alignmentStrength = increaseStrength(alignmentStrength);
@@ -1092,47 +1092,35 @@ void CALLBACK OnD3D11FrameRender(ID3D11Device* pd3dDevice, ID3D11DeviceContext* 
 }
 
 void spawnFlock() {
-	int rows = pow(flockSize, 0.5);
-	int columns = flockSize / rows;
-	int arrayIndex = 0;
 	Boid* boid;
 	float xStart;
 	float zStart;
 	float rxStart;
 
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < columns; j++) {
-			xStart = spawnX(spawnGen);
-			std::uniform_real_distribution<float> spawnZ(-leashLength + fabs(xStart), leashLength - fabs(xStart));
-			zStart = spawnZ(spawnGen);
-			rxStart = spawnRX(spawnGen);
-			boid = new Boid(xStart, 0.0, zStart, rxStart, 0.0, 0.0);
-			flock[arrayIndex] = boid;
-			arrayIndex += 1;
-		}
+	for (int i = 0; i < flockSize; i++) {
+		xStart = spawnX(spawnGen);
+		std::uniform_real_distribution<float> spawnZ(-leashLength + fabs(xStart), leashLength - fabs(xStart));
+		zStart = spawnZ(spawnGen);
+		rxStart = spawnRX(spawnGen);
+		boid = new Boid(xStart, 0.0, zStart, rxStart, 0.0, 0.0);
+		flock[i] = boid;
 	}
 }
 
 void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matView) {
-	int rows = pow(flockSize, 0.5);
-	int columns = flockSize / rows;
-	int arrayIndex = 0;
 	XMMATRIX matBoidTranslate;
 	XMMATRIX matBoidScale;
 	XMMATRIX matBoidWorld;
 	XMMATRIX matBoidWorldViewProjection;
 	Boid* boid;
 
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < columns; j++) {
-			boid = flock[arrayIndex];
-			matBoidTranslate = XMMatrixTranslation(boid->getX(), boid->getY(), boid->getZ());
-			matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
-			matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
-			matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
-			prepareRender(pd3dImmediateContext, &meshBoid, matBoidWorld, matBoidWorldViewProjection, false);
-			arrayIndex += 1;
-		}
+	for (int i = 0; i < flockSize; i++) {
+		boid = flock[i];
+		matBoidTranslate = XMMatrixTranslation(boid->getX(), boid->getY(), boid->getZ());
+		matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
+		matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
+		matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
+		prepareRender(pd3dImmediateContext, &meshBoid, matBoidWorld, matBoidWorldViewProjection, false);
 	}
 }
 

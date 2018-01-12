@@ -166,7 +166,7 @@ void Boid::alignment(std::vector<Boid*> flock, float alignmentStrength) {
 }
 
 //Cohesion: steer to move toward the average position of local flockmates
-void Boid::cohesian(std::vector<Boid*> flock, float cohesianStrength, float fElapsedTime) {
+void Boid::cohesion(std::vector<Boid*> flock, float cohesionStrength, float fElapsedTime) {
 	XMVECTOR position = XMVectorSet(getX(), getY(), getZ(), 0.0);
 	XMVECTOR targetPosition;
 	int flockSize = flock.size();
@@ -208,7 +208,7 @@ void Boid::cohesian(std::vector<Boid*> flock, float cohesianStrength, float fEla
 	//If turn required is greater than 0.19 Radians (11 Degrees)
 	if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
 		//Turn 0.01% clockwise towards the point
-		setRX(getRX() + (cohesianStrength * XMVectorGetX(angleBetween) / 10000.0));
+		setRX(getRX() + (cohesionStrength * XMVectorGetX(angleBetween) / 10000.0));
 	}
 }
 

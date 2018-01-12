@@ -39,25 +39,23 @@ Boid::~Boid() {
 }
 
 bool Boid::isNear(Boid* flockMember, float range) {
-	XMVECTOR dist = distance(XMVectorSet(flockMember->getX(), flockMember->getY(), flockMember->getZ(), 0.0));
+	float dist = distance(XMVectorSet(flockMember->getX(), flockMember->getY(), flockMember->getZ(), 0.0));
 
-	return (XMVectorGetX(dist) + XMVectorGetY(dist) + XMVectorGetZ(dist) <= range);
+	return (dist <= range);
 }
 
 bool Boid::isNear(XMVECTOR xyzPos, float range) {
-	XMVECTOR dist = distance(xyzPos);
+	float dist = distance(xyzPos);
 
-	return (XMVectorGetX(dist) + XMVectorGetY(dist) + XMVectorGetZ(dist) <= range);
+	return (dist <= range);
 }
 
-XMVECTOR Boid::distance(XMVECTOR xyzPos) {
+float Boid::distance(XMVECTOR xyzPos) {
 	float deltaX = abs(long(getX() - XMVectorGetX(xyzPos)));
 	float deltaY = abs(long(getY() - XMVectorGetY(xyzPos)));
 	float deltaZ = abs(long(getZ() - XMVectorGetZ(xyzPos)));
 
-	XMVECTOR dist = XMVectorSet(deltaX, deltaY, deltaZ, 0.0);
-
-	return dist;
+	return (deltaX + deltaY + deltaZ);
 }
 
 void Boid::move(float fElapsedTime) {
@@ -95,8 +93,19 @@ void Boid::fleeBear(XMVECTOR bearPos, float fElapsedTime) {
 
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
 
-	//Turn 5% towards the position 180 degrees/PI radians from the bear
-	setRX(getRX() + (XMVectorGetX(angleBetween) / 20.0));
+	/*
+	//If we are closer to our target continue, otherwise invert the turn direction		--- Does not work :(
+	float proposedNewDirection = getRX() + (XMVectorGetX(angleBetween) / 40);
+	if (!turnedTowardsTarget(proposedNewDirection, angleBetween, boidToTarget, fElapsedTime)) {
+	angleBetween *= -1;
+	}
+	*/
+
+	//If turn required is greater than 0.19 Radians (11 Degrees)
+	if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
+		//Turn 5% clockwise towards the point
+		setRX(getRX() + (XMVectorGetX(angleBetween) / 20.0));
+	}
 }
 
 //Separation: steer to avoid crowding local flockmates 
@@ -116,37 +125,43 @@ void Boid::separation(std::vector<Boid*> flock, float separationStrength, float 
 			boidToTarget = XMVector3Normalize(boidToTarget);
 			//Angle between currenct vector and position 180 degrees/PI radians from avoidance position
 			angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
-			//Turn 0.5% towards the position 180 degrees/PI radians from the avoidance position
-			setRX(getRX() + (separationStrength * XMVectorGetX(angleBetween) / 200.0));
+			 
+			/*
+			//If we are closer to our target continue, otherwise invert the turn direction		--- Does not work :(
+			float proposedNewDirection = getRX() + (XMVectorGetX(angleBetween) / 40);
+			if (!turnedTowardsTarget(proposedNewDirection, angleBetween, boidToTarget, fElapsedTime)) {
+			angleBetween *= -1;
+			}
+			*/
+
+			//If turn required is greater than 0.19 Radians (11 Degrees)
+			if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
+				//Turn 0.5% clockwise towards the point
+				setRX(getRX() + (separationStrength * XMVectorGetX(angleBetween) / 200.0));
+			}
 		}
 		flock.pop_back();
 	}
 }
 
 //Alignment: steer towards the average heading of local flockmates
+//To make 3d simply add RY values
 void Boid::alignment(std::vector<Boid*> flock, float alignmentStrength) {
 	int flockSize = flock.size();
 	//Prevent divide by 0
 	if (0 < flockSize) {
 		float targetRX = 0.0;
-		//float targetRY = 0.0;
-		float targetSpeed = 0.0;
 
 		while (!flock.empty()) {
-			//Make total RX, RY
+			//Make total RX
 			targetRX += flock.back()->getRX();
-			//targetRY += flock.back()->getRY();
-
 			flock.pop_back();
 		}
-		//Divide each by flock size
+		//Divide by flock size
 		targetRX = targetRX / flockSize;
-		//targetRY /= flockSize;
-		targetSpeed = targetSpeed / flockSize;
 
 		//Turn 0.1% towards this position
 		setRX(getRX() + (alignmentStrength * targetRX / 1000.0));
-		//setRY(getRY() + (targetRY / 1000.0));
 	}
 }
 
@@ -182,8 +197,19 @@ void Boid::cohesian(std::vector<Boid*> flock, float cohesianStrength, float fEla
 
 	XMVECTOR angleBetween = XMVector3AngleBetweenNormals(movementVector, boidToTarget);
 
-	//Turn 0.01% towards this position
-	setRX(getRX() + (cohesianStrength * XMVectorGetX(angleBetween) / 10000.0));
+	/*
+	//If we are closer to our target continue, otherwise invert the turn direction		--- Does not work :(
+	float proposedNewDirection = getRX() + (XMVectorGetX(angleBetween) / 40);
+	if (!turnedTowardsTarget(proposedNewDirection, angleBetween, boidToTarget, fElapsedTime)) {
+	angleBetween *= -1;
+	}
+	*/
+
+	//If turn required is greater than 0.19 Radians (11 Degrees)
+	if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
+		//Turn 0.01% clockwise towards the point
+		setRX(getRX() + (cohesianStrength * XMVectorGetX(angleBetween) / 10000.0));
+	}
 }
 
 void Boid::moveRandomly(float fElapsedTime) {
@@ -266,22 +292,20 @@ void Boid::leash(XMVECTOR leashPosition, float leashStrength, float leashLength,
 		boidToLeash = XMVector3Normalize(boidToLeash);
 
 		XMVECTOR angleBetween = XMVector3AngleBetweenNormals(boidToLeash, movementVector);
-
-		//Turn 2.5% clockwise towards the point
-		setRX(getRX() + (leashStrength * XMVectorGetX(angleBetween) / 40.0));
-		
+	
 		/*
-		Sometimes turns the wrong way since XMVector3AngleBetweenNormals returns an undirected angle.
-		The following system has been designed to stop this, but isn't working at present.
+		//If we are closer to our target continue, otherwise invert the turn direction		--- Does not work :(
+		float proposedNewDirection = getRX() + (XMVectorGetX(angleBetween) / 40);
+		if (!turnedTowardsTarget(proposedNewDirection, angleBetween, boidToLeash, fElapsedTime)) {
+			angleBetween *= -1;
+		}
 		*/
-		/*float proposedNewDirection = getRX() + (XMVectorGetX(angleBetween) / 40);
-		
-		//If we are closer to our target continue
-		if (turnedTowardsTarget(proposedNewDirection, angleBetween, boidToLeash, fElapsedTime)) {
-			setRX(proposedNewDirection);
-		} else { //Otherwise turn 2.5% anti-clockwise (from original direction)
-			setRX(getRX() - (XMVectorGetX(angleBetween) / 40.0));
-		}*/
+
+		//If turn required is greater than 0.19 Radians (11 Degrees)
+		if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
+			//Turn 2.5% clockwise towards the point
+			setRX(getRX() + (leashStrength * XMVectorGetX(angleBetween) / 40.0));
+		} //else do nothing - attempt at stopping spiralling caused by single turn direction
 	}
 }
 

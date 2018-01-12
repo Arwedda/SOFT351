@@ -117,10 +117,13 @@ Bear*		bear				= new Bear();
 Boid*		flock[100];
 int			flockSize			= sizeof(flock) / sizeof(*flock);
 float		neighbourRange		= 5.0;
+float		neighbourMultiplier = 1.0;
 float		minProximity		= 1.0;
+float		proximityMultiplier = 1.0;
 float		leashLength			= 50.0;
 float		bearDistance		= 5.0;
 float		leashStrength		= 1.0;
+float		leashMultiplier		= 1.0;
 float		cohesianStrength	= 1.0;
 float		alignmentStrength	= 1.0;
 float		separationStrength	= 1.0;
@@ -473,7 +476,7 @@ void flockInteraction(float fElapsedTime) {
 		std::vector<Boid*> localFlock;
 		//Cycle through other boids to determine local flock
 		for (int j = 0; j < flockSize; j++) {
-			if ((flock[i]->isNear(flock[j], neighbourRange)) && (i != j)) {
+			if ((flock[i]->isNear(flock[j], (neighbourRange * neighbourMultiplier))) && (i != j)) {
 				localFlock.push_back(flock[j]);
 			}
 		}
@@ -483,16 +486,16 @@ void flockInteraction(float fElapsedTime) {
 		} else { //Otherwise, be a boid
 			flock[i]->adjustSpeed(fElapsedTime);
 			flock[i]->cohesian(localFlock, cohesianStrength, fElapsedTime);
-			flock[i]->separation(localFlock, separationStrength, minProximity, fElapsedTime);
+			flock[i]->separation(localFlock, separationStrength, (minProximity * proximityMultiplier), fElapsedTime);
 			flock[i]->alignment(localFlock, alignmentStrength);
 		}
 		//Run from the bear if it is nearby
-		if (flock[i]->isNear(bearPos, bearDistance)) {
-			flock[i]->fleeBear(bearPos, fElapsedTime);
-			flock[i]->move(fElapsedTime);
+		if (flock[i]->isNear(bearPos, (bearDistance * proximityMultiplier))) {
+			//flock[i]->fleeBear(bearPos, fElapsedTime);
+			//flock[i]->move(fElapsedTime);
 		}
 		//Force the boids to stay near the base 3rd-person camera position
-		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashStrength, leashLength, fElapsedTime);
+		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashStrength, (leashLength * leashMultiplier), fElapsedTime);
 		flock[i]->move(fElapsedTime);
 		//Modulus division required to ensure angles don't go beyond float capacities
 		if (2*XM_PI < flock[i]->getRX()) {
@@ -522,9 +525,24 @@ void RenderText()
 	// Draw help
 	if (g_bShowHelp)
 	{
-		g_pTxtHelper->SetInsertionPos(2, nBackBufferHeight - 20 * 8);
+		g_pTxtHelper->SetInsertionPos(2, nBackBufferHeight - 20 * 13);
 		g_pTxtHelper->SetForegroundColor(D3DXCOLOR(1.0f, 0.75f, 0.0f, 1.0f));
 		g_pTxtHelper->DrawTextLine(L"Controls:");
+
+		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 12);
+		g_pTxtHelper->DrawTextLine(L"Leash: r = stronger / d = weaker. t = longer / f = shorter.\n");
+
+		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 11);
+		g_pTxtHelper->DrawTextLine(L"Neighbour range: y = longer / g = shorter.\n");
+
+		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 10);
+		g_pTxtHelper->DrawTextLine(L"Cohesian strength: u = stronger / h = weaker\n");
+
+		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 9);
+		g_pTxtHelper->DrawTextLine(L"Alignment strength: i = stronger / j = weaker\n");
+
+		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 8);
+		g_pTxtHelper->DrawTextLine(L"Separation: o = stronger / k = weaker. p = longer / l = shorter.\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 7);
 		g_pTxtHelper->DrawTextLine(L"Rotate model: Left / Right arrows\n");
@@ -603,29 +621,47 @@ void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserCo
 		case VK_F4:
 			isBearView = !isBearView;
 			break;
-		case 85://u
+		case 82://r
 			leashStrength = increaseStrength(leashStrength);
 			break;
-		case 72://h
+		case 68://d
 			leashStrength = decreaseStrength(leashStrength);
 			break;
-		case 73://i
+		case 84://t
+			leashMultiplier = increaseStrength(leashMultiplier);
+			break;
+		case 70://f
+			leashMultiplier = decreaseStrength(leashMultiplier);
+			break;
+		case 89://y
+			neighbourMultiplier = increaseStrength(neighbourMultiplier);
+			break;
+		case 71://g
+			neighbourMultiplier = decreaseStrength(neighbourMultiplier);
+			break;
+		case 85://u
 			cohesianStrength = increaseStrength(cohesianStrength);
 			break;
-		case 74://j
+		case 72://h
 			cohesianStrength = decreaseStrength(cohesianStrength);
 			break;
-		case 79://o
+		case 73://i
 			alignmentStrength = increaseStrength(alignmentStrength);
 			break;
-		case 75://k
+		case 74://j
 			alignmentStrength = decreaseStrength(alignmentStrength);
 			break;
-		case 80://p
+		case 79://o
 			separationStrength = increaseStrength(separationStrength);
 			break;
-		case 76://l
+		case 75://k
 			separationStrength = decreaseStrength(separationStrength);
+			break;
+		case 80://p
+			proximityMultiplier = increaseStrength(proximityMultiplier);
+			break;
+		case 76://l
+			proximityMultiplier = decreaseStrength(proximityMultiplier);
 			break;
 		}
 	}

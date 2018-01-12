@@ -20,7 +20,7 @@ public:
 	~Boid();
 	bool isNear(Boid* flockMember, float range);
 	bool isNear(XMVECTOR xyzPos, float range);
-	XMVECTOR distance(XMVECTOR xyzPos);
+	float distance(XMVECTOR xyzPos);
 	void move(float fElapsedTime);
 	void fleeBear(XMVECTOR bearPos, float fElapsedTime);
 	void separation(std::vector<Boid*> flock, float separationStrength, float minProximity, float fElapsedTime);

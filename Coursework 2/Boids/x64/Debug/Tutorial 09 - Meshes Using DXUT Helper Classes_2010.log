@@ -39,13 +39,13 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
 c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
-Boids.cpp(181): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
-Boids.cpp(316): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-Boids.cpp(977): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
-Boids.cpp(1022): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
-Boids.cpp(892): warning C4101: 'hr': unreferenced local variable
-Boids.cpp(1059): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Boids.cpp(1081): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Boids.cpp(1209): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+Boids.cpp(184): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
+Boids.cpp(319): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+Boids.cpp(1013): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+Boids.cpp(1058): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
+Boids.cpp(928): warning C4101: 'hr': unreferenced local variable
+Boids.cpp(1095): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(1117): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Boids.cpp(1245): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.exe
   Tutorial 09 - Meshes Using DXUT Helper Classes_2010.vcxproj -> C:\Users\jkell\Desktop\Coursework\Coursework 2\Boids\x64\Debug\Boids.pdb (Full PDB)

@@ -101,11 +101,8 @@ void Boid::fleeBear(XMVECTOR bearPos, float fElapsedTime) {
 	}
 	*/
 
-	//If turn required is greater than 0.19 Radians (11 Degrees)
-	if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
-		//Turn 5% clockwise towards the point
-		setRX(getRX() + (XMVectorGetX(angleBetween) / 20.0));
-	}
+	//Turn 5% clockwise towards the point
+	setRX(getRX() + (XMVectorGetX(angleBetween) / 20.0));
 }
 
 //Separation: steer to avoid crowding local flockmates 
@@ -134,11 +131,8 @@ void Boid::separation(std::vector<Boid*> flock, float separationStrength, float 
 			}
 			*/
 
-			//If turn required is greater than 0.19 Radians (11 Degrees)
-			if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
-				//Turn 0.5% clockwise towards the point
-				setRX(getRX() + (separationStrength * XMVectorGetX(angleBetween) / 200.0));
-			}
+			//Turn 2.5% clockwise towards the point
+			setRX(getRX() + (separationStrength * XMVectorGetX(angleBetween) / 40.0));
 		}
 		flock.pop_back();
 	}
@@ -160,8 +154,10 @@ void Boid::alignment(std::vector<Boid*> flock, float alignmentStrength) {
 		//Divide by flock size
 		targetRX = targetRX / flockSize;
 
-		//Turn 0.1% towards this position
-		setRX(getRX() + (alignmentStrength * targetRX / 1000.0));
+		targetRX -= getRX();
+
+		//Turn 1% towards the target direction
+		setRX(getRX() + (alignmentStrength * targetRX / 100.0));
 	}
 }
 
@@ -171,22 +167,19 @@ void Boid::cohesion(std::vector<Boid*> flock, float cohesionStrength, float fEla
 	XMVECTOR targetPosition;
 	int flockSize = flock.size();
 	float avgX = 0.0;
-	float avgY = 0.0;
 	float avgZ = 0.0;
 
 	while (!flock.empty()) {
 		avgX += flock.back()->getX();
-		avgY += flock.back()->getY();
 		avgZ += flock.back()->getZ();
 
 		flock.pop_back();
 	}
 	//Divide by size to create average position
 	avgX = avgX / flockSize;
-	avgY = avgY / flockSize;
 	avgZ = avgZ / flockSize;
 
-	targetPosition = XMVectorSet(avgX, avgY, avgZ, 0.0);
+	targetPosition = XMVectorSet(avgX, 0.0, avgZ, 0.0);
 
 	//Angle between these = turn required to face average position
 	XMVECTOR movementVector = createMovementVector(getRX(), getRY(), getRZ(), fElapsedTime);
@@ -205,11 +198,9 @@ void Boid::cohesion(std::vector<Boid*> flock, float cohesionStrength, float fEla
 	}
 	*/
 
-	//If turn required is greater than 0.19 Radians (11 Degrees)
-	if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
-		//Turn 0.01% clockwise towards the point
-		setRX(getRX() + (cohesionStrength * XMVectorGetX(angleBetween) / 10000.0));
-	}
+
+	//Turn 0.1% clockwise towards the point
+	setRX(getRX() + (cohesionStrength * XMVectorGetX(angleBetween) / 1000.0));
 }
 
 void Boid::moveRandomly(float fElapsedTime) {
@@ -301,11 +292,8 @@ void Boid::leash(XMVECTOR leashPosition, float leashStrength, float leashLength,
 		}
 		*/
 
-		//If turn required is greater than 0.19 Radians (11 Degrees)
-		if ((XM_PI / 16) < XMVectorGetX(angleBetween)) {
-			//Turn 2.5% clockwise towards the point
-			setRX(getRX() + (leashStrength * XMVectorGetX(angleBetween) / 40.0));
-		} //else do nothing - attempt at stopping spiralling caused by single turn direction
+		//Turn 2.5% clockwise towards the point
+		setRX(getRX() + (leashStrength * XMVectorGetX(angleBetween) / 40.0));
 	}
 }
 

@@ -485,14 +485,14 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->moveRandomly(fElapsedTime);
 		} else { //Otherwise, be a boid
 			flock[i]->adjustSpeed(fElapsedTime);
+			flock[i]->alignment(localFlock, alignmentStrength);
 			flock[i]->cohesion(localFlock, cohesionStrength, fElapsedTime);
 			flock[i]->separation(localFlock, separationStrength, (minProximity * proximityMultiplier), fElapsedTime);
-			flock[i]->alignment(localFlock, alignmentStrength);
 		}
 		//Run from the bear if it is nearby
 		if (flock[i]->isNear(bearPos, (bearDistance * proximityMultiplier))) {
-			//flock[i]->fleeBear(bearPos, fElapsedTime);
-			//flock[i]->move(fElapsedTime);
+			flock[i]->fleeBear(bearPos, fElapsedTime);
+			flock[i]->move(fElapsedTime);
 		}
 		//Force the boids to stay near the base 3rd-person camera position
 		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashStrength, (leashLength * leashMultiplier), fElapsedTime);

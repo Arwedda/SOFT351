@@ -291,7 +291,6 @@ void Boid::leash(XMVECTOR leashPosition, float leashStrength, float leashLength,
 			angleBetween *= -1;
 		}
 		*/
-
 		//Turn 2.5% clockwise towards the point
 		setRX(getRX() + (leashStrength * XMVectorGetX(angleBetween) / 40.0));
 	}

@@ -1,5 +1,4 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'c:\users\jkell\desktop\coursework\coursework 2\boids\x64\debug\boids.exe' because it is being used by another process.
-  DXUT.cpp
+﻿  DXUT.cpp
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: 'DXGI_STATUS_OCCLUDED': macro redefinition
   C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(50092): note: see previous definition of 'DXGI_STATUS_OCCLUDED'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(13): warning C4005: 'DXGI_STATUS_CLIPPED': macro redefinition
@@ -162,7 +161,7 @@ Boid.cpp(144): warning C4267: 'initializing': conversion from 'size_t' to 'int',
 Boid.cpp(160): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 Boid.cpp(168): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 Boid.cpp(203): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Boid.cpp(296): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Boid.cpp(295): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   DXUTDevice11.cpp
   DXUTDevice9.cpp
   DXUTmisc.cpp
@@ -270,12 +269,12 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\xnamathmisc.inl(519): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 c:\users\jkell\desktop\coursework\coursework 2\boids\Thing3D.h(29): warning C4324: 'Thing3D': structure was padded due to alignment specifier
 c:\users\jkell\desktop\coursework\coursework 2\boids\Bear.h(21): warning C4324: 'Bear': structure was padded due to alignment specifier
-Boids.cpp(184): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
-Boids.cpp(319): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-Boids.cpp(1013): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
-Boids.cpp(1058): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
-Boids.cpp(928): warning C4101: 'hr': unreferenced local variable
-Boids.cpp(1233): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+Boids.cpp(185): warning C4244: 'initializing': conversion from 'double' to 'UINT', possible loss of data
+Boids.cpp(320): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+Boids.cpp(1019): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+Boids.cpp(1064): warning C4244: 'argument': conversion from 'double' to 'FLOAT', possible loss of data
+Boids.cpp(934): warning C4101: 'hr': unreferenced local variable
+Boids.cpp(1240): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   BasicHLSL9.cpp
   Generating Code...
 c:\users\jkell\desktop\coursework\coursework 2\boids\basichlsl9.cpp(152): warning C4702: unreachable code

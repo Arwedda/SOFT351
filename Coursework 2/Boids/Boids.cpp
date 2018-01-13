@@ -127,6 +127,7 @@ float		leashMultiplier		= 1.0;
 float		cohesionStrength	= 1.0;
 float		alignmentStrength	= 1.0;
 float		separationStrength	= 1.0;
+bool		leashOn				= true;
 std::mt19937 spawnGen;
 std::uniform_real_distribution<float> spawnX(-leashLength, leashLength);
 std::uniform_real_distribution<float> spawnRX(0, 2 * XM_PI);
@@ -495,7 +496,9 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->move(fElapsedTime);
 		}
 		//Force the boids to stay near the base 3rd-person camera position
-		flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashStrength, (leashLength * leashMultiplier), fElapsedTime);
+		if (leashOn) {
+			flock[i]->leash(XMVectorSet(0.0f, 0.0f, -0.1f, 0.0f), leashStrength, (leashLength * leashMultiplier), fElapsedTime);
+		}
 		flock[i]->move(fElapsedTime);
 		//Modulus division required to ensure angles don't go beyond float capacities
 		if (2*XM_PI < flock[i]->getRX()) {
@@ -530,34 +533,34 @@ void RenderText()
 		g_pTxtHelper->DrawTextLine(L"Controls:");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 12);
-		g_pTxtHelper->DrawTextLine(L"Leash: r = stronger / d = weaker. t = longer / f = shorter.\n");
+		g_pTxtHelper->DrawTextLine(L"Leash: On/Off = e. r = Stronger / d = Weaker. t = Longer / f = Shorter.\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 11);
-		g_pTxtHelper->DrawTextLine(L"Neighbour range: y = longer / g = shorter.\n");
+		g_pTxtHelper->DrawTextLine(L"Neighbour Range: y = Longer / g = Shorter.\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 10);
-		g_pTxtHelper->DrawTextLine(L"cohesion strength: u = stronger / h = weaker\n");
+		g_pTxtHelper->DrawTextLine(L"Cohesion Strength: u = Stronger / h = Weaker\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 9);
-		g_pTxtHelper->DrawTextLine(L"Alignment strength: i = stronger / j = weaker\n");
+		g_pTxtHelper->DrawTextLine(L"Alignment Strength: i = Stronger / j = Weaker\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 8);
-		g_pTxtHelper->DrawTextLine(L"Separation: o = stronger / k = weaker. p = longer / l = shorter.\n");
+		g_pTxtHelper->DrawTextLine(L"Separation: o = stronger / k = Weaker. p = Longer / l = Shorter.\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 7);
-		g_pTxtHelper->DrawTextLine(L"Rotate model: Left / Right arrows\n");
+		g_pTxtHelper->DrawTextLine(L"Rotate Model: Left / Right Arrows\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 6);
-		g_pTxtHelper->DrawTextLine(L"Rotate model: Up / Down arrows\n");
+		g_pTxtHelper->DrawTextLine(L"Rotate Model: Up / Down Arrows\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 5);
-		g_pTxtHelper->DrawTextLine(L"Add momentum to model: W / S keys\n");
+		g_pTxtHelper->DrawTextLine(L"Add Momentum to Model: W / S Keys\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 4);
-		g_pTxtHelper->DrawTextLine(L"Roar: Space key\n");
+		g_pTxtHelper->DrawTextLine(L"Roar: Space Key\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 3);
-		g_pTxtHelper->DrawTextLine(L"Apply momentum and angle the bear skyward to fly\n");
+		g_pTxtHelper->DrawTextLine(L"Apply Momentum & Angle the Bear Skyward to Fly\n");
 
 		g_pTxtHelper->SetInsertionPos(20, nBackBufferHeight - 20 * 2);
 		g_pTxtHelper->DrawTextLine(L"Switch views: F4 key\n");
@@ -662,6 +665,9 @@ void CALLBACK OnKeyboard(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserCo
 			break;
 		case 76://l
 			proximityMultiplier = decreaseStrength(proximityMultiplier);
+			break;
+		case 69://e
+			leashOn = !leashOn;
 			break;
 		}
 	}
@@ -1103,6 +1109,7 @@ void spawnFlock() {
 		zStart = spawnZ(spawnGen);
 		rxStart = spawnRX(spawnGen);
 		boid = new Boid(xStart, 0.0, zStart, rxStart, 0.0, 0.0);
+		boid->mesh = &meshBoid;
 		flock[i] = boid;
 	}
 }
@@ -1120,7 +1127,7 @@ void updateFlock(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matV
 		matBoidScale = XMMatrixScaling(boid->getSX(), boid->getSY(), boid->getSZ());
 		matBoidWorld = boid->matRotations * matBoidTranslate * matBoidScale;
 		matBoidWorldViewProjection = matBoidWorld * matView * matProjection;
-		prepareRender(pd3dImmediateContext, &meshBoid, matBoidWorld, matBoidWorldViewProjection, false);
+		prepareRender(pd3dImmediateContext, boid->mesh, matBoidWorld, matBoidWorldViewProjection, false);
 	}
 }
 

@@ -4,5 +4,3 @@ boids mechanics:
 	XMVector3AngleBetweenNormals/Vectors doesn't understand direction
 		+ the difference = clockwise
 		- the difference = anticlockwise
-
-Also consider acceptable angle range (5% either side of target) to prevent huge turns to get back on track

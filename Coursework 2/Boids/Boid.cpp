@@ -329,3 +329,10 @@ float Boid::getSpeed() {
 float Boid::getMaxForward() {
 	return maxForward;
 }
+
+void Boid::respawn(float xSpawn, float zSpawn, float rxSpawn) {
+	setX(xSpawn);
+	setZ(zSpawn);
+	setRX(rxSpawn);
+	
+}

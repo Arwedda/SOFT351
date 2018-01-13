@@ -188,3 +188,7 @@ void Thing3D::renderMesh(ID3D11DeviceContext *pContext) {
 		pContext->DrawIndexed((UINT)pSubset->IndexCount, 0, (UINT)pSubset->VertexStart);
 	}
 }
+
+void Thing3D::setInitRX(float initRX) {
+	XMVectorSetX(initialDirection, initRX);
+}

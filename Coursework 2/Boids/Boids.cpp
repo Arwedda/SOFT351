@@ -122,6 +122,7 @@ float		minProximity		= 1.0;
 float		proximityMultiplier = 1.0;
 float		leashLength			= 50.0;
 float		bearDistance		= 5.0;
+float		bearAttack			= 1.0;
 float		leashStrength		= 1.0;
 float		leashMultiplier		= 1.0;
 float		cohesionStrength	= 1.0;
@@ -490,8 +491,17 @@ void flockInteraction(float fElapsedTime) {
 			flock[i]->cohesion(localFlock, cohesionStrength, fElapsedTime);
 			flock[i]->separation(localFlock, separationStrength, (minProximity * proximityMultiplier), fElapsedTime);
 		}
+
+		//If the bear is close enough to attack
+		if (flock[i]->isNear(bearPos, bearAttack)) {
+			float xSpawn= spawnX(spawnGen);
+			std::uniform_real_distribution<float> spawnZ(-leashLength + fabs(xSpawn), leashLength - fabs(xSpawn));
+			float zSpawn = spawnZ(spawnGen);
+			float rxSpawn = spawnRX(spawnGen);
+			flock[i]->respawn(xSpawn, zSpawn, rxSpawn);
+			bear->roar();
 		//Run from the bear if it is nearby
-		if (flock[i]->isNear(bearPos, (bearDistance * proximityMultiplier))) {
+		} else if (flock[i]->isNear(bearPos, (bearDistance * proximityMultiplier))) {
 			flock[i]->fleeBear(bearPos, fElapsedTime);
 			flock[i]->move(fElapsedTime);
 		}

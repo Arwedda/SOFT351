@@ -69,6 +69,7 @@ public:
 	float getSZ();
 	void setSZ(float newSX);
 	XMVECTOR getInitialDirection();
+	void setInitRX(float initRX);
 	void prepareRender(ID3D11DeviceContext *pd3dImmediateContext, const XMMATRIX &matView, const XMMATRIX &matProjection);
 	void renderMesh(ID3D11DeviceContext *pContext);
 };

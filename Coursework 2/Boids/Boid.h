@@ -38,5 +38,6 @@ public:
 	bool turnedTowardsTarget(float proposedRX, XMVECTOR oldAngleBetween, XMVECTOR positionToTarget, float fElapsedTime);
 	float getSpeed();
 	float getMaxForward();
+	void respawn(float xSpawn, float zSpawn, float rxSpawn);
 };
 #endif
